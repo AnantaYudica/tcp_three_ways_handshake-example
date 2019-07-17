@@ -22,7 +22,7 @@ public:
     inline Bit(const Bit & cpy);
     inline Bit(Bit && mov);
 public:
-    inline Bit & operator=(Bit &&) = delete;
+    inline Bit & operator=(Bit && b);
     inline Bit & operator=(const Bit & b);
     inline Bit & operator=(const bool & b);
     inline Bit & operator=(const std::uint8_t & b);
@@ -125,6 +125,17 @@ inline Bit::Bit(Bit && mov) :
 {
     mov.m_bytePtr = std::make_shared<std::uint8_t>(0);
     mov.m_offset = 0;
+}
+
+inline Bit & Bit::operator=(Bit && b)
+{
+    auto cpy = m_bytePtr;
+    m_bytePtr = b.m_bytePtr;
+    m_offset = b.m_offset;
+    b.m_bytePtr = cpy;
+    *b.m_bytePtr = 0;
+    b.m_offset = 0;
+    return *this;
 }
 
 inline Bit & Bit::operator=(const Bit & b)
