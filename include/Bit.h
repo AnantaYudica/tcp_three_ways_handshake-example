@@ -166,12 +166,10 @@ inline Bit::Bit(Bit && mov) :
 
 inline Bit & Bit::operator=(Bit && b)
 {
-    auto cpy = m_ptr;
     m_ptr = b.m_ptr;
     m_offset = b.m_offset;
     m_index = b.m_index;
-    b.m_ptr = cpy;
-    *b.m_ptr = 0;
+    b.m_ptr = std::make_shared<std::uint8_t>(0);
     b.m_offset = 0;
     b.m_index = 0;
     return *this;
