@@ -391,7 +391,7 @@ inline bool Bit::operator!=(const std::uint8_t & b) const
 
 inline bool Bit::operator!=(const std::shared_ptr<std::uint8_t> & b) const
 {
-    return !(m_ptr == b);
+    return !(*this == b);
 }
 
 inline Bit operator|(const bool & a, const Bit & b)
