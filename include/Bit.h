@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "byte/One.h"
+#include "bytes/Pointer.h"
 
 class Bit
 {
@@ -12,12 +13,6 @@ private:
     std::uint8_t m_offset;
     std::shared_ptr<std::uint8_t> m_ptr;
     std::size_t m_index;
-private:
-    static inline std::uint8_t * Pointer(std::shared_ptr<std::uint8_t> & ptr,
-        const std::size_t & i);
-    static inline const std::uint8_t * 
-        Pointer(const std::shared_ptr<std::uint8_t> & ptr, 
-        const std::size_t & i); 
 public:
     inline Bit();
     inline Bit(const std::uint8_t & b);
@@ -83,18 +78,6 @@ public:
     inline bool operator!=(const bool & b) const;
     inline bool operator!=(const std::uint8_t & b) const;
 };
-
-inline std::uint8_t * Bit::Pointer(std::shared_ptr<std::uint8_t> & ptr,
-    const std::size_t & i)
-{
-    return ptr.get() + i;
-}
-
-inline const std::uint8_t * 
-Bit::Pointer(const std::shared_ptr<std::uint8_t> & ptr, const std::size_t & i)
-{
-    return ptr.get() + i;
-}
 
 inline Bit::Bit() :
     m_ptr(new std::uint8_t(0)),
@@ -174,8 +157,8 @@ inline Bit & Bit::operator=(const Bit & b)
 
 inline Bit & Bit::operator=(const bool & b)
 {
-    *Pointer(m_ptr, m_index) &= ~byte::One(m_offset);
-    *Pointer(m_ptr, m_index) |= byte::One(m_offset, b);
+    *bytes::Pointer(m_ptr, m_index) &= ~byte::One(m_offset);
+    *bytes::Pointer(m_ptr, m_index) |= byte::One(m_offset, b);
     return *this;
 }
 
@@ -186,20 +169,22 @@ inline Bit & Bit::operator=(const std::uint8_t & b)
 
 inline Bit::operator bool() const
 {
-    return *Pointer(m_ptr, m_index) & byte::One(m_offset);
+    return *bytes::Pointer(m_ptr, m_index) & byte::One(m_offset);
 }
 
 inline Bit::operator std::uint8_t() const
 {
-    if (*Pointer(m_ptr, m_index) & byte::One(m_offset)) return std::uint8_t(1);
+    if (*bytes::Pointer(m_ptr, m_index) & byte::One(m_offset)) 
+        return std::uint8_t(1);
     return std::uint8_t(0);
 }
 
 inline Bit Bit::operator~() const
 {
     Bit res(*this);
-    *Pointer(res.m_ptr, m_index) = ~*(Pointer(res.m_ptr, m_index));
-    *Pointer(res.m_ptr, m_index) &= byte::One(m_offset);
+    *bytes::Pointer(res.m_ptr, m_index) = 
+        ~*(bytes::Pointer(res.m_ptr, m_index));
+    *bytes::Pointer(res.m_ptr, m_index) &= byte::One(m_offset);
     return res;
 }
 
@@ -210,7 +195,7 @@ inline Bit & Bit::operator|=(const Bit & b)
 
 inline Bit & Bit::operator|=(const bool & b)
 {
-    *Pointer(m_ptr, m_index) |= byte::One(m_offset, b);
+    *bytes::Pointer(m_ptr, m_index) |= byte::One(m_offset, b);
     return *this;
 }
 
@@ -247,7 +232,7 @@ inline Bit & Bit::operator&=(const Bit & b)
 
 inline Bit & Bit::operator&=(const bool & b)
 {
-    *Pointer(m_ptr, m_index) &= (byte::One(m_offset, b) | 
+    *bytes::Pointer(m_ptr, m_index) &= (byte::One(m_offset, b) | 
         ~byte::One(m_offset));
     return *this;
 }
@@ -285,7 +270,7 @@ inline Bit & Bit::operator^=(const Bit & b)
 
 inline Bit & Bit::operator^=(const bool & b)
 {
-    *Pointer(m_ptr, m_index) ^= byte::One(m_offset, b);
+    *bytes::Pointer(m_ptr, m_index) ^= byte::One(m_offset, b);
     return *this;
 }
 
