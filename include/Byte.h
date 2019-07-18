@@ -11,6 +11,9 @@
 class Byte
 {
 private:
+    static inline void Default(Byte & b);
+    static inline void Validation(Byte & b);
+private:
     std::shared_ptr<std::uint8_t> m_ptr;
     std::size_t m_index;
 public:
@@ -103,9 +106,11 @@ public:
 public:
     inline bool operator==(const Byte & b) const;
     inline bool operator==(const std::uint8_t & b) const;
+    inline bool operator==(const std::shared_ptr<std::uint8_t> & b) const;
 public:
     inline bool operator!=(const Byte & b) const;
     inline bool operator!=(const std::uint8_t & b) const;
+    inline bool operator!=(const std::shared_ptr<std::uint8_t> & b) const;
 public:
     inline bool operator<(const Byte & b) const;
     inline bool operator<(const std::uint8_t & b) const;
@@ -120,6 +125,17 @@ public:
     inline bool operator>=(const std::uint8_t & b) const;
 };
 
+inline void Byte::Default(Byte & b)
+{
+    b.m_ptr = std::make_shared<std::uint8_t>(0);
+    b.m_index = 0;
+}
+
+inline void Byte::Validation(Byte & b)
+{
+    if (!b.m_ptr) Default(b);
+}
+
 inline Byte::Byte() :
     m_ptr(new std::uint8_t(0)),
     m_index(0)
@@ -133,13 +149,17 @@ inline Byte::Byte(const std::uint8_t & b) :
 inline Byte::Byte(const std::shared_ptr<std::uint8_t> & b) :
     m_ptr(b),
     m_index(0)
-{}
+{
+    Validation(*this);
+}
 
 inline Byte::Byte(const std::shared_ptr<std::uint8_t> & b, 
     const std::size_t & i) :
         m_ptr(b),
         m_index(i)
-{}
+{
+    Validation(*this);
+}
 
 inline Byte::~Byte()
 {
@@ -156,16 +176,14 @@ inline Byte::Byte(Byte && mov) :
     m_ptr(mov.m_ptr),
     m_index(mov.m_index)
 {
-    mov.m_ptr = std::make_shared<std::uint8_t>(0);
-    mov.m_index = 0;
+    Default(mov);
 }
 
 inline Byte & Byte::operator=(Byte && b)
 {
     m_ptr = b.m_ptr;
     m_index = b.m_index;
-    b.m_ptr = std::make_shared<std::uint8_t>(0);
-    b.m_index = 0;
+    Default(b);
     return *this;
 }
 
@@ -462,12 +480,22 @@ inline bool Byte::operator==(const std::uint8_t & b) const
     return *bytes::Pointer(m_ptr, m_index) == b;
 }
 
+inline bool Byte::operator==(const std::shared_ptr<std::uint8_t> & b) const
+{
+    return m_ptr == b;
+}
+
 inline bool Byte::operator!=(const Byte & b) const
 {
     return !(*this == b);
 }
 
 inline bool Byte::operator!=(const std::uint8_t & b) const
+{
+    return !(*this == b);
+}
+
+inline bool Byte::operator!=(const std::shared_ptr<std::uint8_t> & b) const
 {
     return !(*this == b);
 }
@@ -557,7 +585,20 @@ inline bool operator==(const std::uint8_t & a, const Byte & b)
     return b == a;
 }
 
+inline bool operator==(const std::shared_ptr<std::uint8_t> & a,
+    const Byte & b)
+{
+    return b == a;
+}
+
+
 inline bool operator!=(const std::uint8_t & a, const Byte & b)
+{
+    return b != a;
+}
+
+inline bool operator!=(const std::shared_ptr<std::uint8_t> & a,
+    const Byte & b)
 {
     return b != a;
 }
