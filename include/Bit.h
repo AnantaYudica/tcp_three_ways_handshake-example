@@ -10,6 +10,9 @@
 class Bit
 {
 private:
+    static inline void Default(Bit & b);
+    static inline void Validation(Bit & b);
+private:
     std::uint8_t m_offset;
     std::shared_ptr<std::uint8_t> m_ptr;
     std::size_t m_index;
@@ -73,11 +76,25 @@ public:
     inline bool operator==(const Bit & b) const;
     inline bool operator==(const bool & b) const;
     inline bool operator==(const std::uint8_t & b) const;
+    inline bool operator==(const std::shared_ptr<std::uint8_t> & b) const;
 public:
     inline bool operator!=(const Bit & b) const;
     inline bool operator!=(const bool & b) const;
     inline bool operator!=(const std::uint8_t & b) const;
+    inline bool operator!=(const std::shared_ptr<std::uint8_t> & b) const;
 };
+
+inline void Bit::Default(Bit & b)
+{
+    b.m_ptr = std::make_shared<std::uint8_t>(0);
+    b.m_offset = 0;
+    b.m_index = 0;
+}
+
+inline void Bit::Validation(Bit & b)
+{
+    if (!b.m_ptr) Default(b);
+}
 
 inline Bit::Bit() :
     m_ptr(new std::uint8_t(0)),
@@ -101,20 +118,26 @@ inline Bit::Bit(const std::shared_ptr<std::uint8_t> & b) :
     m_ptr(b),
     m_offset(0),
     m_index(0)
-{}
+{
+    Validation(*this);
+}
 
 inline Bit::Bit(const std::shared_ptr<std::uint8_t> & b, const std::uint8_t & off) :
     m_ptr(b),
     m_offset(off),
     m_index(0)
-{}
+{
+    Validation(*this);
+}
 
 inline Bit::Bit(const std::shared_ptr<std::uint8_t> & b, const std::uint8_t & off,
     const std::size_t i) :
         m_ptr(b),
         m_offset(off),
         m_index(i)
-{}
+{
+    Validation(*this);
+}
 
 inline Bit::~Bit()
 {
@@ -134,9 +157,7 @@ inline Bit::Bit(Bit && mov) :
     m_offset(mov.m_offset),
     m_index(mov.m_index)
 {
-    mov.m_ptr = std::make_shared<std::uint8_t>(0);
-    mov.m_offset = 0;
-    mov.m_index = 0;
+    Default(mov);
 }
 
 inline Bit & Bit::operator=(Bit && b)
@@ -144,9 +165,7 @@ inline Bit & Bit::operator=(Bit && b)
     m_ptr = b.m_ptr;
     m_offset = b.m_offset;
     m_index = b.m_index;
-    b.m_ptr = std::make_shared<std::uint8_t>(0);
-    b.m_offset = 0;
-    b.m_index = 0;
+    Default(b);
     return *this;
 }
 
@@ -350,6 +369,11 @@ inline bool Bit::operator==(const std::uint8_t & b) const
     return static_cast<bool>(*this) == (b >= 1);
 }
 
+inline bool Bit::operator==(const std::shared_ptr<std::uint8_t> & b) const
+{
+    return m_ptr == b;
+}
+
 inline bool Bit::operator!=(const Bit & b) const
 {
     return !(*this == b);
@@ -363,6 +387,11 @@ inline bool Bit::operator!=(const bool & b) const
 inline bool Bit::operator!=(const std::uint8_t & b) const
 {
     return !(*this == b);
+}
+
+inline bool Bit::operator!=(const std::shared_ptr<std::uint8_t> & b) const
+{
+    return !(m_ptr == b);
 }
 
 inline Bit operator|(const bool & a, const Bit & b)
@@ -425,12 +454,22 @@ inline bool operator==(const std::uint8_t & a, const Bit & b)
     return b == a;
 }
 
+inline bool operator==(const std::shared_ptr<std::uint8_t> & a, const Bit & b)
+{
+    return b == a;
+}
+
 inline bool operator!=(const bool & a, const Bit & b)
 {
     return b != a;
 }
 
 inline bool operator!=(const std::uint8_t & a, const Bit & b)
+{
+    return b != a;
+}
+
+inline bool operator!=(const std::shared_ptr<std::uint8_t> & a, const Bit & b)
 {
     return b != a;
 }
