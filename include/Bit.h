@@ -99,7 +99,7 @@ inline void Bit::Default(Bit & b)
 
 inline bool Bit::Validation(Bit & b)
 {
-    if (!b.m_ptr) 
+    if (!b.m_ptr && !*(b.m_ptr)) 
     {  
         Default(b);
         return false;
@@ -161,8 +161,8 @@ inline Bit::Bit(const std::shared_ptr<bytes::Pointer> & b,
 {
     if (Validation(*this))
     {
-        if (seg && m_ptr->Has(seg)) m_segment = seg;
-        else if (seg)
+        if ((seg && *seg) && m_ptr->Has(seg)) m_segment = seg;
+        else if (seg && *seg)
             m_segment = m_ptr->Share(seg->Begin(), seg->End());
         else  m_segment = m_ptr->Share(0, 1);
     }
@@ -170,7 +170,7 @@ inline Bit::Bit(const std::shared_ptr<bytes::Pointer> & b,
 
 inline Bit::~Bit()
 {
-    if (m_ptr) m_ptr->Reset(m_segment);
+    m_ptr->Reset(m_segment);
     m_segment = nullptr;
     m_ptr = nullptr;
     m_offset = 0;
