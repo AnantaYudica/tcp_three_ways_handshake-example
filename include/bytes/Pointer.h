@@ -46,6 +46,8 @@ private:
 public:
     inline std::shared_ptr<bytes::ptr::Segment> Share(const std::size_t & bg, 
         const std::size_t & ed);
+    inline std::shared_ptr<bytes::ptr::Segment> 
+        Share(const std::shared_ptr<bytes::ptr::Segment> & seg);
 public:
     inline void Reset(const std::shared_ptr<bytes::ptr::Segment> & seg);
 public:
@@ -179,6 +181,20 @@ inline std::shared_ptr<bytes::ptr::Segment>
     return nseg;
 }
 
+inline std::shared_ptr<bytes::ptr::Segment> 
+    Pointer::Share(const std::shared_ptr<bytes::ptr::Segment> & seg)
+{
+    if (!*this || seg) return std::make_shared<bytes::ptr::Segment>();
+    for(auto it = m_segments.begin(); it != m_segments.end(); ++it)
+    {
+        if ((*it).Get() == seg)
+            return (++(*it)).Get();
+    }
+    auto nseg = std::make_shared<bytes::ptr::Segment>(seg->Begin(), seg->End());
+    m_segments.push_back(nseg);
+    return nseg;
+}
+
 inline void Pointer::Reset(const std::shared_ptr<bytes::ptr::Segment> & seg)
 {
     if (!*this) return;
@@ -186,7 +202,7 @@ inline void Pointer::Reset(const std::shared_ptr<bytes::ptr::Segment> & seg)
     {
         if ((*it).Get() == seg)
         {
-            if (--(*it)) m_segments.erase(it);
+            if (!(--(*it))) m_segments.erase(it);
             break;
         } 
     }
