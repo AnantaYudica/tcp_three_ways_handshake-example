@@ -31,6 +31,8 @@ public:
     inline Segment & operator=(Segment && mov);
 public:
     inline bool IsSameObject(const Segment & seg) const;
+    inline bool 
+        IsSameObject(const std::shared_ptr<bytes::ptr::Object> & b) const;
 public:
     inline std::size_t Begin() const;
 protected:
@@ -81,7 +83,7 @@ inline Segment::~Segment()
 inline Segment::Segment(const Segment & cpy) :
     m_begin(cpy.m_begin),
     m_end(cpy.m_end),
-    m_object(std::make_shared<bytes::ptr::Object>(cpy.m_object, 
+    m_object(std::make_shared<bytes::ptr::Object>(*(cpy.m_object), 
         m_begin, m_end))
 {}
 
@@ -99,7 +101,7 @@ inline Segment & Segment::operator=(const Segment & cpy)
 {
     m_begin = cpy.m_begin;
     m_end = cpy.m_end;
-    m_object = std::make_shared<bytes::ptr::Object>(cpy.m_object,
+    m_object = std::make_shared<bytes::ptr::Object>(*(cpy.m_object),
         m_begin, m_end);
     return *this;
 }
@@ -118,6 +120,11 @@ inline Segment & Segment::operator=(Segment && mov)
 inline bool Segment::IsSameObject(const Segment & seg) const
 {
     return seg.m_object == m_object;
+}
+inline bool Segment::
+    IsSameObject(const std::shared_ptr<bytes::ptr::Object> & b) const
+{
+    return b == m_object;
 }
 
 inline std::size_t Segment::Begin() const
