@@ -11,7 +11,7 @@ namespace ptr
 
 class Object
 {
-private:
+public:
     static inline std::uint8_t * Null();
 public:
     static inline bool IsEnd(const std::uint8_t * ptr);
