@@ -33,8 +33,12 @@ public:
     inline bool IsSameObject(const Segment & seg) const;
 public:
     inline std::size_t Begin() const;
+protected:
+    inline void Begin(const std::size_t & bg);
 public:
     inline std::size_t End() const;
+protected:
+    inline void End(const std::size_t & ed);
 public:
     inline std::size_t Size() const;
 public:
@@ -121,14 +125,24 @@ inline std::size_t Segment::Begin() const
     return m_begin;
 }
 
+inline void Segment::Begin(const std::size_t & bg)
+{
+    m_begin = bg;
+}
+
 inline std::size_t Segment::End() const
 {
     return m_end;
 }
 
+inline void Segment::End(const std::size_t & ed)
+{
+    m_end = ed;
+}
+
 inline std::size_t Segment::Size() const
 {
-    return m_end - m_begin;
+    return (m_end > m_begin ? m_end - m_begin : 0);
 }
 
 inline std::uint8_t & Segment::At(const std::size_t & i)
