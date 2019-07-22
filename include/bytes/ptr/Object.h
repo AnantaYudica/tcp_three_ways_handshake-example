@@ -25,6 +25,8 @@ public:
     inline ~Object();
 public:
     inline Object(const Object & cpy);
+    inline Object(const Object & cpy, const std::size_t & bg,
+        const std::size_t & ed);
     inline Object(Object && mov);
 public:
     inline Object & operator=(const Object & cpy) = delete;
@@ -90,6 +92,19 @@ inline Object::Object(const Object & cpy) :
     {
         m_ptr = new std::uint8_t[m_size];
         std::memcpy(m_ptr, cpy.m_ptr, m_size);
+    }
+}
+
+inline Object::Object(const Object & cpy, const std::size_t & bg,
+    const std::size_t & ed) :
+        m_ptr(nullptr),
+        m_size(ed > bg ? ed - bg : 0)
+{
+    if (cpy.m_ptr && m_size > 0)
+    {
+        m_ptr = new std::uint8_t[m_size];
+        std::memcpy(m_ptr, cpy.m_ptr + (bg < m_size ? bg : 0), 
+            (m_size < cpy.m_size ? m_size : cpy.m_size));
     }
 }
 
