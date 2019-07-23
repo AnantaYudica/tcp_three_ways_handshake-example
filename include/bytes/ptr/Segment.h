@@ -193,8 +193,10 @@ inline const std::uint8_t & Segment::operator[](const std::size_t & i) const
 
 inline bool Segment::operator==(const Segment & b) const
 {
-    return m_object && b.m_object && m_begin == b.m_begin && 
-        m_end == b.m_end;
+    const bool ca = static_cast<bool>(*this),
+        cb = static_cast<bool>(b);
+    return (!ca && !cb) || (ca && cb && m_begin == b.m_begin &&
+        m_end == b.m_end);
 }
 
 inline bool Segment::operator!=(const Segment & b) const
