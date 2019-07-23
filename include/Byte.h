@@ -6,7 +6,7 @@
 #include <cstdint>
 #include <memory>
 
-#include "bytes/Pointer.h"
+#include "bytes/ptr/Object.h"
 #include "bytes/ptr/Segment.h"
 
 class Byte
@@ -15,14 +15,11 @@ private:
     static inline void Default(Byte & b);
     static inline bool Validation(Byte & b);
 private:
-    std::shared_ptr<bytes::Pointer> m_ptr;
     std::shared_ptr<bytes::ptr::Segment> m_segment;
 public:
     inline Byte();
     inline Byte(const std::uint8_t & b);
-    inline Byte(const std::shared_ptr<bytes::Pointer> & b);
-    inline Byte(const std::shared_ptr<bytes::Pointer> & b, 
-        const std::shared_ptr<bytes::ptr::Segment> & seg);
+    inline Byte(const std::shared_ptr<bytes::ptr::Segment> & b);
     inline ~Byte();
 public:
     inline Byte(const Byte & cpy);
@@ -32,8 +29,9 @@ public:
     inline Byte & operator=(const Byte & b);
     inline Byte & operator=(const std::uint8_t & b);
 public:
-    inline bool IsSamePointer(const Byte & b) const;
-    inline bool IsSamePointer(const std::shared_ptr<bytes::Pointer> & b) const;
+    inline bool IsSameObject(const Byte & b) const;
+    inline bool 
+        IsSameObject(const std::shared_ptr<bytes::ptr::Object> & b) const;
 public:
     inline operator std::uint8_t() const;
 public:
@@ -129,14 +127,14 @@ public:
 
 inline void Byte::Default(Byte & b)
 {
-    b.m_ptr = std::make_shared<bytes::Pointer>(1);
-    b.m_ptr->At(0) = 0;
-    b.m_segment = b.m_ptr->Share(0, 1);
+    b.m_segment = std::make_shared<bytes::ptr::Segment>(0, 1,
+        std::make_shared<bytes::ptr::Object>(1));
+    b.m_segment->At(0) = 0;
 }
 
 inline bool Byte::Validation(Byte & b)
 {
-    if (!b.m_ptr && !*(b.m_ptr)) 
+    if (!b.m_segment && !*(b.m_segment)) 
     {
         Default(b);
         return false;
@@ -145,54 +143,38 @@ inline bool Byte::Validation(Byte & b)
 }
 
 inline Byte::Byte() :
-    m_ptr(new bytes::Pointer(1)),
-    m_segment(m_ptr->Share(0, 1))
-{}
+    m_segment(new bytes::ptr::Segment(0, 1, 
+        std::make_shared<bytes::ptr::Object>(1)))
+{
+    m_segment->At(0) = 0;
+}
 
 inline Byte::Byte(const std::uint8_t & b) :
-    m_ptr(new bytes::Pointer(1)),
-    m_segment(m_ptr->Share(0, 1))
+    m_segment(new bytes::ptr::Segment(0, 1, 
+        std::make_shared<bytes::ptr::Object>(1)))
 {
-    m_ptr->At(0) = b;
+    m_segment->At(0) = b;
 }
 
-inline Byte::Byte(const std::shared_ptr<bytes::Pointer> & b) :
-    m_ptr(b)
+inline Byte::Byte(const std::shared_ptr<bytes::ptr::Segment> & b) :
+    m_segment(b)
 {
-    if (Validation(*this)) m_segment = m_ptr->Share(0, 1);
-}
-
-inline Byte::Byte(const std::shared_ptr<bytes::Pointer> & b, 
-    const std::shared_ptr<bytes::ptr::Segment> & seg) :
-        m_ptr(b)
-{
-    if (Validation(*this))
-    {
-        if ((seg && *seg) && m_ptr->Has(seg))
-            m_segment = seg;
-        else if (seg && *seg)
-            m_segment = m_ptr->Share(seg->Begin(), seg->End());
-        else
-            m_segment = m_ptr->Share(0, 1);
-    }
+    Validation(*this);
 }
 
 inline Byte::~Byte()
 {
-    m_ptr->Reset(m_segment);
     m_segment = nullptr;
-    m_ptr = nullptr;
 }
 
 inline Byte::Byte(const Byte & cpy) :
-    m_ptr(new bytes::Pointer(1))
+    m_segment(new bytes::ptr::Segment(0, 1, 
+        std::make_shared<bytes::ptr::Object>(1)))
 {
-    m_segment = m_ptr->Share(0, 1);
     (*this) = cpy;
 }
 
 inline Byte::Byte(Byte && mov) :
-    m_ptr(mov.m_ptr),
     m_segment(mov.m_segment)
 {
     Default(mov);
@@ -200,7 +182,6 @@ inline Byte::Byte(Byte && mov) :
 
 inline Byte & Byte::operator=(Byte && b)
 {
-    m_ptr = b.m_ptr;
     m_segment = b.m_segment;
     Default(b);
     return *this;
@@ -208,29 +189,29 @@ inline Byte & Byte::operator=(Byte && b)
 
 inline Byte & Byte::operator=(const Byte & b)
 {
-    return (*this = b.m_ptr->At(m_segment, 0));
+    return (*this = b.m_segment->At(0));
 }
 
 inline Byte & Byte::operator=(const std::uint8_t & b)
 {
-    m_ptr->At(m_segment, 0) = b;
+    m_segment->At(0) = b;
     return *this;
 }
 
-inline bool Byte::IsSamePointer(const Byte & b) const
+inline bool Byte::IsSameObject(const Byte & b) const
 {
-    return m_ptr == b.m_ptr;
+    return m_segment->IsSameObject(*(b.m_segment));
 }
 
 inline bool 
-    Byte::IsSamePointer(const std::shared_ptr<bytes::Pointer> & b) const
+    Byte::IsSameObject(const std::shared_ptr<bytes::ptr::Object> & b) const
 {
-    return m_ptr == b;
+    return m_segment->IsSameObject(b);
 }
 
 inline Byte::operator std::uint8_t() const
 {
-    return m_ptr->At(m_segment, 0);
+    return m_segment->At(0);
 }
 
 inline Byte Byte::operator~() const
@@ -247,7 +228,7 @@ inline Byte & Byte::operator|=(const Byte & b)
 
 inline Byte & Byte::operator|=(const std::uint8_t & b)
 {
-    m_ptr->At(m_segment, 0) |= b;
+    m_segment->At(0) |= b;
     return *this;
 }
 
@@ -272,7 +253,7 @@ inline Byte & Byte::operator&=(const Byte & b)
 
 inline Byte & Byte::operator&=(const std::uint8_t & b)
 {
-    m_ptr->At(m_segment, 0) &= b;
+    m_segment->At(0) &= b;
     return *this;
 }
 
@@ -297,7 +278,7 @@ inline Byte & Byte::operator^=(const Byte & b)
 
 inline Byte & Byte::operator^=(const std::uint8_t & b)
 {
-    m_ptr->At(m_segment, 0) ^= b;
+    m_segment->At(0) ^= b;
     return *this;
 }
 
@@ -317,7 +298,7 @@ inline Byte Byte::operator^(const std::uint8_t & b) const
 
 inline Byte & Byte::operator>>=(const std::uint8_t & b)
 {
-    m_ptr->At(m_segment, 0) >>= b;
+    m_segment->At(0) >>= b;
     return *this;
 }
 
@@ -330,7 +311,7 @@ inline Byte Byte::operator>>(const std::uint8_t & b) const
 
 inline Byte & Byte::operator<<=(const std::uint8_t & b)
 {
-    m_ptr->At(m_segment, 0) <<= b;
+    m_segment->At(0) <<= b;
     return *this;
 }
 
@@ -372,7 +353,7 @@ inline Byte & Byte::operator+=(const Byte & b)
 
 inline Byte & Byte::operator+=(const std::uint8_t & b)
 {
-    m_ptr->At(m_segment, 0) += b;
+    m_segment->At(0) += b;
     return *this;
 }
 
@@ -397,7 +378,7 @@ inline Byte & Byte::operator-=(const Byte & b)
 
 inline Byte & Byte::operator-=(const std::uint8_t & b)
 {
-    m_ptr->At(m_segment, 0) -= b;
+    m_segment->At(0) -= b;
     return *this;
 }
 
@@ -422,7 +403,7 @@ inline Byte & Byte::operator*=(const Byte & b)
 
 inline Byte & Byte::operator*=(const std::uint8_t & b)
 {
-    m_ptr->At(m_segment, 0) *= b;
+    m_segment->At(0) *= b;
     return *this;
 }
 
@@ -447,7 +428,7 @@ inline Byte & Byte::operator/=(const Byte & b)
 
 inline Byte & Byte::operator/=(const std::uint8_t & b)
 {
-    m_ptr->At(m_segment, 0) /= b;
+    m_segment->At(0) /= b;
     return *this;
 }
 
@@ -472,7 +453,7 @@ inline Byte & Byte::operator%=(const Byte & b)
 
 inline Byte & Byte::operator%=(const std::uint8_t & b)
 {
-    m_ptr->At(m_segment, 0) %= b;
+    m_segment->At(0) %= b;
     return *this;
 }
 
@@ -492,12 +473,12 @@ inline Byte Byte::operator%(const std::uint8_t & b) const
 
 inline Bit Byte::operator[](const std::uint8_t & i)
 {
-    return {m_ptr, i, m_ptr->Share(m_segment)};
+    return {m_segment, i};
 }
 
 inline const Bit Byte::operator[](const std::uint8_t & i) const
 {
-    Bit res{m_ptr->At(m_segment, 0), i};
+    Bit res{m_segment->At(0), i};
     return res;
 }
 
@@ -508,7 +489,7 @@ inline bool Byte::operator==(const Byte & b) const
 
 inline bool Byte::operator==(const std::uint8_t & b) const
 {
-    return m_ptr->At(m_segment, 0) == b;
+    return m_segment->At(0) == b;
 }
 
 inline bool Byte::operator!=(const Byte & b) const
@@ -528,7 +509,7 @@ inline bool Byte::operator<(const Byte & b) const
 
 inline bool Byte::operator<(const std::uint8_t & b) const
 {
-    return m_ptr->At(m_segment, 0) < b;
+    return m_segment->At(0) < b;
 }
 
 inline bool Byte::operator<=(const Byte & b) const
@@ -538,7 +519,7 @@ inline bool Byte::operator<=(const Byte & b) const
 
 inline bool Byte::operator<=(const std::uint8_t & b) const
 {
-    return m_ptr->At(m_segment, 0) <= b;
+    return m_segment->At(0) <= b;
 }
 
 inline bool Byte::operator>(const Byte & b) const
@@ -548,7 +529,7 @@ inline bool Byte::operator>(const Byte & b) const
 
 inline bool Byte::operator>(const std::uint8_t & b) const
 {
-    return m_ptr->At(m_segment, 0) > b;
+    return m_segment->At(0) > b;
 }
 
 inline bool Byte::operator>=(const Byte & b) const
@@ -558,7 +539,7 @@ inline bool Byte::operator>=(const Byte & b) const
 
 inline bool Byte::operator>=(const std::uint8_t & b) const
 {
-    return m_ptr->At(m_segment, 0) >= b;
+    return m_segment->At(0) >= b;
 }
 
 inline Byte operator|(const std::uint8_t & a, const Byte & b)
