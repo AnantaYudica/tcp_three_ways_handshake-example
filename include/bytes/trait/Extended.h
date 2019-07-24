@@ -22,6 +22,7 @@ private:
     std::function<std::size_t(const std::size_t &)> m_formula;
 public:
     inline Extended();
+    inline Extended(const bytes::Endian::CategoryEnum & e);
     inline Extended(const std::size_t & c);
     inline Extended(const bytes::Endian::CategoryEnum & e,
         const std::size_t & c);
@@ -61,6 +62,10 @@ inline Extended::Extended() :
     m_formula(&Default)
 {}
 
+inline Extended::Extended(const bytes::Endian::CategoryEnum & e) :
+    m_formula(&Default)
+{}
+
 inline Extended::Extended(const std::size_t & c) :
     m_formula([&](const std::size_t & s){
         if (s == 0) return c;
@@ -89,10 +94,12 @@ inline Extended::~Extended()
 {}
 
 inline Extended::Extended(const Extended & cpy) :
+    bytes::Trait(cpy),
     m_formula(cpy.m_formula)
 {}
 
 inline Extended::Extended(Extended && mov):
+    bytes::Trait(std::move(mov)),
     m_formula(std::move(mov.m_formula))
 {
     mov.m_formula = &Default;
