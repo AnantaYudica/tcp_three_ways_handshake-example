@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <cstring>
 
+#include "../Endian.h"
+
 namespace bytes
 {
 namespace ptr
@@ -32,9 +34,11 @@ public:
     inline Object & operator=(const Object & cpy) = delete;
     inline Object & operator=(Object && mov) = delete;
 public:
-    inline void Reallocate(const std::size_t & sz);
+    inline void Reallocate(const std::size_t & sz,
+        const bytes::Endian * endian);
     inline void Reallocate(const std::size_t & sz, 
-        const std::size_t & bg, const std::size_t & ed);
+        const std::size_t & bg, const std::size_t & ed,
+        const bytes::Endian * endian);
 public:
     inline std::size_t Size() const;
 public:
@@ -116,25 +120,29 @@ inline Object::Object(Object && mov) :
     mov.m_size = 0;
 }
 
-inline void Object::Reallocate(const std::size_t & sz)
+inline void Object::Reallocate(const std::size_t & sz,
+        const bytes::Endian * endian)
 {
-    return Reallocate(sz, 0, m_size);
+    return Reallocate(sz, 0, m_size, endian);
 }
 
 inline void Object::Reallocate(const std::size_t & sz, 
-    const std::size_t & bg, const std::size_t & ed)
-    
+    const std::size_t & bg, const std::size_t & ed,
+        const bytes::Endian * endian)
 {
     if (m_size == sz) return;
-    const std::size_t tsz = sz + bg + (m_size - ed); 
+    const std::size_t bs = bg, cs = ed - bg, as = m_size - ed,
+        tsz = bs + sz + as, ned = bs + sz; 
     std::uint8_t * nptr = new std::uint8_t[tsz];
     if (*this)
     {
         std::memcpy(nptr, m_ptr, bg);
-        std::memcpy(nptr + bg, m_ptr + m_size, ed - bg);
-        std::memcpy(nptr + ed, m_ptr + m_size, (m_size - ed));
+        const std::size_t min_ed = ned > ed ? ed : ned;
+        for (std::size_t i = bg; i < min_ed; ++i)
+            nptr[endian->At(i, sz)] = m_ptr[endian->At(i, cs)];
+        std::memcpy(nptr + ned, m_ptr + ed, as);
+        delete[] m_ptr;
     }
-    if (m_ptr) delete[] m_ptr;
     m_ptr = nptr;
     m_size = tsz;
 }
