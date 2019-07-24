@@ -7,6 +7,7 @@
 #include <utility>
 #include <cstring>
 
+#include "Endian.h"
 #include "ptr/Object.h"
 #include "ptr/Segment.h"
 #include "ptr/Segment/Wrapper.h"
@@ -36,9 +37,11 @@ public:
     inline bool 
         IsSameObject(const std::shared_ptr<bytes::ptr::Object> & b) const;
 public:
-    inline void Reallocate(const std::size_t & sz);
+    inline void Reallocate(const std::size_t & sz,
+        const bytes::Endian * endian);
     inline void Reallocate(const std::size_t & sz, 
-        const std::shared_ptr<bytes::ptr::Segment> & seg);
+        const std::shared_ptr<bytes::ptr::Segment> & seg,
+        const bytes::Endian * endian);
 public:
     inline std::shared_ptr<bytes::ptr::Segment> Share(const std::size_t & bg, 
         const std::size_t & ed);
@@ -128,17 +131,19 @@ inline bool
     return (*this) && *m_object == *b;
 }
 
-inline void Pointer::Reallocate(const std::size_t & sz)
+inline void Pointer::Reallocate(const std::size_t & sz,
+    const bytes::Endian * endian)
 {
     if (!*this) return;
-    return m_object->Reallocate(sz);
+    return m_object->Reallocate(sz, endian);
 }
 
 inline void Pointer::Reallocate(const std::size_t & sz, 
-    const std::shared_ptr<bytes::ptr::Segment> & seg)
+    const std::shared_ptr<bytes::ptr::Segment> & seg,
+    const bytes::Endian * endian)
 {
     if(!*this || !seg || !*seg) return;
-    m_object->Reallocate(sz, seg->Begin(), seg->End());
+    m_object->Reallocate(sz, seg->Begin(), seg->End(), endian);
     for(auto it = m_segments.begin(); it != m_segments.end(); )
     {
         if ((*it).use_count() == 1)
