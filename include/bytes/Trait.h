@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <utility>
 
 #include "Endian.h"
 #include "sys/Endian.h"
@@ -28,11 +29,14 @@ protected:
     inline Trait(const Trait & cpy);
     inline Trait(Trait && mov);
 public:
-    virtual inline Trait & operator=(const Trait & cpy) = 0;
-    virtual inline Trait & operator=(Trait && mov) = 0;
+    inline Trait & operator=(const Trait & cpy);
+    inline Trait & operator=(Trait && mov);
 public:
     virtual inline std::shared_ptr<Trait> Copy() const = 0;
     virtual inline std::shared_ptr<Trait> Move() = 0;
+protected:
+    virtual inline Trait & Assign(const Trait & cpy) = 0;
+    virtual inline Trait & Assign(Trait && mov) = 0;
 public:
     virtual inline std::size_t Size(const std::size_t & s) const = 0;
 public:
@@ -95,6 +99,21 @@ inline Trait::Trait(Trait && mov) :
     m_endian(mov.m_endian)
 {
     mov.m_endian = &bytes::sys::Endian();
+}
+
+inline Trait & Trait::operator=(const Trait & cpy)
+{
+    m_endian = cpy.m_endian;
+    Assign(cpy);
+    return *this;
+}
+
+inline Trait & Trait::operator=(Trait && mov)
+{
+    m_endian = mov.m_endian;
+    mov.m_endian = &bytes::sys::Endian();
+    Assign(std::move(mov));
+    return *this;
 }
 
 inline std::size_t Trait::Resize(std::shared_ptr<bytes::Pointer> & ptr,
