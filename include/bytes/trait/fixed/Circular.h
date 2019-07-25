@@ -1,20 +1,21 @@
-#ifndef BYTES_TRAIT_CIRCULAR_H_
-#define BYTES_TRAIT_CIRCULAR_H_
+#ifndef BYTES_TRAIT_FIXED_CIRCULAR_H_
+#define BYTES_TRAIT_FIXED_CIRCULAR_H_
 
-#include <functional>
 #include <cstdint>
-#include <limits>
 #include <utility>
 #include <memory>
 
-#include "../Trait.h"
+#include "../Fixed.h"
+#include "../../Trait.h"
 
 namespace bytes
 {
 namespace trait
 {
+namespace fixed
+{
 
-class Circular : public bytes::Trait
+class Circular : public bytes::trait::Fixed
 {
 public:
     inline Circular();
@@ -24,21 +25,21 @@ public:
     inline Circular(const Circular & cpy);
     inline Circular(Circular && mov);
 public:
-    inline std::shared_ptr<bytes::Trait> Copy() const;
-    inline std::shared_ptr<bytes::Trait> Move();
+    virtual inline std::shared_ptr<bytes::Trait> Copy() const;
+    virtual inline std::shared_ptr<bytes::Trait> Move();
 public:
-    inline bytes::Trait & Assign(const bytes::Trait & cpy);
-    inline bytes::Trait & Assign(bytes::Trait && mov);
+    virtual inline bytes::Trait & Assign(const bytes::Trait & cpy);
+    virtual inline bytes::Trait & Assign(bytes::Trait && mov);
 public:
-    inline std::size_t Size(const std::size_t & s) const;
+    virtual inline std::size_t Size(const std::size_t & s) const;
 public:
-    inline std::size_t Resize(const std::size_t & cs,
+    virtual inline std::size_t Resize(const std::size_t & cs,
         const std::size_t & ns) const;
 public:
-    inline std::size_t At(const std::size_t & i, 
+    virtual inline std::size_t At(const std::size_t & i, 
         const std::size_t & bg, const std::size_t & ed) const;
 public:
-    inline bool IsEnd(const std::size_t & i, 
+    virtual inline bool IsEnd(const std::size_t & i, 
         const std::size_t & bg, const std::size_t & ed) const;
 };
 
@@ -46,18 +47,18 @@ inline Circular::Circular()
 {}
 
 inline Circular::Circular(const bytes::Endian::CategoryEnum & e) :
-    bytes::Trait(e)
+    bytes::trait::Fixed(e)
 {}
 
 inline Circular::~Circular()
 {}
 
 inline Circular::Circular(const Circular & cpy) :
-    bytes::Trait(cpy)
+    bytes::trait::Fixed(cpy)
 {}
 
 inline Circular::Circular(Circular && mov) :
-    bytes::Trait(std::move(mov))
+    bytes::trait::Fixed(std::move(mov))
 {}
 
 inline std::shared_ptr<bytes::Trait> Circular::Copy() const
@@ -80,17 +81,6 @@ inline bytes::Trait & Circular::Assign(bytes::Trait && mov)
     return *this;
 }
 
-inline std::size_t Circular::Size(const std::size_t & s) const
-{
-    return s;
-}
-
-inline std::size_t Circular::Resize(const std::size_t & cs,
-    const std::size_t & ns) const
-{
-    return cs;
-}
-
 inline std::size_t Circular::At(const std::size_t & i, 
     const std::size_t & bg, const std::size_t & ed) const
 {
@@ -103,8 +93,10 @@ inline bool Circular::IsEnd(const std::size_t & i,
     return false;
 }
 
+} //!fixed
+
 } //!trait
 
 } //!bytes
 
-#endif //!BYTES_TRAIT_CIRCULAR_H_
+#endif //!BYTES_TRAIT_FIXED_CIRCULAR_H_
