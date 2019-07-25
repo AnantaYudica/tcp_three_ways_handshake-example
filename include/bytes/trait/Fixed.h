@@ -1,9 +1,7 @@
 #ifndef BYTES_TRAIT_FIXED_H_
 #define BYTES_TRAIT_FIXED_H_
 
-#include <functional>
 #include <cstdint>
-#include <limits>
 #include <utility>
 #include <memory>
 
