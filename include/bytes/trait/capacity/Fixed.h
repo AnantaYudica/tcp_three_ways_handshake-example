@@ -26,12 +26,12 @@ public:
     inline Fixed & operator=(const Fixed & cpy) = default;
     inline Fixed & operator=(Fixed && mov) = default;
 public:
-    inline std::shared_ptr<bytes::Trait> Copy() const;
+    inline std::shared_ptr<bytes::trait::Capacity> Copy() const;
 public:
-    inline std::shared_ptr<bytes::Trait> Move();
+    inline std::shared_ptr<bytes::trait::Capacity> Move();
 public:
-    inline bytes::Trait & Assign(const bytes::Trait & cpy);
-    inline bytes::Trait & Assign(bytes::Trait && mov);
+    inline bytes::trait::Capacity & Assign(const bytes::trait::Capacity & cpy);
+    inline bytes::trait::Capacity & Assign(bytes::trait::Capacity && mov);
 public:
     inline std::size_t OnSize(const std::size_t & s) const;
 public:
