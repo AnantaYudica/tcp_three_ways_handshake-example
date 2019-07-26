@@ -26,6 +26,9 @@ public:
 public:
     virtual inline std::shared_ptr<Capacity> Move() = 0;
 public:
+    virtual inline Capacity & Assign(const Capacity & cpy) = 0;
+    virtual inline Capacity & Assign(Capacity && mov) = 0;
+public:
     virtual inline std::size_t OnSize(const std::size_t & s) const = 0;
 public:
     virtual inline std::size_t OnResize(const std::size_t & cs,

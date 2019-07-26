@@ -26,6 +26,9 @@ public:
 public:
     virtual inline std::shared_ptr<Element> Move() = 0;
 public:
+    virtual inline Element & Assign(const Element & cpy) = 0;
+    virtual inline Element & Assign(Element && mov) = 0;
+public:
     virtual std::uint8_t OnAt(const std::size_t & i, 
         const std::size_t & bg, const std::size_t & ed) const = 0;
 public:

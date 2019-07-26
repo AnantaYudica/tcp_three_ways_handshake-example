@@ -27,6 +27,9 @@ public:
 public:
     virtual inline std::shared_ptr<Modifier> Move() = 0;
 public:
+    virtual inline Modifier & Assign(const Modifier & cpy) = 0;
+    virtual inline Modifier & Assign(Modifier && mov) = 0;
+public:
     virtual std::uint8_t OnSet(const std::uint8_t & v, 
         const std::size_t & i, const std::size_t & bg,
         const std::size_t & ed) const = 0;
