@@ -123,9 +123,9 @@ inline bool Circular::operator!=(const Element & b) const
     return !(*this == b);
 }
 
-} //!fixed
-
 } //!element
+
+} //!trait
 
 } //!bytes
 
