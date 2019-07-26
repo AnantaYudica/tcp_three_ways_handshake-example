@@ -39,11 +39,11 @@ public:
         const std::size_t & bg, const std::size_t & ed) const;
 public:
     inline bool OnIsReverseEnd(const std::size_t & i, 
-        const std::size_t & bg, const std::size_t & ed) const = 0;
+        const std::size_t & bg, const std::size_t & ed) const;
 public:
-    inline bool operator==(const Element & b) const = 0;
+    inline bool operator==(const Element & b) const;
 public:
-    inline bool operator!=(const Element & b) const = 0;
+    inline bool operator!=(const Element & b) const;
 };
 
 inline Circular::Circular()
