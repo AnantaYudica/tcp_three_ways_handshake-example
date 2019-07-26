@@ -23,6 +23,9 @@ public:
     inline Circular(const Circular & cpy);
     inline Circular(Circular && mov);
 public:
+    inline Circular & operator=(const Circular & cpy);
+    inline Circular & operator=(Circular && mov);
+public:
     inline std::shared_ptr<bytes::trait::Element> Copy() const;
     inline std::shared_ptr<bytes::trait::Element> Move();
 public:
@@ -56,6 +59,16 @@ inline Circular::Circular(const Circular & cpy) :
 inline Circular::Circular(Circular && mov) :
     bytes::trait::Element(std::move(mov))
 {}
+
+inline Circular & Circular::operator=(const Circular & cpy)
+{
+    return *this;
+}
+
+inline Circular & Circular::operator=(Circular && mov)
+{
+    return *this;
+}
 
 inline std::shared_ptr<bytes::trait::Element> Circular::Copy() const
 {
