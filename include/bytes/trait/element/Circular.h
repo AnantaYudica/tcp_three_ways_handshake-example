@@ -1,102 +1,117 @@
-#ifndef BYTES_TRAIT_FIXED_CIRCULAR_H_
-#define BYTES_TRAIT_FIXED_CIRCULAR_H_
+#ifndef BYTES_TRAIT_ELEMENT_CIRCULAR_H_
+#define BYTES_TRAIT_ELEMENT_CIRCULAR_H_
 
 #include <cstdint>
 #include <utility>
 #include <memory>
 
-#include "../Fixed.h"
-#include "../../Trait.h"
+#include "../Element.h"
 
 namespace bytes
 {
 namespace trait
 {
-namespace fixed
+namespace element
 {
 
-class Circular : public bytes::trait::Fixed
+class Circular : public bytes::trait::Element
 {
 public:
     inline Circular();
-    inline Circular(const bytes::Endian::CategoryEnum & e);
     inline ~Circular();
 public:
     inline Circular(const Circular & cpy);
     inline Circular(Circular && mov);
 public:
-    virtual inline std::shared_ptr<bytes::Trait> Copy() const;
-    virtual inline std::shared_ptr<bytes::Trait> Move();
+    inline std::shared_ptr<bytes::trait::Element> Copy() const;
+    inline std::shared_ptr<bytes::trait::Element> Move();
 public:
-    virtual inline bytes::Trait & Assign(const bytes::Trait & cpy);
-    virtual inline bytes::Trait & Assign(bytes::Trait && mov);
+    inline bytes::trait::Element & Assign(const bytes::trait::Element & cpy);
+    inline bytes::trait::Element & Assign(bytes::trait::Element && mov);
 public:
-    virtual inline std::size_t Size(const std::size_t & s) const;
-public:
-    virtual inline std::size_t Resize(const std::size_t & cs,
-        const std::size_t & ns) const;
-public:
-    virtual inline std::size_t At(const std::size_t & i, 
+    inline std::size_t OnAt(const std::size_t & i, 
         const std::size_t & bg, const std::size_t & ed) const;
 public:
-    virtual inline bool IsEnd(const std::size_t & i, 
+    inline bool OnIsEnd(const std::size_t & i, 
         const std::size_t & bg, const std::size_t & ed) const;
+public:
+    inline bool OnIsReverseEnd(const std::size_t & i, 
+        const std::size_t & bg, const std::size_t & ed) const = 0;
+public:
+    inline bool operator==(const Element & b) const = 0;
+public:
+    inline bool operator!=(const Element & b) const = 0;
 };
 
 inline Circular::Circular()
-{}
-
-inline Circular::Circular(const bytes::Endian::CategoryEnum & e) :
-    bytes::trait::Fixed(e)
 {}
 
 inline Circular::~Circular()
 {}
 
 inline Circular::Circular(const Circular & cpy) :
-    bytes::trait::Fixed(cpy)
+    bytes::trait::Element(cpy)
 {}
 
 inline Circular::Circular(Circular && mov) :
-    bytes::trait::Fixed(std::move(mov))
+    bytes::trait::Element(std::move(mov))
 {}
 
-inline std::shared_ptr<bytes::Trait> Circular::Copy() const
+inline std::shared_ptr<bytes::trait::Element> Circular::Copy() const
 {
     return std::make_shared<Circular>(*this);
 }
 
-inline std::shared_ptr<bytes::Trait> Circular::Move()
+inline std::shared_ptr<bytes::trait::Element> Circular::Move()
 {
     return std::make_shared<Circular>(std::move(*this));
 }
 
-inline bytes::Trait & Circular::Assign(const bytes::Trait & cpy)
+inline bytes::trait::Element & 
+    Circular::Assign(const bytes::trait::Element & cpy)
 {
     return *this;
 }
 
-inline bytes::Trait & Circular::Assign(bytes::Trait && mov)
+inline bytes::trait::Element & 
+    Circular::Assign(bytes::trait::Element && mov)
 {
     return *this;
 }
 
-inline std::size_t Circular::At(const std::size_t & i, 
+inline std::size_t Circular::OnAt(const std::size_t & i, 
     const std::size_t & bg, const std::size_t & ed) const
 {
     return (i % (ed - bg));
 }
 
-inline bool Circular::IsEnd(const std::size_t & i, 
+inline bool Circular::OnIsEnd(const std::size_t & i, 
         const std::size_t & bg, const std::size_t & ed) const
 {
     return false;
 }
 
+inline bool Circular::OnIsReverseEnd(const std::size_t & i, 
+    const std::size_t & bg, const std::size_t & ed) const
+{
+    return false;
+}
+
+inline bool Circular::operator==(const Element & b) const
+{
+    auto * cb = dynamic_cast<const Circular *>(&b);
+    return cb;
+}
+
+inline bool Circular::operator!=(const Element & b) const
+{
+    return !(*this == b);
+}
+
 } //!fixed
 
-} //!trait
+} //!element
 
 } //!bytes
 
-#endif //!BYTES_TRAIT_FIXED_CIRCULAR_H_
+#endif //!BYTES_TRAIT_ELEMENT_CIRCULAR_H_
