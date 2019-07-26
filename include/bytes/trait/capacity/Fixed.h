@@ -17,14 +17,14 @@ namespace capacity
 class Fixed : public bytes::trait::Capacity
 {
 public:
-    inline Fixed() = default;
-    inline ~Fixed() = default;
+    inline Fixed();
+    inline ~Fixed();
 public:
     inline Fixed(const Fixed & cpy);
     inline Fixed(Fixed && mov);
 public:
-    inline Fixed & operator=(const Fixed & cpy) = default;
-    inline Fixed & operator=(Fixed && mov) = default;
+    inline Fixed & operator=(const Fixed & cpy);
+    inline Fixed & operator=(Fixed && mov);
 public:
     inline std::shared_ptr<bytes::trait::Capacity> Copy() const;
 public:
@@ -56,6 +56,16 @@ inline Fixed::Fixed(const Fixed & cpy) :
 inline Fixed::Fixed(Fixed && mov) :
     bytes::trait::Capacity(std::move(mov))
 {}
+
+inline Fixed & Fixed::operator=(const Fixed & cpy)
+{
+    return *this;
+}
+
+inline Fixed & Fixed::operator=(Fixed && mov)
+{
+    return *this;
+}
 
 inline std::shared_ptr<bytes::trait::Capacity> Fixed::Copy() const
 {
