@@ -23,7 +23,7 @@ protected:
     inline Modifier & operator=(const Modifier & cpy) = default;
     inline Modifier & operator=(Modifier && mov) = default;
 public:
-    virtual inline std::shared_ptr<Modifier> Copy() = 0;
+    virtual inline std::shared_ptr<Modifier> Copy() const = 0;
 public:
     virtual inline std::shared_ptr<Modifier> Move() = 0;
 public:

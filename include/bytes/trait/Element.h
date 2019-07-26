@@ -22,7 +22,7 @@ protected:
     inline Element & operator=(const Element & cpy) = default;
     inline Element & operator=(Element && mov) = default;
 public:
-    virtual inline std::shared_ptr<Element> Copy() = 0;
+    virtual inline std::shared_ptr<Element> Copy() const = 0;
 public:
     virtual inline std::shared_ptr<Element> Move() = 0;
 public:

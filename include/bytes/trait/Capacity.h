@@ -22,7 +22,7 @@ protected:
     inline Capacity & operator=(const Capacity & cpy) = default;
     inline Capacity & operator=(Capacity & mov) = default;
 public:
-    virtual inline std::shared_ptr<Capacity> Copy() = 0;
+    virtual inline std::shared_ptr<Capacity> Copy() const = 0;
 public:
     virtual inline std::shared_ptr<Capacity> Move() = 0;
 public:
