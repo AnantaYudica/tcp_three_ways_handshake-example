@@ -13,12 +13,12 @@ namespace trait
 class Modifier
 {
 protected:
-    Modifier() = default;
+    inline Modifier() = default;
 public:
-    virtual ~Modifier() = default;
+    virtual inline ~Modifier() = default;
 protected:
-    Modifier(const Modifier & cpy) = default;
-    Modifier(Modifier && mov) = default;
+    inline Modifier(const Modifier & cpy) = default;
+    inline Modifier(Modifier && mov) = default;
 protected:
     inline Modifier & operator=(const Modifier & cpy) = default;
     inline Modifier & operator=(Modifier && mov) = default;
@@ -30,11 +30,11 @@ public:
     virtual inline Modifier & Assign(const Modifier & cpy) = 0;
     virtual inline Modifier & Assign(Modifier && mov) = 0;
 public:
-    virtual std::uint8_t OnSet(const std::uint8_t & v, 
+    virtual inline std::uint8_t OnSet(const std::uint8_t & v, 
         const std::size_t & i, const std::size_t & bg,
         const std::size_t & ed) const = 0;
 public:
-    virtual std::uint8_t OnGet(const std::uint8_t & v, 
+    virtual inline std::uint8_t OnGet(const std::uint8_t & v, 
         const std::size_t & i, const std::size_t & bg,
         const std::size_t & ed) const = 0;
 public:
