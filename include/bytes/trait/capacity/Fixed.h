@@ -5,65 +5,64 @@
 #include <utility>
 #include <memory>
 
-#include "../Trait.h"
+#include "../Capacity.h"
 
 namespace bytes
 {
 namespace trait
 {
+namespace capacity
+{
 
-class Fixed : public bytes::Trait
+class Fixed : public bytes::trait::Capacity
 {
 public:
-    inline Fixed();
-    inline Fixed(const bytes::Endian::CategoryEnum & e);
-    inline ~Fixed();
+    inline Fixed() = default;
+    inline ~Fixed() = default;
 public:
     inline Fixed(const Fixed & cpy);
     inline Fixed(Fixed && mov);
 public:
+    inline Fixed & operator=(const Fixed & cpy) = default;
+    inline Fixed & operator=(Fixed && mov) = default;
+public:
     inline std::shared_ptr<bytes::Trait> Copy() const;
+public:
     inline std::shared_ptr<bytes::Trait> Move();
 public:
     inline bytes::Trait & Assign(const bytes::Trait & cpy);
     inline bytes::Trait & Assign(bytes::Trait && mov);
 public:
-    inline std::size_t Size(const std::size_t & s) const;
+    inline std::size_t OnSize(const std::size_t & s) const;
 public:
-    inline std::size_t Resize(const std::size_t & cs,
+    inline std::size_t OnResize(const std::size_t & cs,
         const std::size_t & ns) const;
 public:
-    inline std::size_t At(const std::size_t & i, 
-        const std::size_t & bg, const std::size_t & ed) const;
+    inline bool operator==(const bytes::trait::Capacity & b) const;
 public:
-    inline bool IsEnd(const std::size_t & i, 
-        const std::size_t & bg, const std::size_t & ed) const;
+    inline bool operator!=(const bytes::trait::Capacity & b) const;
 };
 
 inline Fixed::Fixed()
-{}
-
-inline Fixed::Fixed(const bytes::Endian::CategoryEnum & e) :
-    bytes::Trait(e)
 {}
 
 inline Fixed::~Fixed()
 {}
 
 inline Fixed::Fixed(const Fixed & cpy) :
-    bytes::Trait(cpy)
+    bytes::trait::Capacity(cpy)
 {}
 
 inline Fixed::Fixed(Fixed && mov) :
-    bytes::Trait(std::move(mov))
+    bytes::trait::Capacity(std::move(mov))
 {}
 
-inline std::shared_ptr<bytes::Trait> Fixed::Copy() const
+inline std::shared_ptr<bytes::trait::Capacity> Fixed::Copy() const
 {
     return std::make_shared<Fixed>(*this);
 }
 
-inline std::shared_ptr<bytes::Trait> Fixed::Move()
+inline std::shared_ptr<bytes::trait::Capacity> Fixed::Move()
 {
     return std::make_shared<Fixed>(std::move(*this));
 }
@@ -78,28 +77,29 @@ inline bytes::Trait & Fixed::Assign(bytes::Trait && mov)
     return *this;
 }
 
-inline std::size_t Fixed::Size(const std::size_t & s) const
+inline std::size_t Fixed::OnSize(const std::size_t & s) const
 {
     return s;
 }
 
-inline std::size_t Fixed::Resize(const std::size_t & cs,
+inline std::size_t Fixed::OnResize(const std::size_t & cs,
     const std::size_t & ns) const
 {
     return cs;
 }
 
-inline std::size_t Fixed::At(const std::size_t & i, 
-    const std::size_t & bg, const std::size_t & ed) const
+inline bool Fixed::operator==(const bytes::trait::Capacity & b) const
 {
-    return i;
+    auto * cb = dynamic_cast<const Fixed *>(&b);
+    return cb;
 }
 
-inline bool Fixed::IsEnd(const std::size_t & i, 
-        const std::size_t & bg, const std::size_t & ed) const
+inline bool Fixed::operator!=(const bytes::trait::Capacity & b) const
 {
-    return i >= ed;
+    return !(*this == b);
 }
+
+} //!capacity
 
 } //!trait
 
