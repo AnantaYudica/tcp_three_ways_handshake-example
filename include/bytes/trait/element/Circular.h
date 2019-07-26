@@ -62,11 +62,13 @@ inline Circular::Circular(Circular && mov) :
 
 inline Circular & Circular::operator=(const Circular & cpy)
 {
+    bytes::trait::Element::operator=(cpy);
     return *this;
 }
 
 inline Circular & Circular::operator=(Circular && mov)
 {
+    bytes::trait::Element::operator=(std::move(mov));
     return *this;
 }
 

@@ -59,11 +59,13 @@ inline Fixed::Fixed(Fixed && mov) :
 
 inline Fixed & Fixed::operator=(const Fixed & cpy)
 {
+    bytes::trait::Capacity::operator=(cpy);
     return *this;
 }
 
 inline Fixed & Fixed::operator=(Fixed && mov)
 {
+    bytes::trait::Capacity::operator=(std::move(mov));
     return *this;
 }
 

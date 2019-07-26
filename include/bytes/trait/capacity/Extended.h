@@ -89,12 +89,14 @@ inline Extended::Extended(Extended && mov):
 
 inline Extended & Extended::operator=(const Extended & cpy)
 {
+    bytes::trait::Capacity::operator=(cpy);
     m_formula = cpy.m_formula;
     return *this;
 }
 
 inline Extended & Extended::operator=(Extended && mov)
 {
+    bytes::trait::Capacity::operator=(std::move(mov));
     m_formula = mov.m_formula;
     mov.m_formula = &Default;
     return *this;
