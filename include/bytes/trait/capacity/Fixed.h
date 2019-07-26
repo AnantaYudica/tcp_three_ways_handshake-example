@@ -67,12 +67,14 @@ inline std::shared_ptr<bytes::trait::Capacity> Fixed::Move()
     return std::make_shared<Fixed>(std::move(*this));
 }
 
-inline bytes::Trait & Fixed::Assign(const bytes::Trait & cpy)
+inline bytes::trait::Capacity & 
+    Fixed::Assign(const bytes::trait::Capacity & cpy)
 {
     return *this;
 }
 
-inline bytes::Trait & Fixed::Assign(bytes::Trait && mov)
+inline bytes::trait::Capacity & 
+    Fixed::Assign(bytes::trait::Capacity && mov)
 {
     return *this;
 }
