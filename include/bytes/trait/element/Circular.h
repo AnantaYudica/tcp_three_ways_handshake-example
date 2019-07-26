@@ -41,9 +41,9 @@ public:
     inline bool OnIsReverseEnd(const std::size_t & i, 
         const std::size_t & bg, const std::size_t & ed) const;
 public:
-    inline bool operator==(const Element & b) const;
+    inline bool operator==(const bytes::trait::Element & b) const;
 public:
-    inline bool operator!=(const Element & b) const;
+    inline bool operator!=(const bytes::trait::Element & b) const;
 };
 
 inline Circular::Circular()
@@ -112,13 +112,13 @@ inline bool Circular::OnIsReverseEnd(const std::size_t & i,
     return false;
 }
 
-inline bool Circular::operator==(const Element & b) const
+inline bool Circular::operator==(const bytes::trait::Element & b) const
 {
     auto * cb = dynamic_cast<const Circular *>(&b);
     return cb;
 }
 
-inline bool Circular::operator!=(const Element & b) const
+inline bool Circular::operator!=(const bytes::trait::Element & b) const
 {
     return !(*this == b);
 }

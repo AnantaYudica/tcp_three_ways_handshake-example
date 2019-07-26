@@ -41,9 +41,9 @@ public:
     inline bool OnIsReverseEnd(const std::size_t & i, 
         const std::size_t & bg, const std::size_t & ed) const;
 public:
-    inline bool operator==(const Element & b) const;
+    inline bool operator==(const bytes::trait::Element & b) const;
 public:
-    inline bool operator!=(const Element & b) const;
+    inline bool operator!=(const bytes::trait::Element & b) const;
 };
 
 inline Direct::Direct()
@@ -117,7 +117,7 @@ inline bool Direct::operator==(const Element & b) const
     return cb;
 }
 
-inline bool Direct::operator!=(const Element & b) const
+inline bool Direct::operator!=(const bytes::trait::Element & b) const
 {
     return !(*this == b);
 }
