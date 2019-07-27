@@ -79,13 +79,9 @@ public:
     inline bool IsReverseEnd(const std::size_t & i, 
         const std::size_t & bg, const std::size_t & ed) const;
 public:
-    inline std::uint8_t OnSet(const std::uint8_t & v, 
-        const std::size_t & i, const std::size_t & bg,
-        const std::size_t & ed) const;
+    inline std::uint8_t Set(const std::uint8_t & v) const;
 public:
-    inline std::uint8_t OnGet(const std::uint8_t & v, 
-        const std::size_t & i, const std::size_t & bg,
-        const std::size_t & ed) const;
+    inline std::uint8_t Get(const std::uint8_t & v) const;
 public:
     inline bool operator==(const Trait & b) const;
 public:
@@ -268,18 +264,14 @@ inline bool Trait::IsReverseEnd(const std::size_t & i,
     return m_element->OnIsReverseEnd(i, bg, ed);
 }
 
-inline std::uint8_t Trait::Set(const std::uint8_t & v, 
-    const std::size_t & i, const std::size_t & bg,
-    const std::size_t & ed) const
+inline std::uint8_t Trait::Set(const std::uint8_t & v) const
 {
-    return m_modifier->OnSet(v, i, bg, ed);
+    return m_modifier->OnSet(v);
 }
 
-inline std::uint8_t Trait::Get(const std::uint8_t & v, 
-    const std::size_t & i, const std::size_t & bg,
-    const std::size_t & ed) const
+inline std::uint8_t Trait::Get(const std::uint8_t & v) const
 {
-    return m_modifier->OnGet(v, i, bg, ed);
+    return m_modifier->OnGet(v);
 }
 
 inline bool Trait::operator==(const Trait & b) const
