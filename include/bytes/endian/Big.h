@@ -24,7 +24,14 @@ public:
     inline Big & operator=(const Big & cpy) = delete;
     inline Big & operator=(Big && mov) = delete;
 public:
-    inline std::size_t At(const std::size_t & i, const std::size_t & s) const;
+    inline std::size_t At(const std::size_t & i, const std::size_t & bg, 
+        const std::size_t & ed) const;
+public:
+    inline std::size_t Begin(const std::size_t & bg, 
+        const std::size_t & ed) const;
+public:
+    inline std::size_t End(const std::size_t & bg, 
+        const std::size_t & ed) const;
 };
 
 inline const Big & Big::Instance()
@@ -37,9 +44,22 @@ inline Big::Big() :
     bytes::Endian(bytes::Endian::big)
 {}
 
-inline std::size_t Big::At(const std::size_t & i, const std::size_t & s) const
+inline std::size_t Big::At(const std::size_t & i, const std::size_t & bg, 
+        const std::size_t & ed) const
 {
-    return (s - ((i % s) + 1)) % s;
+    return (ed - 1) - i;
+}
+
+inline std::size_t Big::Begin(const std::size_t & bg, 
+    const std::size_t & ed) const
+{
+    return ed - 1;
+}
+
+inline std::size_t Big::End(const std::size_t & bg, 
+    const std::size_t & ed) const
+{
+    return bg - 1;
 }
 
 } //!endian
