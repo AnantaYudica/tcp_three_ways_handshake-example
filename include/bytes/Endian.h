@@ -37,6 +37,9 @@ public:
     virtual inline std::size_t End(const std::size_t & bg, 
         const std::size_t & ed) const = 0;
 public:
+    virtual inline void Copy(std::uint8_t * a, const std::size_t & as,
+        const std::uint8_t * b, const std::size_t & bs) const = 0;
+public:
     inline Endian::CategoryEnum Category() const;
 public:
     inline bool operator==(const Endian & b) const;
