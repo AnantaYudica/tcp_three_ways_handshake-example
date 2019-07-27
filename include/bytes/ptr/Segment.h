@@ -8,6 +8,7 @@
 #include "Object.h"
 #include "../Endian.h"
 #include "../Trait.h"
+#include "../Element.h"
 
 namespace bytes
 {
@@ -56,8 +57,8 @@ public:
 protected:
     inline std::size_t Resize(const std::size_t & s);
 public:
-    inline std::uint8_t & At(const std::size_t & i);
-    inline const std::uint8_t & At(const std::size_t & i) const;
+    inline bytes::Element At(const std::size_t & i);
+    inline const bytes::Element At(const std::size_t & i) const;
 public:
     inline std::uint8_t * Get();
     inline const std::uint8_t * Get() const;
@@ -215,16 +216,16 @@ inline void Segment::Resize(const std::size_t & s)
     return ns;
 }
 
-inline std::uint8_t & Segment::At(const std::size_t & i)
+inline bytes::Element Segment::At(const std::size_t & i)
 {
-    if (!m_object || !m_trait) return *bytes::ptr::Object::Null();
-    return m_object->At(m_trait->At(i, m_begin, m_end));
+    if (!m_object || !m_trait) return bytes::Element();
+    return bytes::Element(m_trait->At(i, m_begin, m_end), m_object, m_trait);
 }
 
-inline const std::uint8_t & Segment::At(const std::size_t & i) const
+inline const bytes::Element Segment::At(const std::size_t & i) const
 {
-    if (!m_object || !m_trait) return *bytes::ptr::Object::Null();
-    return m_object->At(m_trait->At(i, m_begin, m_end));
+    if (!m_object || !m_trait) return bytes::Element();
+    return bytes::Element(m_trait->At(i, m_begin, m_end), m_object, m_trait);
 }
 
 inline std::uint8_t * Segment::Get()
