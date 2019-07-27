@@ -34,13 +34,9 @@ public:
     inline bytes::trait::Modifier & Assign(const bytes::trait::Modifier & cpy);
     inline bytes::trait::Modifier & Assign(bytes::trait::Modifier && mov);
 public:
-    inline std::uint8_t OnSet(const std::uint8_t & v, 
-        const std::size_t & i, const std::size_t & bg,
-        const std::size_t & ed) const;
+    inline std::uint8_t OnSet(const std::uint8_t & v) const;
 public:
-    inline std::uint8_t OnGet(const std::uint8_t & v, 
-        const std::size_t & i, const std::size_t & bg,
-        const std::size_t & ed) const;
+    inline std::uint8_t OnGet(const std::uint8_t & v) const;
 public:
     inline bool operator==(const bytes::trait::Modifier & b) const;
 public:
@@ -95,16 +91,12 @@ inline bytes::trait::Modifier &
     return *this;
 }
 
-inline std::uint8_t Direct::OnSet(const std::uint8_t & v, 
-    const std::size_t & i, const std::size_t & bg,
-    const std::size_t & ed) const
+inline std::uint8_t Direct::OnSet(const std::uint8_t & v) const
 {
     return v;
 }
 
-inline std::uint8_t Direct::OnGet(const std::uint8_t & v, 
-    const std::size_t & i, const std::size_t & bg,
-    const std::size_t & ed) const
+inline std::uint8_t Direct::OnGet(const std::uint8_t & v) const
 {
     return v;
 }

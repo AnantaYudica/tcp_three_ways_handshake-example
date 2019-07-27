@@ -30,13 +30,9 @@ public:
     virtual inline Modifier & Assign(const Modifier & cpy) = 0;
     virtual inline Modifier & Assign(Modifier && mov) = 0;
 public:
-    virtual inline std::uint8_t OnSet(const std::uint8_t & v, 
-        const std::size_t & i, const std::size_t & bg,
-        const std::size_t & ed) const = 0;
+    virtual inline std::uint8_t OnSet(const std::uint8_t & v) const = 0;
 public:
-    virtual inline std::uint8_t OnGet(const std::uint8_t & v, 
-        const std::size_t & i, const std::size_t & bg,
-        const std::size_t & ed) const = 0;
+    virtual inline std::uint8_t OnGet(const std::uint8_t & v) const = 0;
 public:
     virtual inline bool operator==(const Modifier & b) const = 0;
 public:
