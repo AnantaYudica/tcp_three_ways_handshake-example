@@ -2,6 +2,8 @@
 #define BYTES_ENDIAN_BIG_H_
 
 #include <cstdint>
+#include <cstring>
+#include <algorithm>
 
 #include "../Endian.h"
 
@@ -32,6 +34,9 @@ public:
 public:
     inline std::size_t End(const std::size_t & bg, 
         const std::size_t & ed) const;
+public:
+    inline void Copy(std::uint8_t * a, const std::size_t & as,
+        const std::uint8_t * b, const std::size_t & bs) const;
 };
 
 inline const Big & Big::Instance()
@@ -60,6 +65,15 @@ inline std::size_t Big::End(const std::size_t & bg,
     const std::size_t & ed) const
 {
     return bg - 1;
+}
+
+inline void Big::Copy(std::uint8_t * a, const std::size_t & as,
+    const std::uint8_t * b, const std::size_t & bs) const
+{
+    if (!a || !b || as == 0 || bs == 0) return;
+    const std::size_t ad = bs > as ? 0 : as - bs,
+        bd = bs > as ? bs - as : 0:
+    std::memcpy(a + ad, b + bs, std::min(as, bs));
 }
 
 } //!endian

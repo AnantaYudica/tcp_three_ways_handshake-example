@@ -2,6 +2,8 @@
 #define BYTES_ENDIAN_LITTLE_H_
 
 #include <cstdint>
+#include <cstring>
+#include <algorithm>
 
 #include "../Endian.h"
 
@@ -32,6 +34,9 @@ public:
 public:
     inline std::size_t End(const std::size_t & bg, 
         const std::size_t & ed) const;
+public:
+    inline void Copy(std::uint8_t * a, const std::size_t & as,
+        const std::uint8_t * b, const std::size_t & bs) const;
 };
 
 inline Little & Little::Instance()
@@ -60,6 +65,13 @@ inline std::size_t Little::End(const std::size_t & bg,
     const std::size_t & ed) const
 {
     return ed;
+}
+
+inline void Little::Copy(std::uint8_t * a, const std::size_t & as,
+    const std::uint8_t * b, const std::size_t & bs) const
+{
+    if (!a || !b || as == 0 || bs == 0) return;
+    std::memcpy(a, b, std::min(as, bs));
 }
 
 } //!endian
