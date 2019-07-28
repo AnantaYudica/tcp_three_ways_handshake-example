@@ -137,9 +137,7 @@ inline void Object::Reallocate(const std::size_t & sz,
     if (*this)
     {
         std::memcpy(nptr, m_ptr, bg);
-        const std::size_t min_ed = ned > ed ? ed : ned;
-        for (std::size_t i = bg; i < min_ed; ++i)
-            nptr[endian->At(i, sz)] = m_ptr[endian->At(i, cs)];
+        endian->Copy(nptr + bg, sz, m_ptr + bg, cs);
         std::memcpy(nptr + ned, m_ptr + ed, as);
         delete[] m_ptr;
     }
