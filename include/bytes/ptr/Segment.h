@@ -40,6 +40,8 @@ public:
 public:
     inline Segment & operator=(const Segment & cpy);
     inline Segment & operator=(Segment && mov);
+protected:
+    inline const bytes::Trait & Trait() const; 
 public:
     inline bool IsSameObject(const Segment & seg) const;
     inline bool 
@@ -128,7 +130,6 @@ inline Segment::Segment(const Segment & cpy) :
             m_begin, m_end);
     if (cpy.m_trait) m_trait = std::make_shared<bytes::Trait>(*(cpy.m_trait));
     else m_trait = GetTrait();
-        
 }
 
 inline Segment::Segment(Segment && mov) :
@@ -168,6 +169,13 @@ inline Segment & Segment::operator=(Segment && mov)
     mov.m_object = nullptr;
     mov.m_trait = nullptr;
     return *this;
+}
+
+inline const bytes::Trait & Segment::Trait() const
+{
+    static bytes::Trait t;
+    if (m_trait) return *m_trait;
+    return t;
 }
 
 inline bool Segment::IsSameObject(const Segment & seg) const
