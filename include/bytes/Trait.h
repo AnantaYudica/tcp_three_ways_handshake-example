@@ -43,7 +43,7 @@ private:
     std::shared_ptr<bytes::trait::Capacity> m_capacity;
     std::shared_ptr<bytes::trait::Element> m_element;
     std::shared_ptr<bytes::trait::Modifier> m_modifier;
-protected:
+public:
     inline Trait();
     inline Trait(const bytes::Endian::CategoryEnum & e);
     inline Trait(const std::shared_ptr<bytes::trait::Capacity> & c,
