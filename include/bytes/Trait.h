@@ -55,7 +55,7 @@ public:
         const std::shared_ptr<bytes::trait::Modifier> & m);
 public:
     inline ~Trait();
-protected:
+public:
     inline Trait(const Trait & cpy);
     inline Trait(Trait && mov);
 public:
@@ -132,7 +132,7 @@ inline std::shared_ptr<bytes::trait::Element>
     return GetElement();
 }
 
-inline std::shared_ptr<bytes::trait::Modifier> GetModifier()
+inline std::shared_ptr<bytes::trait::Modifier> Trait::GetModifier()
 {
     return std::make_shared<bytes::trait::modifier::Direct>();
 }
