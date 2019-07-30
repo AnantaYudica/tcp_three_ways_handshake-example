@@ -67,8 +67,8 @@ public:
 public:
     inline operator bool() const;
 public:
-    inline std::uint8_t & operator[](const std::size_t & i);
-    inline const std::uint8_t & operator[](const std::size_t & i) const;
+    inline bytes::Element operator[](const std::size_t & i);
+    inline const bytes::Element operator[](const std::size_t & i) const;
 public:
     inline bool operator==(const Segment & b) const;
 public:
@@ -214,7 +214,7 @@ inline std::size_t Segment::Size() const
     return (m_end > m_begin ? m_end - m_begin : 0);
 }
 
-inline void Segment::Resize(const std::size_t & s)
+inline std::size_t Segment::Resize(const std::size_t & s)
 {
     const std::size_t cs = Size();
     if (cs == s) return cs;
@@ -253,12 +253,12 @@ inline Segment::operator bool() const
     return Begin() != End() && !m_object && !*m_object;
 }
 
-inline std::uint8_t & Segment::operator[](const std::size_t & i)
+inline bytes::Element Segment::operator[](const std::size_t & i)
 {
     return At(i);
 }
 
-inline const std::uint8_t & Segment::operator[](const std::size_t & i) const
+inline const bytes::Element Segment::operator[](const std::size_t & i) const
 {
     return At(i);
 }
