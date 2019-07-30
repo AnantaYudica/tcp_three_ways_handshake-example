@@ -28,16 +28,16 @@ public:
     inline Endian & operator=(const Endian & cpy) = delete;
     inline Endian & operator=(Endian && mov) = delete;
 public:
-    virtual inline std::size_t At(const std::size_t & i, 
+    virtual std::size_t At(const std::size_t & i, 
         const std::size_t & bg, const std::size_t & ed) const = 0;
 public:
-    virtual inline std::size_t Begin(const std::size_t & bg, 
+    virtual std::size_t Begin(const std::size_t & bg, 
         const std::size_t & ed) const = 0;
 public:
-    virtual inline std::size_t End(const std::size_t & bg, 
+    virtual std::size_t End(const std::size_t & bg, 
         const std::size_t & ed) const = 0;
 public:
-    virtual inline void Copy(std::uint8_t * a, const std::size_t & as,
+    virtual void Copy(std::uint8_t * a, const std::size_t & as,
         const std::uint8_t * b, const std::size_t & bs) const = 0;
 public:
     inline Endian::CategoryEnum Category() const;
