@@ -51,7 +51,7 @@ protected:
         const std::shared_ptr<bytes::trait::Modifier> & m);
     inline Trait(const bytes::Endian::CategoryEnum & e,
         const std::shared_ptr<bytes::trait::Capacity> & c,
-        const std::shared_ptr<bytes::trait::Element> & e,
+        const std::shared_ptr<bytes::trait::Element> & el,
         const std::shared_ptr<bytes::trait::Modifier> & m);
 public:
     inline ~Trait();
@@ -169,11 +169,11 @@ inline Trait::Trait(const std::shared_ptr<bytes::trait::Capacity> & c,
 
 inline Trait::Trait(const bytes::Endian::CategoryEnum & e,
     const std::shared_ptr<bytes::trait::Capacity> & c,
-    const std::shared_ptr<bytes::trait::Element> & e,
+    const std::shared_ptr<bytes::trait::Element> & el,
     const std::shared_ptr<bytes::trait::Modifier> & m) :
         m_endian(GetEndian(e)),
         m_capacity(GetCapacity(c)),
-        m_element(GetElement(e)),
+        m_element(GetElement(el)),
         m_modifier(GetModifier(m))
 {}
 
@@ -186,9 +186,9 @@ inline Trait::~Trait()
 
 inline Trait::Trait(const Trait & cpy) :
     m_endian(cpy.m_endian),
-    m_capacity(cpy.m_capacity.Copy()),
-    m_element(cpy.m_element.Copy()),
-    m_modifier(cpy.m_modifier.Copy())
+    m_capacity(cpy.m_capacity->Copy()),
+    m_element(cpy.m_element->Copy()),
+    m_modifier(cpy.m_modifier->Copy())
 {}
 
 inline Trait::Trait(Trait && mov) :
@@ -206,18 +206,18 @@ inline Trait::Trait(Trait && mov) :
 inline Trait & Trait::operator=(const Trait & cpy)
 {
     m_endian = cpy.m_endian;
-    m_capacity = cpy.m_capacity.Copy();
-    m_element = cpy.m_element.Copy();
-    m_modifier = cpy.m_modifier.Copy();
+    m_capacity = cpy.m_capacity->Copy();
+    m_element = cpy.m_element->Copy();
+    m_modifier = cpy.m_modifier->Copy();
     return *this;
 }
 
 inline Trait & Trait::operator=(Trait && mov)
 {
     m_endian = mov.m_endian;
-    m_capacity = cpy.m_capacity;
-    m_element = cpy.m_element;
-    m_modifier = cpy.m_modifier;
+    m_capacity = mov.m_capacity;
+    m_element = mov.m_element;
+    m_modifier = mov.m_modifier;
     mov.m_endian = GetEndian();
     mov.m_capacity = GetCapacity();
     mov.m_element = GetElement();
