@@ -47,7 +47,7 @@ public:
 inline void And::Operator(ConstSegmentPtrType a_segment,
         ConstSegmentPtrType b_segment, SegmentPtrType result_segment)
 {
-    for(std::size_t i = 0; !result_segment->IsEnd(i); ++i)
+    for(std::size_t i = 0; i < result_segment->Size(); ++i)
     {
         const bool a_is_end = a_segment->IsEnd(i),
             b_is_end = b_segment->IsEnd(i);
