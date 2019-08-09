@@ -78,7 +78,7 @@ inline void Or::Operator(SegmentPtrType a_segment,
 }
     
 inline void Or::Operator(PointerPtrType a_result_ptr,
-        SegmentPtrType a_result_segment, ConstSegmentPtrType b_segment)
+    SegmentPtrType a_result_segment, ConstSegmentPtrType b_segment)
 {
     const std::size_t b_size = b_segment->Size();
     if (b_size > a_result_segment->Size())
