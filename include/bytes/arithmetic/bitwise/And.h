@@ -1,11 +1,10 @@
 #ifndef BYTES_ARITHMETIC_BITWISE_AND_H_
 #define BYTES_ARITHMETIC_BITWISE_AND_H_
 
-#include <utility>
+#include <cstdint>
 #include <cstddef>
 #include <memory>
 
-#include "../../sys/Endian.h"
 #include "../../Pointer.h"
 #include "../../ptr/Segment.h"
 
