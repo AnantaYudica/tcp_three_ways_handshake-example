@@ -90,6 +90,26 @@ public:
     static inline void Operator(PointerPtrType a_ptr,
         SegmentPtrType a_segment,
         const std::uint8_t * b_ptr, const std::size_t & b_size);
+public:
+    template<std::size_t N>
+    static inline void Operator(SegmentPtrType a_segment, 
+        const std::size_t & a_bg, const std::size_t & a_size,
+        const std::uint8_t (&b)[N]);
+    template<std::size_t N>
+    static inline void Operator(PointerPtrType a_ptr,
+        SegmentPtrType a_segment, const std::size_t & a_bg,
+        const std::uint8_t (&b)[N]);
+    template<std::size_t N>
+    static inline void Operator(PointerPtrType a_ptr,
+        SegmentPtrType a_segment, const std::uint8_t (&b)[N]);
+public:
+    static inline void Operator(SegmentPtrType a_segment, 
+        const std::size_t & a_bg, const std::size_t & a_size,
+        const std::uint8_t & b);
+    static inline void Operator(SegmentPtrType a_segment, 
+        const std::size_t & a_bg, const std::uint8_t & b);
+    static inline void Operator(SegmentPtrType a_segment, 
+        const std::uint8_t & b);
 private:
     inline Assign() = delete;
 public:
@@ -275,6 +295,49 @@ inline void Assign::Operator(PointerPtrType a_ptr,
     const std::uint8_t * b_ptr, const std::size_t & b_size)
 {
     Assign::Operator(a_ptr, a_segment, 0, b_ptr, b_size);
+}
+
+template<std::size_t N>
+inline void Assign::Operator(SegmentPtrType a_segment, 
+    const std::size_t & a_bg, const std::size_t & a_size,
+    const std::uint8_t (&b)[N])
+{
+    Assign::Operator(a_segment, a_bg, a_size, b, N);
+}
+
+template<std::size_t N>
+inline void Assign::Operator(PointerPtrType a_ptr,
+    SegmentPtrType a_segment, const std::size_t & a_bg,
+    const std::uint8_t (&b)[N])
+{
+    Assign::Operator(a_ptr, a_segment, a_bg, b, N);
+}
+
+template<std::size_t N>
+inline void Assign::Operator(PointerPtrType a_ptr,
+    SegmentPtrType a_segment, const std::uint8_t (&b)[N])
+{
+    Assign::Operator(a_ptr, a_segment, b, N)
+}
+
+inline void Assign::Operator(SegmentPtrType a_segment, 
+    const std::size_t & a_bg, const std::size_t & a_size,
+    const std::uint8_t & b)
+{
+    for(std::size_t i = a_bg, j = 0; i < a_size; ++i, ++j) 
+        a_segment->At(i) = b;
+}
+
+inline void Assign::Operator( SegmentPtrType a_segment, 
+    const std::size_t & a_bg, const std::uint8_t & b)
+{
+    Assign::Operator(a_segment, a_bg, a_segment->Size(), b);
+}
+
+inline void Assign::Operator(SegmentPtrType a_segment, 
+    const std::uint8_t & b)
+{
+    Assign::Operator(a_segment, 0, b);
 }
 
 } //!bytes
