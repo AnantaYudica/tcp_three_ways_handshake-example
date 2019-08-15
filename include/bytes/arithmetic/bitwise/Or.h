@@ -36,6 +36,33 @@ public:
         SegmentPtrType a_result_segment, ConstSegmentPtrType b_segment);
     static inline void Operator(PointerPtrType a_result_ptr,
         SegmentPtrType a_result_segment, SegmentPtrType b_segment);
+public:
+    static inline void Operator(ConstSegmentPtrType a_segment,
+        const std::uint8_t * b, const std::size_t & b_size, 
+        SegmentPtrType result_segment);
+    static inline void Operator(SegmentPtrType a_segment,
+        const std::uint8_t * b, const std::size_t & b_size, 
+        SegmentPtrType result_segment);
+    static inline void Operator(PointerPtrType a_result_ptr,
+        SegmentPtrType a_result_segment,
+        const std::uint8_t * b, const std::size_t & b_size);
+public:
+    template<std::size_t N>
+    static inline void Operator(ConstSegmentPtrType a_segment,
+        const std::uint8_t (&b)[N], SegmentPtrType result_segment);
+    template<std::size_t N>
+    static inline void Operator(SegmentPtrType a_segment,
+        const std::uint8_t (&b)[N], SegmentPtrType result_segment);
+    template<std::size_t N>
+    static inline void Operator(PointerPtrType a_result_ptr,
+        SegmentPtrType a_result_segment, const std::uint8_t (&b)[N]);
+public:
+    static inline void Operator(ConstSegmentPtrType a_segment,
+        const std::uint8_t & b, SegmentPtrType result_segment);
+    static inline void Operator(SegmentPtrType a_segment,
+        const std::uint8_t & b, SegmentPtrType result_segment);
+    static inline void Operator(PointerPtrType a_result_ptr,
+        SegmentPtrType a_result_segment, const std::uint8_t & b);
 private:
     inline Or() = delete;
 public:
@@ -91,6 +118,77 @@ inline void Or::Operator(PointerPtrType a_result_ptr,
 {
     Or::Operator(a_result_ptr, a_result_segment, 
         std::const_pointer_cast<ConstSegmentType>(b_segment));
+}
+
+inline void Or::Operator(ConstSegmentPtrType a_segment,
+    const std::uint8_t * b, const std::size_t & b_size, 
+    SegmentPtrType result_segment)
+{
+    for(std::size_t i = 0; i < result_segment->Size(); ++i)
+    {
+        const bool a_is_end = a_segment->IsEnd(i),
+            b_is_end = i >= b_size;
+        if (a_is_end && b_is_end) result_segment->At(i) = std::uint8_t(0);
+        else if (a_is_end) result_segment->At(i) = b[i];
+        else if (b_is_end) result_segment->At(i) = a_segment->At(i);
+        else result_segment->At(i) = a_segment->At(i) | b[i];
+    }
+}
+
+inline void Or::Operator(SegmentPtrType a_segment,
+    const std::uint8_t * b, const std::size_t & b_size, 
+    SegmentPtrType result_segment)
+{
+    Or::Operator(std::const_pointer_cast<ConstSegmentType>(a_segment), 
+        b, b_size, result_segment);
+}
+
+inline void Or::Operator(PointerPtrType a_result_ptr,
+    SegmentPtrType a_result_segment,
+    const std::uint8_t * b, const std::size_t & b_size)
+{
+    if (b_size > a_result_segment->Size())
+        a_result_ptr->Reallocate(b_size, a_result_segment);
+    Or::Operator(a_result_segment, b, b_size, a_result_segment);
+}
+
+template<std::size_t N>
+inline void Or::Operator(ConstSegmentPtrType a_segment,
+    const std::uint8_t (&b)[N], SegmentPtrType result_segment)
+{
+    Or::Operator(a_segment, b, N, result_segment);
+}
+
+template<std::size_t N>
+inline void Or::Operator(SegmentPtrType a_segment,
+    const std::uint8_t (&b)[N], SegmentPtrType result_segment)
+{
+    Or::Operator(a_segment, b, N, result_segment);
+}
+
+template<std::size_t N>
+inline void Or::Operator(PointerPtrType a_result_ptr,
+    SegmentPtrType a_result_segment, const std::uint8_t (&b)[N])
+{
+    Or::Operator(a_result_ptr, a_result_segment, b, N);
+}
+
+inline void Or::Operator(ConstSegmentPtrType a_segment,
+    const std::uint8_t & b, SegmentPtrType result_segment)
+{
+    Or::Operator(a_segment, &b, 1, result_segment);
+}
+
+inline void Or::Operator(SegmentPtrType a_segment,
+    const std::uint8_t & b, SegmentPtrType result_segment)
+{
+    Or::Operator(a_segment, &b, 1, result_segment);
+}
+
+inline void Or::Operator(PointerPtrType a_result_ptr,
+    SegmentPtrType a_result_segment, const std::uint8_t & b)
+{
+    Or::Operator(a_result_ptr, a_result_segment, &b, 1);
 }
 
 } //bitwise
