@@ -39,9 +39,14 @@ private:
         std::intmax_t & exponent, const std::intmax_t & precision);
 public:
     static inline void Operator(ConstSegmentPtrType numerator_segment, 
-            ConstSegmentPtrType denominator_segment,
-            PointerPtrType result_ptr, SegmentPtrType result_quotient_segment,
-            SegmentPtrType result_remainder_segment);
+        ConstSegmentPtrType denominator_segment,
+        PointerPtrType result_ptr, SegmentPtrType result_quotient_segment,
+        SegmentPtrType result_remainder_segment);
+    static inline void Operator(ConstSegmentPtrType numerator_segment, 
+        const std::uint8_t * denominator_segment, 
+        const std::size_t & denominator_size,
+        PointerPtrType result_ptr, SegmentPtrType result_quotient_segment,
+        SegmentPtrType result_remainder_segment);
 private:
     NewtonRaphson() = delete;
 public:
@@ -98,9 +103,9 @@ inline void NewtonRaphson::Round(PointerPtrType ptr, SegmentPtrType segment,
 }
 
 inline void NewtonRaphson::Operator(ConstSegmentPtrType numerator_segment, 
-        ConstSegmentPtrType denominator_segment,
-        PointerPtrType result_ptr, SegmentPtrType result_quotient_segment,
-        SegmentPtrType result_remainder_segment)
+    ConstSegmentPtrType denominator_segment,
+    PointerPtrType result_ptr, SegmentPtrType result_quotient_segment,
+    SegmentPtrType result_remainder_segment)
 {
     const std::size_t base3_minsize = (numerator_segment->Size() * 8) / 3, 
         base3_bin_minsize = base3_minsize * 3,
@@ -145,6 +150,59 @@ inline void NewtonRaphson::Operator(ConstSegmentPtrType numerator_segment,
         xn_exponent);
     bytes::arithmetic::Multiplication::Operator(result_quotient_segment,
         denominator_segment, result_ptr, result_remainder_segment);
+    bytes::arithmetic::Subtraction::Operator(result_remainder_segment, 
+        numerator_segment);
+}
+
+inline void NewtonRaphson::Operator(ConstSegmentPtrType numerator_segment, 
+    const std::uint8_t * denominator_segment, 
+    const std::size_t & denominator_size,
+    PointerPtrType result_ptr, SegmentPtrType result_quotient_segment,
+    SegmentPtrType result_remainder_segment)
+{
+    const std::size_t base3_minsize = (numerator_segment->Size() * 8) / 3, 
+        base3_bin_minsize = base3_minsize * 3,
+        precision = (base3_minsize * 2) + 1,
+        min_exponent = base3_bin_minsize + ((base3_bin_minsize % 2) == 0 ? 1 : 0),
+        expand_size = numerator_segment->Size() * 4;
+    auto div_ptr = std::make_shared<bytes::Pointer>(expand_size * 5);
+    auto div_trait = std::make_shared<bytes::Trait>(numerator_segment->Trait());
+    auto x0_segment = div_ptr->Share(0, expand_size, div_trait);
+    auto x_segment = div_ptr->Share(expand_size, expand_size * 2, div_trait);
+    auto xn_segment = div_ptr->Share(expand_size * 2, expand_size * 3, div_trait);
+    auto bx_segment = div_ptr->Share(expand_size * 3, expand_size * 4, div_trait);
+    auto c2_segment = div_ptr->Share(expand_size * 4, expand_size * 5, div_trait);
+    std::intmax_t x0_exponent = -1, x_exponent = 0, xn_exponent = -(int(min_exponent)), 
+        c2_exponent = 1, bx_exponent = 0;
+    bytes::Assign::Operator(xn_segment,  std::uint8_t(0));
+    xn_segment->At(0) = std::uint8_t(0x01);
+    bytes::Assign::Operator(c2_segment,  std::uint8_t(0));
+    c2_segment->At(0) = std::uint8_t(0x01);
+    do
+    {
+        std::memcpy(x0_segment->Get(), xn_segment->Get(), expand_size);
+        x0_exponent = xn_exponent;
+        std::memcpy(x_segment->Get(), c2_segment->Get(), expand_size);
+        x_exponent = c2_exponent;
+        bytes::Assign::Operator(bx_segment, std::uint8_t(0));
+        bytes::arithmetic::Multiplication::Operator(x0_segment, 
+            denominator_segment, denominator_size, div_ptr, bx_segment);
+        bx_exponent = x0_exponent;
+        Equalize(x_segment, x_exponent, bx_segment, bx_exponent);
+        bytes::arithmetic::Subtraction::Operator(x_segment, bx_segment);
+        bytes::Assign::Operator(xn_segment, std::uint8_t(0));
+        bytes::arithmetic::Multiplication::Operator(x0_segment, x_segment, 
+            div_ptr, xn_segment);
+        xn_exponent = x0_exponent + x_exponent;
+        Round(div_ptr, xn_segment, xn_exponent, (precision * 2) + 1);
+        Equalize(xn_segment, xn_exponent, x0_segment, x0_exponent);
+    } while(bytes::Comparison::Operation(x0_segment, xn_segment) != 0);
+    bytes::arithmetic::Multiplication::Operator(numerator_segment, x0_segment, 
+        result_ptr, result_quotient_segment);
+    bytes::arithmetic::bitwise::Shift::Operator(result_quotient_segment, 
+        xn_exponent);
+    bytes::arithmetic::Multiplication::Operator(result_quotient_segment,
+        denominator_segment, denominator_size, result_ptr, result_remainder_segment);
     bytes::arithmetic::Subtraction::Operator(result_remainder_segment, 
         numerator_segment);
 }
