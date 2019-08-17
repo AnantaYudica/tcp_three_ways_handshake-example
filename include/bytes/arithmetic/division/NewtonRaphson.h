@@ -148,10 +148,13 @@ inline void NewtonRaphson::Operator(ConstSegmentPtrType numerator_segment,
         result_ptr, result_quotient_segment);
     bytes::arithmetic::bitwise::Shift::Operator(result_quotient_segment, 
         xn_exponent);
-    bytes::arithmetic::Multiplication::Operator(result_quotient_segment,
-        denominator_segment, result_ptr, result_remainder_segment);
-    bytes::arithmetic::Subtraction::Operator(result_remainder_segment, 
-        numerator_segment);
+    if (result_remainder_segment)
+    {
+        bytes::arithmetic::Multiplication::Operator(result_quotient_segment,
+            denominator_segment, result_ptr, result_remainder_segment);
+        bytes::arithmetic::Subtraction::Operator(result_remainder_segment, 
+            numerator_segment);
+    }
 }
 
 inline void NewtonRaphson::Operator(ConstSegmentPtrType numerator_segment, 
@@ -201,10 +204,14 @@ inline void NewtonRaphson::Operator(ConstSegmentPtrType numerator_segment,
         result_ptr, result_quotient_segment);
     bytes::arithmetic::bitwise::Shift::Operator(result_quotient_segment, 
         xn_exponent);
-    bytes::arithmetic::Multiplication::Operator(result_quotient_segment,
-        denominator_segment, denominator_size, result_ptr, result_remainder_segment);
-    bytes::arithmetic::Subtraction::Operator(result_remainder_segment, 
-        numerator_segment);
+    if (result_remainder_segment)
+    {
+        bytes::arithmetic::Multiplication::Operator(result_quotient_segment,
+            denominator_segment, denominator_size, result_ptr, 
+            result_remainder_segment);
+        bytes::arithmetic::Subtraction::Operator(result_remainder_segment, 
+            numerator_segment);
+    }
 }
 
 } //!division
