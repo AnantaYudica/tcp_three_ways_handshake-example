@@ -72,7 +72,7 @@ inline void Big::Copy(std::uint8_t * a, const std::size_t & as,
 {
     if (!a || !b || as == 0 || bs == 0) return;
     const std::size_t ad = bs > as ? 0 : as - bs,
-        bd = bs > as ? bs - as : 0:
+        bd = bs > as ? bs - as : 0;
     std::memcpy(a + ad, b + bs, std::min(as, bs));
 }
 
