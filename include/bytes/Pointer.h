@@ -150,7 +150,7 @@ inline bool Pointer::Reallocate(const std::size_t & sz,
             ns = (*it)->Resize(sz);
             if (ns == od) return false;
             m_object->Reallocate(ns, seg->Begin(), seg->Begin() + od, 
-                &((*it)->Trait().GetEndian()));
+                &((*it)->GetTrait().GetEndian()));
             f = true;
             while (!q.empty())
             {
@@ -175,8 +175,8 @@ inline std::shared_ptr<bytes::ptr::Segment>
     if (!*this) return std::make_shared<bytes::ptr::Segment>();
     for(auto it = m_segments.begin(); it != m_segments.end(); ++it)
     {
-        if ((*it)->Begin() == bg && (*it)->End() == ed && (*it)->Trait() == *t)
-            return (*it);
+        if ((*it)->Begin() == bg && (*it)->End() == ed && 
+            (*it)->GetTrait() == *t) return (*it);
     }
     auto nseg = std::make_shared<bytes::ptr::segment::Warpper>(bg, ed, 
         m_object, t);
