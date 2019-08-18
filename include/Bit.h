@@ -174,10 +174,7 @@ inline Bit::Bit(Bit && mov) :
 
 inline Bit & Bit::operator=(Bit && b)
 {
-    m_offset = b.m_offset;
-    m_segment = b.m_segment;
-    Default(b);
-    return *this;
+    return (*this = (static_cast<bool>(b)));
 }
 
 inline Bit & Bit::operator=(const Bit & b)
