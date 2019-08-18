@@ -34,5 +34,11 @@ int main()
     assert(static_cast<std::uint8_t>(a0) == std::uint8_t(4));
     a0 = ~a1;
     assert(a0 == std::uint8_t(255));
+    assert(a0[0] == true);
+    assert(a0[7] == true);
+    const auto & a0_c = a0;
+    a0 = std::uint8_t(0);
+    assert(a0_c[0] == false); 
+    assert(a0_c[7] == false); 
     return 0;
 }
