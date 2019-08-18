@@ -26,11 +26,11 @@ private:
 private:
     static inline bool Validation(Base & b);
 protected:
-    static inline std::shared_ptr<bytes::Trait> GetTrait();
+    static inline std::shared_ptr<bytes::Trait> Trait();
     static inline std::shared_ptr<bytes::Trait> 
-        GetTrait(const bytes::Endian::CategoryEnum & e);
+        Trait(const bytes::Endian::CategoryEnum & e);
     static inline std::shared_ptr<bytes::Trait> 
-        GetTrait(const bytes::Trait & t);
+        Trait(const bytes::Trait & t);
 protected:
     template<typename TCapacity>
     static inline std::shared_ptr<bytes::Trait> 
@@ -111,8 +111,8 @@ protected:
 
 inline void Base::Default(Base & b)
 {
-    b.m_ptr = std::make_shared<bytes::Pointer>(GetTrait()->Size());
-    b.m_segment = b.m_ptr->Share(0, b.m_ptr->Size(), GetTrait());
+    b.m_ptr = std::make_shared<bytes::Pointer>(Trait()->Size());
+    b.m_segment = b.m_ptr->Share(0, b.m_ptr->Size(), Trait());
 }
 
 inline bool Base::Validation(Base & b)
@@ -125,7 +125,7 @@ inline bool Base::Validation(Base & b)
     return true;
 }
 
-inline std::shared_ptr<bytes::Trait> Base::GetTrait()
+inline std::shared_ptr<bytes::Trait> Base::Trait()
 {
     static std::shared_ptr<bytes::Trait> instance(new bytes::Trait(
         std::make_shared<bytes::trait::capacity::Extended>(),
@@ -135,7 +135,7 @@ inline std::shared_ptr<bytes::Trait> Base::GetTrait()
 }
 
 inline std::shared_ptr<bytes::Trait> 
-    Base::GetTrait(const bytes::Endian::CategoryEnum & e)
+    Base::Trait(const bytes::Endian::CategoryEnum & e)
 {
     return std::make_shared<bytes::Trait>(e,
         std::make_shared<bytes::trait::capacity::Extended>(),
@@ -144,7 +144,7 @@ inline std::shared_ptr<bytes::Trait>
 }
 
 inline std::shared_ptr<bytes::Trait> 
-    Base::GetTrait(const bytes::Trait & t)
+    Base::Trait(const bytes::Trait & t)
 {
     return std::make_shared<bytes::Trait>(t);
 }
@@ -158,22 +158,22 @@ inline std::shared_ptr<bytes::Trait>
 }
 
 inline Base::Base() :
-    m_ptr(std::make_shared<bytes::Pointer>(GetTrait()->Size())),
-    m_segment(m_ptr->Share(0, m_ptr->Size(), GetTrait()))
+    m_ptr(std::make_shared<bytes::Pointer>(Trait()->Size())),
+    m_segment(m_ptr->Share(0, m_ptr->Size(), Trait()))
 {
     bytes::Assign::Operator(m_segment, std::uint8_t(0));
 }
 
 inline Base::Base(const bytes::Endian::CategoryEnum & e) :
-    m_ptr(std::make_shared<bytes::Pointer>(GetTrait()->Size())),
-    m_segment(m_ptr->Share(0, m_ptr->Size(), GetTrait(e)))
+    m_ptr(std::make_shared<bytes::Pointer>(Trait()->Size())),
+    m_segment(m_ptr->Share(0, m_ptr->Size(), Trait(e)))
 {
     bytes::Assign::Operator(m_segment, std::uint8_t(0));
 }
 
 inline Base::Base(const bytes::Trait & t) :
     m_ptr(std::make_shared<bytes::Pointer>(t.Size())),
-    m_segment(m_ptr->Share(0, m_ptr->Size(), GetTrait(t)))
+    m_segment(m_ptr->Share(0, m_ptr->Size(), Trait(t)))
 {
     bytes::Assign::Operator(m_segment, std::uint8_t(0));
 }
@@ -187,7 +187,7 @@ inline Base::Base(const std::shared_ptr<bytes::Trait> & t) :
 
 inline Base::Base(const std::size_t & s) :
     m_ptr(std::make_shared<bytes::Pointer>(s)),
-    m_segment(m_ptr->Share(0, s, GetTrait()))
+    m_segment(m_ptr->Share(0, s, Trait()))
 {
     bytes::Assign::Operator(m_segment, std::uint8_t(0));
 }
@@ -195,14 +195,14 @@ inline Base::Base(const std::size_t & s) :
 inline Base::Base(const std::size_t & s, 
     const bytes::Endian::CategoryEnum & e) :
         m_ptr(std::make_shared<bytes::Pointer>(s)),
-        m_segment(m_ptr->Share(0, s, GetTrait(e)))
+        m_segment(m_ptr->Share(0, s, Trait(e)))
 {
     bytes::Assign::Operator(m_segment, std::uint8_t(0));
 }
 
 inline Base::Base(const std::size_t & s, const bytes::Trait & t) :
     m_ptr(std::make_shared<bytes::Pointer>(s)),
-    m_segment(m_ptr->Share(0, s, GetTrait(t)))
+    m_segment(m_ptr->Share(0, s, Trait(t)))
 {
     bytes::Assign::Operator(m_segment, std::uint8_t(0));
 }
@@ -218,7 +218,7 @@ inline Base::Base(const std::size_t & s,
 template<std::size_t N>
 inline Base::Base(const std::uint8_t (&b)[N]) :
     m_ptr(std::make_shared<bytes::Pointer>(N)),
-    m_segment(m_ptr->Share(0, N, GetTrait()))
+    m_segment(m_ptr->Share(0, N, Trait()))
 {
     bytes::Assign::Operator(m_ptr, m_segment, b);
 }
@@ -226,7 +226,7 @@ template<std::size_t N>
 inline Base::Base(const std::uint8_t (&b)[N], 
     const bytes::Endian::CategoryEnum & e) :
         m_ptr(std::make_shared<bytes::Pointer>(N)),
-        m_segment(m_ptr->Share(0, N, GetTrait(e)))
+        m_segment(m_ptr->Share(0, N, Trait(e)))
 {
     bytes::Assign::Operator(m_ptr, m_segment, b);
 }
@@ -234,7 +234,7 @@ inline Base::Base(const std::uint8_t (&b)[N],
 template<std::size_t N>
 inline Base::Base(const std::uint8_t (&b)[N], const bytes::Trait & t) :
     m_ptr(std::make_shared<bytes::Pointer>(N)),
-    m_segment(m_ptr->Share(0, N, GetTrait(t)))
+    m_segment(m_ptr->Share(0, N, Trait(t)))
 {
     bytes::Assign::Operator(m_ptr, m_segment, b);
 }
@@ -250,7 +250,7 @@ inline Base::Base(const std::uint8_t (&b)[N],
 
 inline Base::Base(const std::uint8_t * ptr, const std::size_t & s) :
     m_ptr(std::make_shared<bytes::Pointer>(s)),
-    m_segment(m_ptr->Share(0, s, GetTrait()))
+    m_segment(m_ptr->Share(0, s, Trait()))
 {
     bytes::Assign::Operator(m_ptr, m_segment, ptr, s);
 }
@@ -258,7 +258,7 @@ inline Base::Base(const std::uint8_t * ptr, const std::size_t & s) :
 inline Base::Base(const std::uint8_t * ptr, const std::size_t & s,
     const bytes::Endian::CategoryEnum & e) :
         m_ptr(std::make_shared<bytes::Pointer>(s)),
-        m_segment(m_ptr->Share(0, s, GetTrait(e)))
+        m_segment(m_ptr->Share(0, s, Trait(e)))
 {
     bytes::Assign::Operator(m_ptr, m_segment, ptr, s);
 }
@@ -266,7 +266,7 @@ inline Base::Base(const std::uint8_t * ptr, const std::size_t & s,
 inline Base::Base(const std::uint8_t * ptr, const std::size_t & s, 
     const bytes::Trait & t) :
         m_ptr(std::make_shared<bytes::Pointer>(s)),
-        m_segment(m_ptr->Share(0, s, GetTrait(t)))
+        m_segment(m_ptr->Share(0, s, Trait(t)))
 {
     bytes::Assign::Operator(m_ptr, m_segment, ptr, s);
 }
@@ -284,7 +284,7 @@ inline Base::Base(const std::shared_ptr<bytes::Pointer> & ptr,
         m_ptr(ptr),
         m_segment(nullptr)
 {
-    if (Validation(*this)) m_segment = m_ptr->Share(0, s, GetTrait());
+    if (Validation(*this)) m_segment = m_ptr->Share(0, s, Trait());
 }
 
 inline Base::Base(const std::shared_ptr<bytes::Pointer> & ptr, 
@@ -292,7 +292,7 @@ inline Base::Base(const std::shared_ptr<bytes::Pointer> & ptr,
         m_ptr(ptr),
         m_segment(nullptr)
 {
-    if (Validation(*this)) m_segment = m_ptr->Share(0, s, GetTrait(e));
+    if (Validation(*this)) m_segment = m_ptr->Share(0, s, Trait(e));
 }
 
 inline Base::Base(const std::shared_ptr<bytes::Pointer> & ptr, 
@@ -300,7 +300,7 @@ inline Base::Base(const std::shared_ptr<bytes::Pointer> & ptr,
         m_ptr(ptr),
         m_segment(nullptr)
 {
-    if (Validation(*this)) m_segment = m_ptr->Share(0, s, GetTrait(t));
+    if (Validation(*this)) m_segment = m_ptr->Share(0, s, Trait(t));
 }
 
 inline Base::Base(const std::shared_ptr<bytes::Pointer> & ptr, 
@@ -316,7 +316,7 @@ inline Base::Base(const std::shared_ptr<bytes::Pointer> & ptr,
         m_ptr(ptr),
         m_segment(nullptr)
 {
-    if (Validation(*this)) m_segment = m_ptr->Share(bg, ed, GetTrait());
+    if (Validation(*this)) m_segment = m_ptr->Share(bg, ed, Trait());
 }
 
 inline Base::Base(const std::shared_ptr<bytes::Pointer> & ptr, 
@@ -325,7 +325,7 @@ inline Base::Base(const std::shared_ptr<bytes::Pointer> & ptr,
         m_ptr(ptr),
         m_segment(nullptr)
 {
-    if (Validation(*this)) m_segment = m_ptr->Share(bg, ed, GetTrait(e));
+    if (Validation(*this)) m_segment = m_ptr->Share(bg, ed, Trait(e));
 }
 
 inline Base::Base(const std::shared_ptr<bytes::Pointer> & ptr, 
@@ -334,7 +334,7 @@ inline Base::Base(const std::shared_ptr<bytes::Pointer> & ptr,
         m_ptr(ptr),
         m_segment(nullptr)
 {
-    if (Validation(*this)) m_segment = m_ptr->Share(bg, ed, GetTrait(t));
+    if (Validation(*this)) m_segment = m_ptr->Share(bg, ed, Trait(t));
 }
 
 inline Base::Base(const std::shared_ptr<bytes::Pointer> & ptr, 
@@ -355,7 +355,7 @@ inline Base::~Base()
 inline Base::Base(const Base & cpy) :
     m_ptr(std::make_shared<bytes::Pointer>(cpy.m_segment->Size())),
     m_segment(m_ptr->Share(0, cpy.m_segment->Size(), 
-        GetTrait(cpy.m_segment->Trait())))
+        Trait(cpy.m_segment->GetTrait())))
 {
     if (Validation(*this)) bytes::Assign::Operator(m_ptr, m_segment, 
         cpy.m_segment);
