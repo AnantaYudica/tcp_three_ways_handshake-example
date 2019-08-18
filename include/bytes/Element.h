@@ -32,6 +32,8 @@ public:
     inline Element & operator=(Element && mov);
     inline Element & operator=(const std::uint8_t & v);
 public:
+    inline std::size_t Index() const;
+public:
     inline operator std::uint8_t() const;
 public:
     inline std::uint8_t operator~() const;
@@ -187,6 +189,11 @@ inline Element & Element::operator=(const std::uint8_t & v)
 {
     m_object->At(m_index) = m_trait->Set(v);
     return *this;
+}
+
+inline std::size_t Element::Index() const
+{
+    return m_index;
 }
 
 inline Element::operator std::uint8_t() const
