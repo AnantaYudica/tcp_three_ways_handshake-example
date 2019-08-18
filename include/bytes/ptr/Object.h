@@ -60,8 +60,8 @@ public:
 
 inline std::uint8_t * Object::Null()
 {
-    static std::uint8_t instance = std::uint8_t(0);
-    return &instance;
+    static std::uint8_t instance;
+    return &(instance = std::uint8_t(0));
 }
 
 inline bool Object::IsEnd(const std::uint8_t * ptr)
