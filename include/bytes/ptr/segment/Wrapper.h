@@ -32,7 +32,7 @@ public:
     inline Warpper & operator=(const Warpper & cpy);
     inline Warpper & operator=(Warpper && mov);
 public:
-    using bytes::ptr::Segment::Trait;
+    using bytes::ptr::Segment::GetTrait;
 public:
     using bytes::ptr::Segment::Begin;
 public:
