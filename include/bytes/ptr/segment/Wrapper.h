@@ -86,7 +86,7 @@ inline void Warpper::Resize(const std::size_t & i, const std::size_t & s,
     if (s == ns) return;
     const bool isinc = s < ns;
     const std::size_t d = (isinc ? ns - s : s - ns), ied = i + ns;
-    const bool isbg_after = Begin() >= ied, ised_before = End() <= i, ;
+    const bool isbg_after = Begin() >= ied, ised_before = End() <= i;
 
     if (isbg_after && isinc)
     {
