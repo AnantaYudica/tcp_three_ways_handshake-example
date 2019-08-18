@@ -40,7 +40,7 @@ public:
 public:
     inline Segment & operator=(const Segment & cpy);
     inline Segment & operator=(Segment && mov);
-protected:
+public:
     inline const bytes::Trait & Trait() const; 
 public:
     inline bool IsSameObject(const Segment & seg) const;
@@ -61,6 +61,10 @@ protected:
 public:
     inline bytes::Element At(const std::size_t & i);
     inline const bytes::Element At(const std::size_t & i) const;
+public:
+    inline bool IsEnd(const std::size_t & i) const;
+public:
+    inline bool IsReverseEnd(const std::size_t & i) const;
 public:
     inline std::uint8_t * Get();
     inline const std::uint8_t * Get() const;
@@ -234,6 +238,18 @@ inline const bytes::Element Segment::At(const std::size_t & i) const
 {
     if (!m_object || !m_trait) return bytes::Element();
     return bytes::Element(m_trait->At(i, m_begin, m_end), m_object, m_trait);
+}
+
+inline bool Segment::IsEnd(const std::size_t & i) const
+{
+    if (!m_object || !m_trait) return true;
+    return m_trait->IsEnd(i, Begin(), End());
+}
+
+inline bool Segment::IsReverseEnd(const std::size_t & i) const
+{
+    if (!m_object || !m_trait) return true;
+    return m_trait->IsReverseEnd(i, Begin(), End());
 }
 
 inline std::uint8_t * Segment::Get()
