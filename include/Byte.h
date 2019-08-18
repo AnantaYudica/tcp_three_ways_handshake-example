@@ -182,9 +182,7 @@ inline Byte::Byte(Byte && mov) :
 
 inline Byte & Byte::operator=(Byte && b)
 {
-    m_segment = b.m_segment;
-    Default(b);
-    return *this;
+    return (*this = b.m_segment->At(0));
 }
 
 inline Byte & Byte::operator=(const Byte & b)
