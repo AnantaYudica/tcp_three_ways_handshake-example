@@ -152,7 +152,7 @@ inline std::shared_ptr<bytes::Trait>
     Base::SetCapacityTrait(const bytes::Trait & t)
 {
     return std::make_shared<bytes::Trait>(std::make_shared<TCapacity>(),
-        t.GetElement()->Copy(), t.GetModifier()->Copy()));
+        t.GetElement()->Copy(), t.GetModifier()->Copy());
 }
 
 inline Base::Base() :
