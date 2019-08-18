@@ -73,7 +73,7 @@ inline void NewtonRaphson::Equalize(SegmentPtrType a_segment,
 inline void NewtonRaphson::Round(PointerPtrType ptr, SegmentPtrType segment,
     std::intmax_t & exponent, const std::intmax_t & precision)
 {
-    auto round_trait = std::make_shared<bytes::Trait>(segment->Trait());
+    auto round_trait = std::make_shared<bytes::Trait>(segment->GetTrait());
     auto round_ptr = std::make_shared<bytes::Pointer>(segment->Size() * 2);
     auto sum_segment = round_ptr->Share(0, segment->Size(), round_trait);
     auto mul_segment = round_ptr->Share(segment->Size(), segment->Size() * 2, 
@@ -109,17 +109,22 @@ inline void NewtonRaphson::Operator(ConstSegmentPtrType numerator_segment,
     const std::size_t base3_minsize = (numerator_segment->Size() * 8) / 3, 
         base3_bin_minsize = base3_minsize * 3,
         precision = (base3_minsize * 2) + 1,
-        min_exponent = base3_bin_minsize + ((base3_bin_minsize % 2) == 0 ? 1 : 0),
+        min_exponent = base3_bin_minsize + 
+            ((base3_bin_minsize % 2) == 0 ? 1 : 0),
         expand_size = numerator_segment->Size() * 4;
     auto div_ptr = std::make_shared<bytes::Pointer>(expand_size * 5);
-    auto div_trait = std::make_shared<bytes::Trait>(numerator_segment->Trait());
+    auto div_trait = 
+        std::make_shared<bytes::Trait>(numerator_segment->GetTrait());
     auto x0_segment = div_ptr->Share(0, expand_size, div_trait);
     auto x_segment = div_ptr->Share(expand_size, expand_size * 2, div_trait);
-    auto xn_segment = div_ptr->Share(expand_size * 2, expand_size * 3, div_trait);
-    auto bx_segment = div_ptr->Share(expand_size * 3, expand_size * 4, div_trait);
-    auto c2_segment = div_ptr->Share(expand_size * 4, expand_size * 5, div_trait);
-    std::intmax_t x0_exponent = -1, x_exponent = 0, xn_exponent = -(int(min_exponent)), 
-        c2_exponent = 1, bx_exponent = 0;
+    auto xn_segment = 
+        div_ptr->Share(expand_size * 2, expand_size * 3, div_trait);
+    auto bx_segment = 
+        div_ptr->Share(expand_size * 3, expand_size * 4, div_trait);
+    auto c2_segment = 
+        div_ptr->Share(expand_size * 4, expand_size * 5, div_trait);
+    std::intmax_t x0_exponent = -1, x_exponent = 0, 
+        xn_exponent = -(int(min_exponent)), c2_exponent = 1, bx_exponent = 0;
     bytes::Assign::Operator(xn_segment,  std::uint8_t(0));
     xn_segment->At(0) = std::uint8_t(0x01);
     bytes::Assign::Operator(c2_segment,  std::uint8_t(0));
@@ -151,8 +156,9 @@ inline void NewtonRaphson::Operator(ConstSegmentPtrType numerator_segment,
             xn_exponent);
         if (result_remainder_segment)
         {
-            bytes::arithmetic::Multiplication::Operator(result_quotient_segment,
-                denominator_segment, result_ptr, result_remainder_segment);
+            bytes::arithmetic::Multiplication::Operator(
+                result_quotient_segment, denominator_segment, result_ptr, 
+                result_remainder_segment);
             bytes::arithmetic::Subtraction::Operator(result_remainder_segment, 
                 numerator_segment);
         }
@@ -180,17 +186,22 @@ inline void NewtonRaphson::Operator(ConstSegmentPtrType numerator_segment,
     const std::size_t base3_minsize = (numerator_segment->Size() * 8) / 3, 
         base3_bin_minsize = base3_minsize * 3,
         precision = (base3_minsize * 2) + 1,
-        min_exponent = base3_bin_minsize + ((base3_bin_minsize % 2) == 0 ? 1 : 0),
+        min_exponent = base3_bin_minsize + 
+            ((base3_bin_minsize % 2) == 0 ? 1 : 0),
         expand_size = numerator_segment->Size() * 4;
     auto div_ptr = std::make_shared<bytes::Pointer>(expand_size * 5);
-    auto div_trait = std::make_shared<bytes::Trait>(numerator_segment->Trait());
+    auto div_trait = 
+        std::make_shared<bytes::Trait>(numerator_segment->GetTrait());
     auto x0_segment = div_ptr->Share(0, expand_size, div_trait);
     auto x_segment = div_ptr->Share(expand_size, expand_size * 2, div_trait);
-    auto xn_segment = div_ptr->Share(expand_size * 2, expand_size * 3, div_trait);
-    auto bx_segment = div_ptr->Share(expand_size * 3, expand_size * 4, div_trait);
-    auto c2_segment = div_ptr->Share(expand_size * 4, expand_size * 5, div_trait);
-    std::intmax_t x0_exponent = -1, x_exponent = 0, xn_exponent = -(int(min_exponent)), 
-        c2_exponent = 1, bx_exponent = 0;
+    auto xn_segment = 
+        div_ptr->Share(expand_size * 2, expand_size * 3, div_trait);
+    auto bx_segment = 
+        div_ptr->Share(expand_size * 3, expand_size * 4, div_trait);
+    auto c2_segment = 
+        div_ptr->Share(expand_size * 4, expand_size * 5, div_trait);
+    std::intmax_t x0_exponent = -1, x_exponent = 0, 
+        xn_exponent = -(int(min_exponent)), c2_exponent = 1, bx_exponent = 0;
     bytes::Assign::Operator(xn_segment,  std::uint8_t(0));
     xn_segment->At(0) = std::uint8_t(0x01);
     bytes::Assign::Operator(c2_segment,  std::uint8_t(0));
@@ -216,15 +227,15 @@ inline void NewtonRaphson::Operator(ConstSegmentPtrType numerator_segment,
     } while(bytes::Comparison::Operation(x0_segment, xn_segment) != 0);
     if (result_quotient_segment)
     {
-        bytes::arithmetic::Multiplication::Operator(numerator_segment, x0_segment, 
-            result_ptr, result_quotient_segment);
+        bytes::arithmetic::Multiplication::Operator(numerator_segment, 
+            x0_segment, result_ptr, result_quotient_segment);
         bytes::arithmetic::bitwise::Shift::Operator(result_quotient_segment, 
             xn_exponent);
         if (result_remainder_segment)
         {
-            bytes::arithmetic::Multiplication::Operator(result_quotient_segment,
-                denominator, denominator_size, result_ptr, 
-                result_remainder_segment);
+            bytes::arithmetic::Multiplication::Operator(
+                result_quotient_segment, denominator, denominator_size, 
+                result_ptr, result_remainder_segment);
             bytes::arithmetic::Subtraction::Operator(result_remainder_segment, 
                 numerator_segment);
         }
@@ -237,7 +248,8 @@ inline void NewtonRaphson::Operator(ConstSegmentPtrType numerator_segment,
         bytes::arithmetic::bitwise::Shift::Operator(xn_segment, 
             xn_exponent);
         bytes::arithmetic::Multiplication::Operator(xn_segment,
-            denominator, denominator_size, result_ptr, result_remainder_segment);
+            denominator, denominator_size, result_ptr, 
+            result_remainder_segment);
         bytes::arithmetic::Subtraction::Operator(result_remainder_segment, 
             numerator_segment);
     }
