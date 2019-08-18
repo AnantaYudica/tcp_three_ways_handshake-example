@@ -123,6 +123,8 @@ public:
 public:
     inline bool operator>=(const Byte & b) const;
     inline bool operator>=(const std::uint8_t & b) const;
+public:
+    inline void Swap(Byte & b);
 };
 
 inline void Byte::Default(Byte & b)
@@ -538,6 +540,13 @@ inline bool Byte::operator>=(const Byte & b) const
 inline bool Byte::operator>=(const std::uint8_t & b) const
 {
     return m_segment->At(0) >= b;
+}
+
+inline void Byte::Swap(Byte & b)
+{
+    auto segment = m_segment;
+    m_segment = b.m_segment;
+    b.m_segment = segment;
 }
 
 inline Byte operator|(const std::uint8_t & a, const Byte & b)
