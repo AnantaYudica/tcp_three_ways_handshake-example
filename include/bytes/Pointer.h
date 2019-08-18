@@ -6,8 +6,10 @@
 #include <vector>
 #include <utility>
 #include <cstring>
+#include <queue>
 
 #include "Endian.h"
+#include "Trait.h"
 #include "ptr/Object.h"
 #include "ptr/Segment.h"
 #include "ptr/Segment/Wrapper.h"
@@ -37,14 +39,11 @@ public:
     inline bool 
         IsSameObject(const std::shared_ptr<bytes::ptr::Object> & b) const;
 public:
-    inline void Reallocate(const std::size_t & sz,
-        const bytes::Endian * endian);
-    inline void Reallocate(const std::size_t & sz, 
-        const std::shared_ptr<bytes::ptr::Segment> & seg,
-        const bytes::Endian * endian);
+    inline bool Reallocate(const std::size_t & sz, 
+        const std::shared_ptr<bytes::ptr::Segment> & seg);
 public:
     inline std::shared_ptr<bytes::ptr::Segment> Share(const std::size_t & bg, 
-        const std::size_t & ed);
+        const std::size_t & ed, const std::shared_ptr<bytes::Trait> & t);
 public:
     inline std::size_t Size() const;
 public:
@@ -131,19 +130,14 @@ inline bool
     return (*this) && *m_object == *b;
 }
 
-inline void Pointer::Reallocate(const std::size_t & sz,
-    const bytes::Endian * endian)
+inline bool Pointer::Reallocate(const std::size_t & sz, 
+    const std::shared_ptr<bytes::ptr::Segment> & seg)
 {
-    if (!*this) return;
-    return m_object->Reallocate(sz, endian);
-}
-
-inline void Pointer::Reallocate(const std::size_t & sz, 
-    const std::shared_ptr<bytes::ptr::Segment> & seg,
-    const bytes::Endian * endian)
-{
-    if(!*this || !seg || !*seg) return;
-    m_object->Reallocate(sz, seg->Begin(), seg->End(), endian);
+    if(!*this || !seg || !*seg) return false;
+    std::size_t ns;
+    const std::size_t od = seg->Size();
+    bool f = false;
+    std::queue<std::shared_ptr<bytes::ptr::segment::Warpper>> q;
     for(auto it = m_segments.begin(); it != m_segments.end(); )
     {
         if ((*it).use_count() == 1)
@@ -152,23 +146,40 @@ inline void Pointer::Reallocate(const std::size_t & sz,
             continue;
         }
         if ((**it) == *seg)
-            (*it)->End(seg->Begin() + sz);
-        else (*it)->Resize(seg->Begin(), seg->Size(), sz);
+        {
+            ns = (*it)->Resize(sz);
+            if (ns == od) return false;
+            m_object->Reallocate(ns, seg->Begin(), seg->Begin() + od, 
+                &((*it)->Trait().Endian()));
+            f = true;
+            while (!q.empty())
+            {
+                q.front()->Resize(seg->Begin(), od, ns);
+                q.pop();
+            }
+        }
+        else 
+        {
+            if (!f) q.push(*it);
+            else (*it)->Resize(seg->Begin(), od, ns);
+        }
         ++it;
     }
+    return true;
 }
 
 inline std::shared_ptr<bytes::ptr::Segment> 
-    Pointer::Share(const std::size_t & bg, const std::size_t & ed)
+    Pointer::Share(const std::size_t & bg, const std::size_t & ed,
+        const std::shared_ptr<bytes::Trait> & t)
 {
     if (!*this) return std::make_shared<bytes::ptr::Segment>();
     for(auto it = m_segments.begin(); it != m_segments.end(); ++it)
     {
-        if ((*it)->Begin() == bg && (*it)->End() == ed)
+        if ((*it)->Begin() == bg && (*it)->End() == ed && (*it)->Trait() == *t)
             return (*it);
     }
     auto nseg = std::make_shared<bytes::ptr::segment::Warpper>(bg, ed, 
-        m_object);
+        m_object, t);
     m_segments.push_back(nseg);
     return nseg;
 }
