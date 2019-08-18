@@ -287,7 +287,7 @@ inline void Assign::Operator(PointerPtrType a_ptr,
     const std::size_t a_size = a_segment->Size() - a_bg;
     if (b_size > a_size)
         a_ptr->Reallocate(a_bg + b_size, a_segment);
-    Assign::Operator(a_ptr, a_segment, a_bg, b_ptr, b_size);
+    Assign::Operator(a_segment, a_bg, a_segment->Size(), b_ptr, b_size);
 }
 
 inline void Assign::Operator(PointerPtrType a_ptr,
