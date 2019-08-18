@@ -98,13 +98,15 @@ public:
     inline Base(Base && mov);
 public:
     inline Base & operator=(const Base & b) = delete;
-    inline Base & operator=(Base && b);
+    inline Base & operator=(Base && b) = delete;
 protected:
-    std::shared_ptr<bytes::Pointer> GetPointer();
-    std::shared_ptr<const bytes::Pointer> GetPointer() const;
+    inline std::shared_ptr<bytes::Pointer> GetPointer();
+    inline std::shared_ptr<const bytes::Pointer> GetPointer() const;
 protected:
-    std::shared_ptr<bytes::ptr::Segment> GetSegment();
-    std::shared_ptr<const bytes::ptr::Segment> GetSegment() const;
+    inline std::shared_ptr<bytes::ptr::Segment> GetSegment();
+    inline std::shared_ptr<const bytes::ptr::Segment> GetSegment() const;
+protected:
+    inline void Swap(Base & b);
 };
 
 inline void Base::Default(Base & b)
@@ -366,32 +368,34 @@ inline Base::Base(Base && mov) :
     Default(mov);
 }
 
-inline Base & Base::operator=(Base && b)
-{
-    m_ptr = b.m_ptr;
-    m_segment = b.m_segment;
-    Default(b);
-    return *this;
-}
-
-std::shared_ptr<bytes::Pointer> Base::GetPointer()
+inline std::shared_ptr<bytes::Pointer> Base::GetPointer()
 {
     return m_ptr;
 }
 
-std::shared_ptr<const bytes::Pointer> Base::GetPointer() const
+inline std::shared_ptr<const bytes::Pointer> Base::GetPointer() const
 {
     return std::const_pointer_cast<const bytes::Pointer>(m_ptr);
 }
 
-std::shared_ptr<bytes::ptr::Segment> Base::GetSegment()
+inline std::shared_ptr<bytes::ptr::Segment> Base::GetSegment()
 {
     return m_segment;
 }
 
-std::shared_ptr<const bytes::ptr::Segment> Base::GetSegment() const
+inline std::shared_ptr<const bytes::ptr::Segment> Base::GetSegment() const
 {
     return std::const_pointer_cast<const bytes::ptr::Segment>(m_segment);
+}
+
+inline void Base::Swap(Base & b)
+{
+    auto ptr = m_ptr;
+    auto segment = m_segment;
+    m_ptr = b.m_ptr;
+    m_segment = b.m_segment;
+    b.m_ptr = ptr;
+    b.m_segment = segment;
 }
 
 } //!bytes
