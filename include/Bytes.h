@@ -125,12 +125,15 @@ public:
     template<std::size_t N>
     inline void Assign(const std::uint8_t (&b)[N]);
     inline void Assign(const std::uint8_t & b);
+    inline void Assign(std::initializer_list<std::uint8_t> li);
     inline void Assign(const Bytes & b);
     inline void Assign(const std::size_t & i, const std::uint8_t * ptr, 
         const std::size_t & ptr_s);
     template<std::size_t N>
     inline void Assign(const std::size_t & i, const std::uint8_t (&b)[N]);
     inline void Assign(const std::size_t & i, const std::uint8_t & b);
+    inline void Assign(const std::size_t & i, 
+        std::initializer_list<std::uint8_t> li);
     inline void Assign(const std::size_t & i, const Bytes & b);
     inline void Assign(const std::size_t & i, const Bytes & b, 
         const std::size_t & ib);
@@ -449,6 +452,12 @@ inline void Bytes::Assign(const std::uint8_t & b)
     bytes::Assign::Operator(GetSegment(), b);
 }
 
+inline void Bytes::Assign(std::initializer_list<std::uint8_t> li)
+{
+    bytes::Assign::Operator(GetPointer(), GetSegment(), 
+        li.begin(), li.size());
+}
+
 inline void Bytes::Assign(const Bytes & b)
 {
     bytes::Assign::Operator(GetPointer(), GetSegment(), b.GetSegment());
@@ -469,6 +478,13 @@ inline void Bytes::Assign(const std::size_t & i, const std::uint8_t (&b)[N])
 inline void Bytes::Assign(const std::size_t & i, const std::uint8_t & b)
 {
     bytes::Assign::Operator(GetSegment(), i, b);
+}
+
+inline void Bytes::Assign(const std::size_t & i, 
+    std::initializer_list<std::uint8_t> li)
+{
+    bytes::Assign::Operator(GetPointer(), GetSegment(), i, 
+        li.begin(), li.size());
 }
 
 inline void Bytes::Assign(const std::size_t & i, const Bytes & b)
