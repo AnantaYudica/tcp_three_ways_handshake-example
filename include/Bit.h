@@ -84,6 +84,8 @@ public:
     inline bool operator!=(const Bit & b) const;
     inline bool operator!=(const bool & b) const;
     inline bool operator!=(const std::uint8_t & b) const;
+public:
+    inline void Swap(Bit & b);
 };
 
 inline void Bit::Default(Bit & b)
@@ -399,6 +401,16 @@ inline bool Bit::operator!=(const bool & b) const
 inline bool Bit::operator!=(const std::uint8_t & b) const
 {
     return !(*this == b);
+}
+
+inline void Bit::Swap(Bit & b)
+{
+    auto offset = m_offset;
+    auto segment = m_segment;
+    m_offset = b.m_offset;
+    m_segment = b.m_segment;
+    b.m_offset = offset;
+    b.m_segment = segment; 
 }
 
 inline Bit operator|(const bool & a, const Bit & b)
