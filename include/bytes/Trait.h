@@ -20,24 +20,21 @@ namespace bytes
 class Trait
 {
 private:
-    static inline const bytes::Endian * GetEndian();
+    static inline const bytes::Endian * Endian();
     static inline const bytes::Endian * 
-        GetEndian(const bytes::Endian::CategoryEnum & e);
+        Endian(const bytes::Endian::CategoryEnum & e);
 private:
+    static inline std::shared_ptr<bytes::trait::Capacity> Capacity();
     static inline std::shared_ptr<bytes::trait::Capacity>
-        GetCapacity();
-    static inline std::shared_ptr<bytes::trait::Capacity>
-        GetCapacity(const std::shared_ptr<bytes::trait::Capacity> & c);
+        Capacity(const std::shared_ptr<bytes::trait::Capacity> & c);
 private:
+    static inline std::shared_ptr<bytes::trait::Element> Element();
     static inline std::shared_ptr<bytes::trait::Element>
-        GetElement();
-    static inline std::shared_ptr<bytes::trait::Element>
-        GetElement(const std::shared_ptr<bytes::trait::Element> & e);
+        Element(const std::shared_ptr<bytes::trait::Element> & e);
 private:
+    static inline std::shared_ptr<bytes::trait::Modifier> Modifier();
     static inline std::shared_ptr<bytes::trait::Modifier>
-        GetModifier();
-    static inline std::shared_ptr<bytes::trait::Modifier>
-        GetModifier(const std::shared_ptr<bytes::trait::Modifier> & m);
+        Modifier(const std::shared_ptr<bytes::trait::Modifier> & m);
 private:
     const bytes::Endian * m_endian;
     std::shared_ptr<bytes::trait::Capacity> m_capacity;
@@ -62,7 +59,13 @@ public:
     inline Trait & operator=(const Trait & cpy);
     inline Trait & operator=(Trait && mov);
 public:
-    inline const bytes::Endian & Endian() const;
+    inline const bytes::Endian & GetEndian() const;
+public:
+    inline std::shared_ptr<const bytes::trait::Capacity> GetCapacity() const;
+public:
+    inline std::shared_ptr<const bytes::trait::Element> GetElement() const;
+public:
+    inline std::shared_ptr<const bytes::trait::Modifier> GetModifier() const;
 public:
     inline std::size_t Size() const;
     inline std::size_t Size(const std::size_t & s) const;
@@ -88,13 +91,13 @@ public:
     inline bool operator!=(const Trait & b) const;
 };
 
-inline const bytes::Endian * Trait::GetEndian()
+inline const bytes::Endian * Trait::Endian()
 {
     return &bytes::sys::Endian();
 }
 
 inline const bytes::Endian * 
-    Trait::GetEndian(const bytes::Endian::CategoryEnum & e)
+    Trait::Endian(const bytes::Endian::CategoryEnum & e)
 {
     switch (e)
     {
@@ -105,76 +108,76 @@ inline const bytes::Endian *
     default:
         break;
     }
-    return GetEndian();
+    return Endian();
 }
 
-inline std::shared_ptr<bytes::trait::Capacity> Trait::GetCapacity()
+inline std::shared_ptr<bytes::trait::Capacity> Trait::Capacity()
 {
     return std::make_shared<bytes::trait::capacity::Fixed>();
 }
 
 inline std::shared_ptr<bytes::trait::Capacity>
-    Trait::GetCapacity(const std::shared_ptr<bytes::trait::Capacity> & c)
+    Trait::Capacity(const std::shared_ptr<bytes::trait::Capacity> & c)
 {
     if (c) return c;
-    return GetCapacity();
+    return Capacity();
 }
 
-inline std::shared_ptr<bytes::trait::Element> Trait::GetElement()
+inline std::shared_ptr<bytes::trait::Element> Trait::Element()
 {
     return std::make_shared<bytes::trait::element::Direct>();
 }
 
 inline std::shared_ptr<bytes::trait::Element>
-    Trait::GetElement(const std::shared_ptr<bytes::trait::Element> & e)
+    Trait::Element(const std::shared_ptr<bytes::trait::Element> & e)
 {
     if (e) return e;
-    return GetElement();
+    return Element();
 }
 
-inline std::shared_ptr<bytes::trait::Modifier> Trait::GetModifier()
+inline std::shared_ptr<bytes::trait::Modifier> Trait::Modifier()
 {
     return std::make_shared<bytes::trait::modifier::Direct>();
 }
 
 inline std::shared_ptr<bytes::trait::Modifier>
-    Trait::GetModifier(const std::shared_ptr<bytes::trait::Modifier> & m)
+    Trait::Modifier(const std::shared_ptr<bytes::trait::Modifier> & m)
 {
     if (m) return m;
-    return GetModifier();
+    return Modifier();
 }
 
 inline Trait::Trait() :
-    m_endian(GetEndian()),
-    m_capacity(GetCapacity()),
-    m_element(GetElement()),
-    m_modifier(GetModifier())
+    m_endian(Endian()),
+    m_capacity(Capacity()),
+    m_element(Element()),
+    m_modifier(Modifier())
 {}
 
 inline Trait::Trait(const bytes::Endian::CategoryEnum & e) :
-    m_endian(GetEndian(e)),
-    m_capacity(GetCapacity()),
-    m_element(GetElement()),
-    m_modifier(GetModifier())
+    m_endian(Endian(e)),
+    m_capacity(Capacity()),
+    m_element(Element()),
+    m_modifier(Modifier())
 {}
 
 inline Trait::Trait(const std::shared_ptr<bytes::trait::Capacity> & c,
     const std::shared_ptr<bytes::trait::Element> & e,
     const std::shared_ptr<bytes::trait::Modifier> & m) :
-        m_endian(GetEndian()),
-        m_capacity(GetCapacity(c)),
-        m_element(GetElement(e)),
-        m_modifier(GetModifier(m))
+        m_endian(Endian()),
+        m_capacity(Capacity(c)),
+        m_element(Element(e)),
+        m_modifier(Modifier(m))
 {}
 
 inline Trait::Trait(const bytes::Endian::CategoryEnum & e,
     const std::shared_ptr<bytes::trait::Capacity> & c,
     const std::shared_ptr<bytes::trait::Element> & el,
     const std::shared_ptr<bytes::trait::Modifier> & m) :
-        m_endian(GetEndian(e)),
-        m_capacity(GetCapacity(c)),
-        m_element(GetElement(el)),
-        m_modifier(GetModifier(m))
+        m_endian(Endian(e)),
+        m_capacity(Capacity(c)),
+        m_element(Element(el)),
+        m_modifier(Modifier(m))
 {}
 
 inline Trait::~Trait()
@@ -197,10 +200,10 @@ inline Trait::Trait(Trait && mov) :
     m_element(mov.m_element),
     m_modifier(mov.m_modifier)
 {
-    mov.m_endian = GetEndian();
-    mov.m_capacity = GetCapacity();
-    mov.m_element = GetElement();
-    mov.m_modifier = GetModifier();
+    mov.m_endian = Endian();
+    mov.m_capacity = Capacity();
+    mov.m_element = Element();
+    mov.m_modifier = Modifier();
 }
 
 inline Trait & Trait::operator=(const Trait & cpy)
@@ -218,16 +221,34 @@ inline Trait & Trait::operator=(Trait && mov)
     m_capacity = mov.m_capacity;
     m_element = mov.m_element;
     m_modifier = mov.m_modifier;
-    mov.m_endian = GetEndian();
-    mov.m_capacity = GetCapacity();
-    mov.m_element = GetElement();
-    mov.m_modifier = GetModifier();
+    mov.m_endian = Endian();
+    mov.m_capacity = Capacity();
+    mov.m_element = Element();
+    mov.m_modifier = Modifier();
     return *this;
 }
 
-inline const bytes::Endian & Trait::Endian() const
+inline const bytes::Endian & Trait::GetEndian() const
 {
     return *m_endian;
+}
+
+inline std::shared_ptr<const bytes::trait::Capacity> 
+    Trait::GetCapacity() const
+{
+    return std::const_pointer_cast<const bytes::trait::Capacity>(m_capacity);
+}
+
+inline std::shared_ptr<const bytes::trait::Element> 
+    Trait::GetElement() const
+{
+    return std::const_pointer_cast<const bytes::trait::Element>(m_element);
+}
+
+inline std::shared_ptr<const bytes::trait::Modifier> 
+    Trait::GetModifier() const
+{
+    return std::const_pointer_cast<const bytes::trait::Modifier>(m_modifier);
 }
 
 inline std::size_t Trait::Size() const
