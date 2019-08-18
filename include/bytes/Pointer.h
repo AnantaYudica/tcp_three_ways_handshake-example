@@ -150,7 +150,7 @@ inline bool Pointer::Reallocate(const std::size_t & sz,
             ns = (*it)->Resize(sz);
             if (ns == od) return false;
             m_object->Reallocate(ns, seg->Begin(), seg->Begin() + od, 
-                &((*it)->Trait().Endian()));
+                &((*it)->Trait().GetEndian()));
             f = true;
             while (!q.empty())
             {
