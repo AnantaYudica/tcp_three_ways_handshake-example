@@ -110,7 +110,7 @@ public:
     inline Bytes & operator=(const std::uint8_t & b);
     inline Bytes & operator=(std::initializer_list<std::uint8_t> li);
 public:
-    const bytes::Trait & Trait() const;
+    const bytes::Trait & GetTrait() const;
 public:
     Byte At(const std::size_t & i);
     const Byte At(const std::size_t & i) const;
@@ -220,6 +220,8 @@ public:
     inline bool operator>(const Bytes & b) const;
 public:
     inline bool operator>=(const Bytes & b) const;
+public:
+    inline void Swap(Bytes & b);
 };
 
 inline Bytes::Bytes() :
@@ -379,7 +381,7 @@ inline Bytes & Bytes::operator=(const Bytes & b)
 
 inline Bytes & Bytes::operator=(Bytes && b)
 {
-    bytes::Base::operator=(std::move(b));
+    bytes::Assign::Operator(GetPointer(), GetSegment(), b.GetSegment());
     return *this;
 }
 
@@ -402,7 +404,7 @@ inline Bytes & Bytes::operator=(std::initializer_list<std::uint8_t> li)
     return *this;
 }
 
-const bytes::Trait & Bytes::Trait() const
+const bytes::Trait & Bytes::GetTrait() const
 {
     return GetSegment()->Trait();
 }
@@ -411,7 +413,7 @@ Byte Bytes::At(const std::size_t & i)
 {
     const std::size_t index = GetSegment()->At(i).Index();
     return Byte(GetPointer()->Share(index, index + 1, 
-        SetCapacityTrait<bytes::trait::capacity::Fixed>(Trait())));
+        SetCapacityTrait<bytes::trait::capacity::Fixed>(GetTrait())));
 }
 
 const Byte Bytes::At(const std::size_t & i) const
@@ -514,13 +516,13 @@ inline void Bytes::Assign(const std::size_t & i, const std::size_t & s,
 
 inline Bytes Bytes::Slice(const std::size_t & i)
 {
-    return Bytes(GetPointer(), GetSegment()->At(i).Index(), Trait());
+    return Bytes(GetPointer(), GetSegment()->At(i).Index(), GetTrait());
 }
 
 inline const Bytes Bytes::Slice(const std::size_t & i) const
 {
     auto _this = const_cast<Bytes *>(this);
-    return Bytes(_this->GetPointer(), GetSegment()->At(i).Index(), Trait());
+    return Bytes(_this->GetPointer(), GetSegment()->At(i).Index(), GetTrait());
 }
 
 inline Bytes Bytes::Slice(const std::size_t & i, const bytes::Trait & t)
@@ -538,7 +540,7 @@ inline const Bytes Bytes::Slice(const std::size_t & i,
 inline Bytes Bytes::Slice(const std::size_t & i, const std::size_t & s)
 {
     const std::size_t index = GetSegment()->At(i).Index();
-    return Bytes(GetPointer(), index, index + s, Trait());
+    return Bytes(GetPointer(), index, index + s, GetTrait());
 }
 
 inline const Bytes Bytes::Slice(const std::size_t & i, 
@@ -546,7 +548,7 @@ inline const Bytes Bytes::Slice(const std::size_t & i,
 {
     const std::size_t index = GetSegment()->At(i).Index();
     auto _this = const_cast<Bytes *>(this);
-    return Bytes(_this->GetPointer(), index, index + s, Trait());
+    return Bytes(_this->GetPointer(), index, index + s, GetTrait());
 }
 
 inline Bytes Bytes::Slice(const std::size_t & i, const std::size_t & s,
@@ -783,6 +785,11 @@ inline bool Bytes::operator>(const Bytes & b) const
 inline bool Bytes::operator>=(const Bytes & b) const
 {
     return bytes::Comparison::Operation(GetSegment(), b.GetSegment()) >= 0;
+}
+
+inline void Bytes::Swap(Bytes & b)
+{
+    Base::Swap(b);
 }
 
 #endif //!BYTES_H_
