@@ -33,7 +33,7 @@ inline void Shift::Operator(SegmentPtrType a_segment,
 {
     const std::size_t size = a_segment->Size();
     std::uint8_t c = std::uint8_t(0);
-    std::int8_t binary_index = std::int8_t(value % 8);
+    std::int8_t binary_index = std::int8_t(value % std::intmax_t(8));
     std::intmax_t index = std::intmax_t(value / std::intmax_t(8));
     if (index > std::intmax_t(0) || binary_index > std::uint8_t(0))
     {
@@ -44,23 +44,27 @@ inline void Shift::Operator(SegmentPtrType a_segment,
                     a_segment->At(j--));
             else
                 a_segment->At(i--) = (((j >= size) ? std::uint8_t(0) : 
-                    std::uint8_t(a_segment->At(j--) << binary_index)) | 
+                    std::uint8_t(a_segment->At(j--) << 
+                    std::uint8_t(binary_index))) | 
                     ((j >= size) ? std::uint8_t(0) : 
-                    std::uint8_t(a_segment->At(j) >> (8 - binary_index))));
+                    std::uint8_t(a_segment->At(j) >> 
+                    std::uint8_t(8 - binary_index))));
         }
     }
     else if (index < std::intmax_t(0) || binary_index < std::uint8_t(0))
     {
         for (std::size_t i = 0, j = -index; i < size;)
         {
-            if (binary_index == 0)
+            if (binary_index == std::uint8_t(0))
                 a_segment->At(i++) = (j >= size ? std::uint8_t(0) : 
                     a_segment->At(j++));
             else
                 a_segment->At(i++) = (((j >= size) ? std::uint8_t(0) : 
-                    std::uint8_t(a_segment->At(j++) >> -binary_index)) | 
+                    std::uint8_t(a_segment->At(j++) >> 
+                    std::uint8_t(-binary_index))) | 
                     ((j >= size) ? std::uint8_t(0) : 
-                    std::uint8_t(a_segment->At(j) << (8 + binary_index))));
+                    std::uint8_t(a_segment->At(j) << 
+                    std::uint8_t(8 + binary_index))));
         }
     }
 }
