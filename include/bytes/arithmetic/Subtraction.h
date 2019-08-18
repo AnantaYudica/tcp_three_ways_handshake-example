@@ -67,9 +67,9 @@ inline void Subtraction::Operator(ConstSegmentPtrType a_segment,
     for (; i < result_segment->Size(); ++i)
     {
         std::uint16_t val = 0;
-        if (a_segment->IsEnd(i))
+        if (!a_segment->IsEnd(i))
             val += a_segment->At(i);
-        if (b_segment->IsEnd(i))
+        if (!b_segment->IsEnd(i))
             val -= b_segment->At(i);
         val -= c;
         std::uint8_t * pval = reinterpret_cast<std::uint8_t *>(&val);
@@ -122,7 +122,7 @@ inline void Subtraction::Operator(ConstSegmentPtrType a_segment,
     for (; i < result_segment->Size(); ++i)
     {
         std::uint16_t val = 0;
-        if (a_segment->IsEnd(i))
+        if (!a_segment->IsEnd(i))
             val += a_segment->At(i);
         if (i < b_size)
             val -= b[i];
