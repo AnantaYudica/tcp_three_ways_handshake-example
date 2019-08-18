@@ -18,9 +18,9 @@ namespace ptr
 class Segment
 {
 private:
-    static inline std::shared_ptr<bytes::Trait> GetTrait();
+    static inline std::shared_ptr<bytes::Trait> Trait();
     static inline std::shared_ptr<bytes::Trait> 
-        GetTrait(const std::shared_ptr<bytes::Trait> & t);
+        Trait(const std::shared_ptr<bytes::Trait> & t);
 private:
     std::size_t m_begin;
     std::size_t m_end;
@@ -41,7 +41,7 @@ public:
     inline Segment & operator=(const Segment & cpy);
     inline Segment & operator=(Segment && mov);
 public:
-    inline const bytes::Trait & Trait() const; 
+    inline const bytes::Trait & GetTrait() const; 
 public:
     inline bool IsSameObject(const Segment & seg) const;
     inline bool 
@@ -79,16 +79,16 @@ public:
     inline bool operator!=(const Segment & b) const;
 };
 
-inline std::shared_ptr<bytes::Trait> Segment::GetTrait()
+inline std::shared_ptr<bytes::Trait> Segment::Trait()
 {
     return std::make_shared<bytes::Trait>();
 }
 
 inline std::shared_ptr<bytes::Trait> 
-    Segment::GetTrait(const std::shared_ptr<bytes::Trait> & t)
+    Segment::Trait(const std::shared_ptr<bytes::Trait> & t)
 {
     if (t) return t;
-    return GetTrait();
+    return Trait();
 }
     
 inline Segment::Segment() :
@@ -103,7 +103,7 @@ inline Segment::Segment(const std::size_t & bg, const std::size_t & ed,
         m_begin(bg),
         m_end(ed),
         m_object(o),
-        m_trait(GetTrait())
+        m_trait(Trait())
 {}
 
 inline Segment::Segment(const std::size_t & bg, const std::size_t & ed,
@@ -112,7 +112,7 @@ inline Segment::Segment(const std::size_t & bg, const std::size_t & ed,
         m_begin(bg),
         m_end(ed),
         m_object(o),
-        m_trait(GetTrait(t))
+        m_trait(Trait(t))
 {}
 
 inline Segment::~Segment()
@@ -133,7 +133,7 @@ inline Segment::Segment(const Segment & cpy) :
         m_object = std::make_shared<bytes::ptr::Object>(*(cpy.m_object), 
             m_begin, m_end);
     if (cpy.m_trait) m_trait = std::make_shared<bytes::Trait>(*(cpy.m_trait));
-    else m_trait = GetTrait();
+    else m_trait = Trait();
 }
 
 inline Segment::Segment(Segment && mov) :
@@ -158,7 +158,7 @@ inline Segment & Segment::operator=(const Segment & cpy)
         m_object = std::make_shared<bytes::ptr::Object>(*(cpy.m_object),
             m_begin, m_end);
     if (cpy.m_trait) m_trait = std::make_shared<bytes::Trait>(*(cpy.m_trait));
-    else m_trait = GetTrait();
+    else m_trait = Trait();
     return *this;
 }
 
@@ -175,7 +175,7 @@ inline Segment & Segment::operator=(Segment && mov)
     return *this;
 }
 
-inline const bytes::Trait & Segment::Trait() const
+inline const bytes::Trait & Segment::GetTrait() const
 {
     static bytes::Trait t;
     if (m_trait) return *m_trait;
