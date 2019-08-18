@@ -108,6 +108,7 @@ public:
     template<std::size_t N>
     inline Bytes & operator=(const std::uint8_t (&b)[N]);
     inline Bytes & operator=(const std::uint8_t & b);
+    inline Bytes & operator=(std::initializer_list<std::uint8_t> li);
 public:
     const bytes::Trait & Trait() const;
 public:
@@ -389,6 +390,12 @@ inline Bytes & Bytes::operator=(const std::uint8_t (&b)[N])
 inline Bytes & Bytes::operator=(const std::uint8_t & b)
 {
     bytes::Assign::Operator(GetSegment(), b);
+    return *this;
+}
+
+inline Bytes & Bytes::operator=(std::initializer_list<std::uint8_t> li)
+{
+    bytes::Assign::Operator(GetPointer(), GetSegment(), li.begin(), li.size());
     return *this;
 }
 
