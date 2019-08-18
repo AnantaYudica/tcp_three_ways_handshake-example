@@ -406,7 +406,7 @@ inline Bytes & Bytes::operator=(std::initializer_list<std::uint8_t> li)
 
 const bytes::Trait & Bytes::GetTrait() const
 {
-    return GetSegment()->Trait();
+    return GetSegment()->GetTrait();
 }
 
 Byte Bytes::At(const std::size_t & i)
