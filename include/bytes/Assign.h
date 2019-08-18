@@ -317,7 +317,7 @@ template<std::size_t N>
 inline void Assign::Operator(PointerPtrType a_ptr,
     SegmentPtrType a_segment, const std::uint8_t (&b)[N])
 {
-    Assign::Operator(a_ptr, a_segment, b, N)
+    Assign::Operator(a_ptr, a_segment, b, N);
 }
 
 inline void Assign::Operator(SegmentPtrType a_segment, 
