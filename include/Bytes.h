@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <cstddef>
 #include <memory>
+#include <initializer_list>
 
 #include "Byte.h"
 #include "bytes/Base.h"
@@ -63,6 +64,14 @@ public:
     inline Bytes(const std::uint8_t * ptr, const std::size_t & s, 
         const bytes::Trait & t);
     inline Bytes(const std::uint8_t * ptr, const std::size_t & s, 
+        const std::shared_ptr<bytes::Trait> & t);
+public:
+    inline Bytes(std::initializer_list<std::uint8_t> li);
+    inline Bytes(std::initializer_list<std::uint8_t> li,
+        const bytes::Endian::CategoryEnum & e);
+    inline Bytes(std::initializer_list<std::uint8_t> li, 
+        const bytes::Trait & t);
+    inline Bytes(std::initializer_list<std::uint8_t> li, 
         const std::shared_ptr<bytes::Trait> & t);
 private: 
     inline Bytes(const std::shared_ptr<bytes::Pointer> & ptr, 
@@ -282,6 +291,25 @@ inline Bytes::Bytes(const std::uint8_t * ptr, const std::size_t & s,
 inline Bytes::Bytes(const std::uint8_t * ptr, const std::size_t & s,
     const std::shared_ptr<bytes::Trait> & t) :
         bytes::Base(ptr, s, t)
+{}
+
+inline Bytes::Bytes(std::initializer_list<std::uint8_t> li) :
+    bytes::Base(li.begin(), li.size())
+{}
+
+inline Bytes::Bytes(std::initializer_list<std::uint8_t> li,
+    const bytes::Endian::CategoryEnum & e) :
+        bytes::Base(li.begin(), li.size(), e)
+{}
+
+inline Bytes::Bytes(std::initializer_list<std::uint8_t> li, 
+    const bytes::Trait & t)  :
+        bytes::Base(li.begin(), li.size(), t)
+{}
+
+inline Bytes::Bytes(std::initializer_list<std::uint8_t> li, 
+    const std::shared_ptr<bytes::Trait> & t)  :
+        bytes::Base(li.begin(), li.size(), t)
 {}
 
 inline Bytes::Bytes(const std::shared_ptr<bytes::Pointer> & ptr, 
