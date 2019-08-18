@@ -89,7 +89,8 @@ inline void Multiplication::Operator(ConstSegmentPtrType a_segment,
     const auto b_size = b_segment->Size();
     const auto result_size = result_segment->Size();
     bytes::Pointer mul_ptr{result_size};
-    auto mul_trait = std::make_shared<bytes::Trait>(result_segment->Trait());
+    auto mul_trait = 
+        std::make_shared<bytes::Trait>(result_segment->GetTrait());
     auto mul_segment = mul_ptr.Share(0, result_size, mul_trait);
     for (std::size_t i = 0; i < b_size; ++i)
     {
@@ -155,7 +156,7 @@ inline void Multiplication::Operator(PointerPtrType a_result_ptr,
         b_segment->Size();
     auto result_ptr = std::make_shared<bytes::Pointer>(expand_size);
     auto result_trait = 
-        std::make_shared<bytes::Trait>(a_result_segment->Trait());
+        std::make_shared<bytes::Trait>(a_result_segment->GetTrait());
     auto result_segment = result_ptr->Share(0, expand_size, result_trait);
     bytes::Assign::Operator(result_segment, std::uint8_t(0));
     Multiplication::Operator(a_result_segment, b_segment, result_ptr, 
@@ -186,7 +187,8 @@ inline void Multiplication::Operator(ConstSegmentPtrType a_segment,
     const auto a_size = a_segment->Size();
     const auto result_size = result_segment->Size();
     bytes::Pointer mul_ptr{result_size};
-    auto mul_trait = std::make_shared<bytes::Trait>(result_segment->Trait());
+    auto mul_trait = 
+        std::make_shared<bytes::Trait>(result_segment->GetTrait());
     auto mul_segment = mul_ptr.Share(0, result_size, mul_trait);
     for (std::size_t i = 0; i < b_size; ++i)
     {
@@ -233,7 +235,7 @@ inline void Multiplication::Operator(PointerPtrType a_result_ptr,
     const std::size_t expand_size = a_result_segment->Size() + b_size;
     auto result_ptr = std::make_shared<bytes::Pointer>(expand_size);
     auto result_trait = 
-        std::make_shared<bytes::Trait>(a_result_segment->Trait());
+        std::make_shared<bytes::Trait>(a_result_segment->GetTrait());
     auto result_segment = result_ptr->Share(0, expand_size, result_trait);
     bytes::Assign::Operator(result_segment, std::uint8_t(0));
     Multiplication::Operator(a_result_segment, b, b_size, result_ptr, 
