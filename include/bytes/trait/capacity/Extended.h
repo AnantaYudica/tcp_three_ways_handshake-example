@@ -145,7 +145,7 @@ inline std::size_t Extended::OnResize(const std::size_t & cs,
 inline bool Extended::operator==(const bytes::trait::Capacity & b) const
 {
     auto * cb = dynamic_cast<const Extended *>(&b);
-    return cb && m_formula == cb->m_formula;
+    return cb && &m_formula == &(cb->m_formula);
 }
 
 inline bool Extended::operator!=(const bytes::trait::Capacity & b) const
