@@ -99,7 +99,7 @@ inline void Multiplication::Operator(ConstSegmentPtrType a_segment,
         std::size_t j;
         for (j = 0; j < a_size; ++j)
         {
-            if (b_segment->At(i) == 0 && carry == 0) break;
+            if (b_segment->At(i) == std::uint8_t(0) && carry == 0) break;
             std::uint16_t val = a_segment->At(j);
             val *= b_segment->At(i);
             std::uint8_t * pval = reinterpret_cast<std::uint8_t *>(&val);
