@@ -119,11 +119,12 @@ inline int Comparison::Operation(ConstSegmentPtrType a_segment,
                 if (a_segment->At(i--) != std::uint8_t(0)) return 1;
             else
                 if (b_segment->At(j--) != std::uint8_t(0)) return -1;
+            continue;
         }
         if (a_segment->At(i) == b_segment->At(j)) 
         {
-            const bool is_i_decrement = i > a_bg, 
-                is_j_decrement = j > b_bg;
+            const bool is_i_decrement = i >= a_bg && i < a_size, 
+                is_j_decrement = j >= b_bg && j < b_size;
             if (is_j_decrement && is_i_decrement)
             {
                 --i; --j;
