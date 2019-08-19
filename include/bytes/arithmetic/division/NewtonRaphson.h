@@ -96,7 +96,7 @@ inline void NewtonRaphson::Round(PointerPtrType ptr, SegmentPtrType segment,
     const std::size_t binary_shift = prev_exponent % 8;
     const std::uint8_t binary_index = 1 << binary_shift;
     const bool round = (sum_segment->At(index) & binary_index) == binary_index;
-    bytes::arithmetic::bitwise::Shift::Operator(segment, -diff);
+    bytes::arithmetic::bitwise::Shift::Operator(segment, -std::intmax_t(diff));
     exponent += diff;
     if (round) bytes::arithmetic::Addition::Operator(ptr, segment, 1);
 }
@@ -145,35 +145,26 @@ inline void NewtonRaphson::Operator(ConstSegmentPtrType numerator_segment,
         bytes::arithmetic::Multiplication::Operator(x0_segment, x_segment, 
             div_ptr, xn_segment);
         xn_exponent = x0_exponent + x_exponent;
-        Round(div_ptr, xn_segment, xn_exponent, (precision * 2) + 1);
+        Round(div_ptr, xn_segment, xn_exponent, precision);
         Equalize(xn_segment, xn_exponent, x0_segment, x0_exponent);
     } while(bytes::Comparison::Operation(x0_segment, xn_segment) != 0);
+    bytes::Assign::Operator(xn_segment, std::uint8_t(0));
+    bytes::arithmetic::Multiplication::Operator(numerator_segment, 
+        x0_segment, div_ptr, xn_segment);
+    bytes::arithmetic::bitwise::Shift::Operator(xn_segment, 
+        xn_exponent);
     if (result_quotient_segment)
     {
-        bytes::arithmetic::Multiplication::Operator(numerator_segment, 
-            x0_segment, result_ptr, result_quotient_segment);
-        bytes::arithmetic::bitwise::Shift::Operator(result_quotient_segment, 
-            xn_exponent);
-        if (result_remainder_segment)
-        {
-            bytes::arithmetic::Multiplication::Operator(
-                result_quotient_segment, denominator_segment, result_ptr, 
-                result_remainder_segment);
-            bytes::arithmetic::Subtraction::Operator(result_remainder_segment, 
-                numerator_segment);
-        }
+        bytes::Assign::Operator(result_quotient_segment, 0, 
+            result_quotient_segment->Size(), xn_segment);
     }
-    else
+    if (result_remainder_segment)
     {
-        bytes::Assign::Operator(xn_segment, std::uint8_t(0));
-        bytes::arithmetic::Multiplication::Operator(numerator_segment, 
-            x0_segment, div_ptr, xn_segment);
-        bytes::arithmetic::bitwise::Shift::Operator(xn_segment, 
-            xn_exponent);
+        bytes::Assign::Operator(x0_segment, std::uint8_t(0));
         bytes::arithmetic::Multiplication::Operator(xn_segment,
-            denominator_segment, result_ptr, result_remainder_segment);
-        bytes::arithmetic::Subtraction::Operator(result_remainder_segment, 
-            numerator_segment);
+            denominator_segment, div_ptr, x0_segment);
+        bytes::arithmetic::Subtraction::Operator(numerator_segment, 
+            x0_segment, result_remainder_segment);
     }
     
 }
@@ -222,36 +213,26 @@ inline void NewtonRaphson::Operator(ConstSegmentPtrType numerator_segment,
         bytes::arithmetic::Multiplication::Operator(x0_segment, x_segment, 
             div_ptr, xn_segment);
         xn_exponent = x0_exponent + x_exponent;
-        Round(div_ptr, xn_segment, xn_exponent, (precision * 2) + 1);
+        Round(div_ptr, xn_segment, xn_exponent, precision);
         Equalize(xn_segment, xn_exponent, x0_segment, x0_exponent);
     } while(bytes::Comparison::Operation(x0_segment, xn_segment) != 0);
+    bytes::Assign::Operator(xn_segment, std::uint8_t(0));
+    bytes::arithmetic::Multiplication::Operator(numerator_segment, 
+        x0_segment, div_ptr, xn_segment);
+    bytes::arithmetic::bitwise::Shift::Operator(xn_segment, 
+        xn_exponent);
     if (result_quotient_segment)
     {
-        bytes::arithmetic::Multiplication::Operator(numerator_segment, 
-            x0_segment, result_ptr, result_quotient_segment);
-        bytes::arithmetic::bitwise::Shift::Operator(result_quotient_segment, 
-            xn_exponent);
-        if (result_remainder_segment)
-        {
-            bytes::arithmetic::Multiplication::Operator(
-                result_quotient_segment, denominator, denominator_size, 
-                result_ptr, result_remainder_segment);
-            bytes::arithmetic::Subtraction::Operator(result_remainder_segment, 
-                numerator_segment);
-        }
+        bytes::Assign::Operator(result_quotient_segment, 0, 
+            result_quotient_segment->Size(), xn_segment);
     }
-    else
+    if (result_remainder_segment)
     {
-        bytes::Assign::Operator(xn_segment, std::uint8_t(0));
-        bytes::arithmetic::Multiplication::Operator(numerator_segment, 
-            x0_segment, div_ptr, xn_segment);
-        bytes::arithmetic::bitwise::Shift::Operator(xn_segment, 
-            xn_exponent);
+        bytes::Assign::Operator(x0_segment, std::uint8_t(0));
         bytes::arithmetic::Multiplication::Operator(xn_segment,
-            denominator, denominator_size, result_ptr, 
-            result_remainder_segment);
-        bytes::arithmetic::Subtraction::Operator(result_remainder_segment, 
-            numerator_segment);
+            denominator, denominator_size, div_ptr, x0_segment);
+        bytes::arithmetic::Subtraction::Operator(numerator_segment, 
+            x0_segment, result_remainder_segment);
     }
 }
 
