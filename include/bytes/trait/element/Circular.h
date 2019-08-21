@@ -129,7 +129,10 @@ inline std::size_t Circular::OnNextAt(const std::size_t & i,
     const std::size_t & st, const std::size_t & bg, 
     const std::size_t & ed) const
 {
-    return OnAt(i + (st % (ed - bg)), bg, ed);
+    const std::size_t size = (ed - bg), mod_st = st % size,
+        rem_size = size - i;
+    return (mod_st < rem_size) ? OnAt(i + mod_st, bg, ed) :
+        OnAt(mod_st - rem_size, bg, ed);
 }
 
 inline std::size_t Circular::OnPreviousAt(const std::size_t & i, 
@@ -145,7 +148,10 @@ inline std::size_t Circular::OnNextReverseAt(const std::size_t & i,
     const std::size_t & st, const std::size_t & bg, 
     const std::size_t & ed) const
 {
-    return OnReverseAt(i + (st % (ed - bg)), bg, ed);
+    const std::size_t size = (ed - bg), mod_st = st % size,
+        rem_size = size - i;
+    return (mod_st < rem_size) ? OnAt(i + mod_st, bg, ed) :
+        OnAt(mod_st - rem_size, bg, ed);
 }
 
 inline std::size_t Circular::OnPrevioursReverseAt(const std::size_t & i, 
