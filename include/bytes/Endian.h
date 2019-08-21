@@ -31,6 +31,9 @@ public:
     virtual std::size_t At(const std::size_t & i, 
         const std::size_t & bg, const std::size_t & ed) const = 0;
 public:
+    virtual std::size_t ReverseAt(const std::size_t & i, 
+        const std::size_t & bg, const std::size_t & ed) const = 0;
+public:
     virtual std::size_t Begin(const std::size_t & bg, 
         const std::size_t & ed) const = 0;
 public:
