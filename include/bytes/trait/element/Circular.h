@@ -38,6 +38,22 @@ public:
     inline std::size_t OnReverseAt(const std::size_t & i, 
         const std::size_t & bg, const std::size_t & ed) const;
 public:
+    inline std::size_t OnNextAt(const std::size_t & i, 
+        const std::size_t & st, const std::size_t & bg, 
+        const std::size_t & ed) const;
+public:
+    inline std::size_t OnPreviousAt(const std::size_t & i, 
+        const std::size_t & st, const std::size_t & bg, 
+        const std::size_t & ed) const;
+public:
+    inline std::size_t OnNextReverseAt(const std::size_t & i, 
+        const std::size_t & st, const std::size_t & bg, 
+        const std::size_t & ed) const;
+public:
+    inline std::size_t OnPrevioursReverseAt(const std::size_t & i, 
+        const std::size_t & st, const std::size_t & bg, 
+        const std::size_t & ed) const;
+public:
     inline bool OnIsEnd(const std::size_t & i, 
         const std::size_t & bg, const std::size_t & ed) const;
 public:
@@ -107,6 +123,38 @@ inline std::size_t Circular::OnReverseAt(const std::size_t & i,
     const std::size_t & bg, const std::size_t & ed) const
 {
     return (i % (ed - bg));
+}
+
+inline std::size_t Circular::OnNextAt(const std::size_t & i, 
+    const std::size_t & st, const std::size_t & bg, 
+    const std::size_t & ed) const
+{
+    return OnAt(i + (st % (ed - bg)), bg, ed);
+}
+
+inline std::size_t Circular::OnPreviousAt(const std::size_t & i, 
+    const std::size_t & st, const std::size_t & bg, 
+    const std::size_t & ed) const
+{
+    const std::size_t size = (ed - bg), mod_st = st % size;
+    return (i >= mod_st) ? OnAt(i - mod_st, bg, ed) : 
+        OnAt(size - (mod_st - i), bg, ed) ;
+}
+
+inline std::size_t Circular::OnNextReverseAt(const std::size_t & i, 
+    const std::size_t & st, const std::size_t & bg, 
+    const std::size_t & ed) const
+{
+    return OnReverseAt(i + (st % (ed - bg)), bg, ed);
+}
+
+inline std::size_t Circular::OnPrevioursReverseAt(const std::size_t & i, 
+    const std::size_t & st, const std::size_t & bg, 
+    const std::size_t & ed) const
+{
+    const std::size_t size = (ed - bg), mod_st = st % size;
+    return (i >= mod_st) ? OnAt(i - mod_st, bg, ed) : 
+        OnAt(size - (mod_st - i), bg, ed) ;
 }
 
 inline bool Circular::OnIsEnd(const std::size_t & i, 
