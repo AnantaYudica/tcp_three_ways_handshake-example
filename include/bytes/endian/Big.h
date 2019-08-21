@@ -52,28 +52,26 @@ inline Big::Big() :
 inline std::size_t Big::At(const std::size_t & i, const std::size_t & bg, 
         const std::size_t & ed) const
 {
-    return (ed - 1) - i;
+    return bg + i;
 }
 
 inline std::size_t Big::Begin(const std::size_t & bg, 
     const std::size_t & ed) const
 {
-    return ed - 1;
+    return bg;
 }
 
 inline std::size_t Big::End(const std::size_t & bg, 
     const std::size_t & ed) const
 {
-    return bg - 1;
+    return ed;
 }
 
 inline void Big::Copy(std::uint8_t * a, const std::size_t & as,
     const std::uint8_t * b, const std::size_t & bs) const
 {
     if (!a || !b || as == 0 || bs == 0) return;
-    const std::size_t ad = bs > as ? 0 : as - bs,
-        bd = bs > as ? bs - as : 0;
-    std::memcpy(a + ad, b + bs, std::min(as, bs));
+    std::memcpy(a, b, std::min(as, bs));
 }
 
 } //!endian

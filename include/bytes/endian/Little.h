@@ -52,26 +52,28 @@ inline Little::Little() :
 inline std::size_t Little::At(const std::size_t & i, const std::size_t & bg, 
         const std::size_t & ed) const
 {
-    return bg + i;
+    return (ed - 1) - i;
 }
 
 inline std::size_t Little::Begin(const std::size_t & bg, 
     const std::size_t & ed) const
 {
-    return bg;
+    return ed - 1;
 }
 
 inline std::size_t Little::End(const std::size_t & bg, 
     const std::size_t & ed) const
 {
-    return ed;
+    return bg - 1;
 }
 
 inline void Little::Copy(std::uint8_t * a, const std::size_t & as,
     const std::uint8_t * b, const std::size_t & bs) const
 {
     if (!a || !b || as == 0 || bs == 0) return;
-    std::memcpy(a, b, std::min(as, bs));
+    const std::size_t ad = bs > as ? 0 : as - bs,
+        bd = bs > as ? bs - as : 0;
+    std::memcpy(a + ad, b + bs, std::min(as, bs));
 }
 
 } //!endian
