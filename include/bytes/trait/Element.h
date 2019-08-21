@@ -35,6 +35,22 @@ public:
     virtual std::size_t OnReverseAt(const std::size_t & i, 
         const std::size_t & bg, const std::size_t & ed) const = 0;
 public:
+    virtual std::size_t OnNextAt(const std::size_t & i, 
+        const std::size_t & st, const std::size_t & bg, 
+        const std::size_t & ed) const = 0;
+public:
+    virtual std::size_t OnPreviousAt(const std::size_t & i, 
+        const std::size_t & st, const std::size_t & bg, 
+        const std::size_t & ed) const = 0;
+public:
+    virtual std::size_t OnNextReverseAt(const std::size_t & i, 
+        const std::size_t & st, const std::size_t & bg, 
+        const std::size_t & ed) const = 0;
+public:
+    virtual std::size_t OnPrevioursReverseAt(const std::size_t & i, 
+        const std::size_t & st, const std::size_t & bg, 
+        const std::size_t & ed) const = 0;
+public:
     virtual bool OnIsEnd(const std::size_t & i, 
         const std::size_t & bg, const std::size_t & ed) const = 0;
 public:
