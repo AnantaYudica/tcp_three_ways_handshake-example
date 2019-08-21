@@ -35,6 +35,9 @@ public:
     inline std::size_t OnAt(const std::size_t & i, 
         const std::size_t & bg, const std::size_t & ed) const;
 public:
+    inline std::size_t OnReverseAt(const std::size_t & i, 
+        const std::size_t & bg, const std::size_t & ed) const;
+public:
     inline bool OnIsEnd(const std::size_t & i, 
         const std::size_t & bg, const std::size_t & ed) const;
 public:
@@ -95,6 +98,12 @@ inline bytes::trait::Element &
 }
 
 inline std::size_t Circular::OnAt(const std::size_t & i, 
+    const std::size_t & bg, const std::size_t & ed) const
+{
+    return (i % (ed - bg));
+}
+
+inline std::size_t Circular::OnReverseAt(const std::size_t & i, 
     const std::size_t & bg, const std::size_t & ed) const
 {
     return (i % (ed - bg));

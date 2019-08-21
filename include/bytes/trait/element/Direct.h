@@ -35,6 +35,9 @@ public:
     inline std::size_t OnAt(const std::size_t & i, 
         const std::size_t & bg, const std::size_t & ed) const;
 public:
+    inline std::size_t OnReverseAt(const std::size_t & i, 
+        const std::size_t & bg, const std::size_t & ed) const;
+public:
     inline bool OnIsEnd(const std::size_t & i, 
         const std::size_t & bg, const std::size_t & ed) const;
 public:
@@ -94,6 +97,12 @@ inline bytes::trait::Element & Direct::Assign(bytes::trait::Element && mov)
 }
 
 inline std::size_t Direct::OnAt(const std::size_t & i, 
+    const std::size_t & bg, const std::size_t & ed) const
+{
+    return i;
+}
+
+inline std::size_t Direct::OnReverseAt(const std::size_t & i, 
     const std::size_t & bg, const std::size_t & ed) const
 {
     return i;
