@@ -73,12 +73,18 @@ public:
 inline void And::Operator(ConstSegmentPtrType a_segment,
         ConstSegmentPtrType b_segment, SegmentPtrType result_segment)
 {
-    for(std::size_t i = 0; i < result_segment->Size(); ++i)
+    std::size_t i = 0, j = 0, k = 0;
+    for(; k < result_segment->Size();)
     {
-        const bool a_is_end = a_segment->IsEnd(i),
-            b_is_end = b_segment->IsEnd(i);
-        if (a_is_end || b_is_end) result_segment->At(i) = std::uint8_t(0);
-        else result_segment->At(i) = a_segment->At(i) & b_segment->At(i);
+        const bool a_is_end = a_segment->IsReverseEnd(i),
+            b_is_end = b_segment->IsReverseEnd(j);
+        if (a_is_end || b_is_end) 
+            result_segment->ReverseAt(k) = std::uint8_t(0);
+        else result_segment->ReverseAt(k) = 
+            a_segment->ReverseAt(i) & b_segment->ReverseAt(j);
+        i = a_segment->Next(i);
+        j = b_segment->Next(j);
+        k = result_segment->Next(k);
     }
 }
 
@@ -123,11 +129,14 @@ inline void And::Operator(ConstSegmentPtrType a_segment,
     const std::uint8_t * b, const std::size_t & b_size, 
     SegmentPtrType result_segment)
 {
-    for(std::size_t i = 0; i < result_segment->Size(); ++i)
+    std::size_t i = 0, j = 0, k = 0;
+    for(; k < result_segment->Size(); ++j)
     {
-        if (a_segment->IsEnd(i) || i >= b_size) 
-            result_segment->At(i) = std::uint8_t(0);
-        else result_segment->At(i) = a_segment->At(i) & b[i];
+        if (a_segment->IsReverseEnd(i) || j >= b_size) 
+            result_segment->ReverseAt(k) = std::uint8_t(0);
+        else result_segment->ReverseAt(k) = a_segment->ReverseAt(i) & b[j];
+        i = a_segment->Next(i);
+        k = result_segment->Next(k);
     }
 }
 
