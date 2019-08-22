@@ -29,6 +29,9 @@ public:
     inline std::size_t At(const std::size_t & i, const std::size_t & bg, 
         const std::size_t & ed) const;
 public:
+    inline std::size_t ReverseAt(const std::size_t & i, 
+        const std::size_t & bg, const std::size_t & ed) const;
+public:
     inline std::size_t Begin(const std::size_t & bg, 
         const std::size_t & ed) const;
 public:
@@ -53,6 +56,12 @@ inline std::size_t Little::At(const std::size_t & i, const std::size_t & bg,
         const std::size_t & ed) const
 {
     return (ed - 1) - i;
+}
+
+inline std::size_t Little::ReverseAt(const std::size_t & i, 
+    const std::size_t & bg, const std::size_t & ed) const
+{
+    return bg + i;
 }
 
 inline std::size_t Little::Begin(const std::size_t & bg, 
