@@ -76,6 +76,17 @@ public:
     inline std::size_t At(const std::size_t & i, 
         const std::size_t & bg, const std::size_t & ed) const;
 public:
+    inline std::size_t ReverseAt(const std::size_t & i, 
+        const std::size_t & bg, const std::size_t & ed) const;
+public:
+    inline std::size_t Next(const std::size_t & i, 
+        const std::size_t & st, const std::size_t & bg, 
+        const std::size_t & ed) const;
+public:
+    inline std::size_t Previous(const std::size_t & i, 
+        const std::size_t & st, const std::size_t & bg, 
+        const std::size_t & ed) const;
+public:
     inline bool IsEnd(const std::size_t & i, 
         const std::size_t & bg, const std::size_t & ed) const;
 public:
@@ -271,6 +282,27 @@ inline std::size_t Trait::At(const std::size_t & i,
     const std::size_t & bg, const std::size_t & ed) const
 {
     return m_endian->At(m_element->OnAt(i, bg, ed), bg, ed);
+}
+
+inline std::size_t Trait::ReverseAt(const std::size_t & i, 
+    const std::size_t & bg, const std::size_t & ed) const
+{
+    return m_endian->ReverseAt(m_element->OnReverseAt(i, bg, ed),
+        bg, ed);
+}
+
+inline std::size_t Trait::Next(const std::size_t & i, 
+    const std::size_t & st, const std::size_t & bg, 
+    const std::size_t & ed) const
+{
+    return m_element->OnNext(i, st, bg, ed);
+}
+
+inline std::size_t Trait::Previous(const std::size_t & i, 
+    const std::size_t & st, const std::size_t & bg, 
+    const std::size_t & ed) const
+{
+    return m_element->OnPrevious(i, st, bg, ed);
 }
 
 inline bool Trait::IsEnd(const std::size_t & i, 
