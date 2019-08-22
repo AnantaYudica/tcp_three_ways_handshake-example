@@ -7,6 +7,7 @@
 
 #include "../sys/Endian.h"
 #include "../ptr/Segment.h"
+#include "../endian/Big.h"
 
 namespace bytes
 {
@@ -63,18 +64,21 @@ inline void Subtraction::Operator(ConstSegmentPtrType a_segment,
 {
     const auto & endian = bytes::sys::Endian();
     std::uint8_t c = std::uint8_t(0);
-    std::size_t i = 0;
-    for (; i < result_segment->Size(); ++i)
+    std::size_t i = 0, j = 0, k = 0;
+    for (std::size_t l = 0; l < result_segment->Size(); ++l)
     {
         std::uint16_t val = 0;
-        if (!a_segment->IsEnd(i))
-            val += a_segment->At(i);
-        if (!b_segment->IsEnd(i))
-            val -= b_segment->At(i);
+        if (!a_segment->IsReverseEnd(i))
+            val += a_segment->ReverseAt(i);
+        if (!b_segment->IsReverseEnd(j))
+            val -= b_segment->ReverseAt(j);
         val -= c;
         std::uint8_t * pval = reinterpret_cast<std::uint8_t *>(&val);
-        c = (~pval[endian.At(1, 0, 2)] + std::uint8_t(1));
-        result_segment->At(i) = pval[endian.At(0, 0, 2)];
+        c = (~pval[endian.At(0, 0, 2)] + std::uint8_t(1));
+        result_segment->ReverseAt(k) = pval[endian.At(1, 0, 2)];
+        i = a_segment->Next(i);
+        j = b_segment->Next(j);
+        k = result_segment->Next(k);
     }
 }
 
@@ -118,18 +122,20 @@ inline void Subtraction::Operator(ConstSegmentPtrType a_segment,
 {
     const auto & endian = bytes::sys::Endian();
     std::uint8_t c = std::uint8_t(0);
-    std::size_t i = 0;
-    for (; i < result_segment->Size(); ++i)
+    std::size_t i = 0, j = 0, k = 0;
+    for (std::size_t l = 0; l < result_segment->Size(); ++l, ++j)
     {
         std::uint16_t val = 0;
-        if (!a_segment->IsEnd(i))
-            val += a_segment->At(i);
+        if (!a_segment->IsReverseEnd(i))
+            val += a_segment->ReverseAt(i);
         if (i < b_size)
-            val -= b[i];
+            val -= b[bytes::endian::Big::Instance().ReverseAt(j, 0, b_size)];
         val -= c;
         std::uint8_t * pval = reinterpret_cast<std::uint8_t *>(&val);
-        c = (~pval[endian.At(1, 0, 2)] + std::uint8_t(1));
-        result_segment->At(i) = pval[endian.At(0, 0, 2)];
+        c = (~pval[endian.At(0, 0, 2)] + std::uint8_t(1));
+        result_segment->ReverseAt(k) = pval[endian.At(1, 0, 2)];
+        i = a_segment->Next(i);
+        k = result_segment->Next(k);
     }
 }
 
