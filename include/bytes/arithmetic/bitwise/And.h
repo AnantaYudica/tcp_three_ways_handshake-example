@@ -75,7 +75,7 @@ inline void And::Operator(ConstSegmentPtrType a_segment,
         ConstSegmentPtrType b_segment, SegmentPtrType result_segment)
 {
     std::size_t i = 0, j = 0, k = 0;
-    for(; k < result_segment->Size();)
+    for(std::size_t l = 0; l < result_segment->Size(); ++l)
     {
         const bool a_is_end = a_segment->IsReverseEnd(i),
             b_is_end = b_segment->IsReverseEnd(j);
@@ -131,7 +131,7 @@ inline void And::Operator(ConstSegmentPtrType a_segment,
     SegmentPtrType result_segment)
 {
     std::size_t i = 0, j = 0, k = 0;
-    for(; k < result_segment->Size(); ++j)
+    for(std::size_t l = 0; l < result_segment->Size(); ++j, ++l)
     {
         if (a_segment->IsReverseEnd(i) || j >= b_size) 
             result_segment->ReverseAt(k) = std::uint8_t(0);
