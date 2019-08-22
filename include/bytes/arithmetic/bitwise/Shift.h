@@ -32,39 +32,64 @@ inline void Shift::Operator(SegmentPtrType a_segment,
     const std::intmax_t & value)
 {
     const std::size_t size = a_segment->Size();
-    std::uint8_t c = std::uint8_t(0);
     std::int8_t binary_index = std::int8_t(value % std::intmax_t(8));
     std::intmax_t index = std::intmax_t(value / std::intmax_t(8));
     if (index > std::intmax_t(0) || binary_index > std::uint8_t(0))
     {
-        for (std::size_t i = size - 1, j = size - (index + 1); i < size;)
+        std::size_t i = 0, j = a_segment->Next(0, index);
+        bool j_is_end = a_segment->IsEnd(j);
+        for (std::size_t k = 0; k < size; ++k)
         {
             if (binary_index == std::uint8_t(0))
-                a_segment->At(i--) = (j >= size ? std::uint8_t(0) : 
-                    a_segment->At(j--));
+                a_segment->At(i) = (j_is_end ? 
+                    std::uint8_t(0) : a_segment->At(j));
             else
-                a_segment->At(i--) = (((j >= size) ? std::uint8_t(0) : 
-                    std::uint8_t(a_segment->At(j--) << 
+            {
+                const std::size_t next_j = a_segment->Next(j);
+                const bool next_j_is_end = j_is_end || 
+                    a_segment->IsEnd(next_j);
+                a_segment->At(i) = ((j_is_end ? std::uint8_t(0) : 
+                    std::uint8_t(a_segment->At(j) << 
                     std::uint8_t(binary_index))) | 
-                    ((j >= size) ? std::uint8_t(0) : 
-                    std::uint8_t(a_segment->At(j) >> 
+                    ((next_j_is_end) ? std::uint8_t(0) : 
+                    std::uint8_t(a_segment->At(next_j) >> 
                     std::uint8_t(8 - binary_index))));
+            }
+            i = a_segment->Next(i);
+            if (!j_is_end)
+            {
+                j = a_segment->Next(j);
+                j_is_end = a_segment->IsEnd(j);
+            }
         }
     }
     else if (index < std::intmax_t(0) || binary_index < std::uint8_t(0))
     {
-        for (std::size_t i = 0, j = -index; i < size;)
+        std::size_t i = 0, j = a_segment->Next(0, std::size_t(-index));
+        bool j_is_end = a_segment->IsReverseEnd(j);
+        for (std::size_t k = 0; k < size; ++k)
         {
             if (binary_index == std::uint8_t(0))
-                a_segment->At(i++) = (j >= size ? std::uint8_t(0) : 
-                    a_segment->At(j++));
+                a_segment->ReverseAt(i) = (j_is_end ? std::uint8_t(0) : 
+                    a_segment->ReverseAt(j));
             else
-                a_segment->At(i++) = (((j >= size) ? std::uint8_t(0) : 
-                    std::uint8_t(a_segment->At(j++) >> 
+            {
+                const std::size_t next_j = a_segment->Next(j);
+                const bool next_j_is_end = j_is_end || 
+                    a_segment->IsReverseEnd(next_j);
+                a_segment->ReverseAt(i) = ((j_is_end ? std::uint8_t(0) : 
+                    std::uint8_t(a_segment->ReverseAt(j) >> 
                     std::uint8_t(-binary_index))) | 
-                    ((j >= size) ? std::uint8_t(0) : 
-                    std::uint8_t(a_segment->At(j) << 
+                    (next_j_is_end ? std::uint8_t(0) : 
+                    std::uint8_t(a_segment->ReverseAt(next_j) << 
                     std::uint8_t(8 + binary_index))));
+            }
+            i = a_segment->Next(i);
+            if (!j_is_end)
+            {
+                j = a_segment->Next(j);
+                j_is_end = a_segment->IsReverseEnd(j);
+            }
         }
     }
 }
