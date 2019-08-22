@@ -62,6 +62,15 @@ public:
     inline bytes::Element At(const std::size_t & i);
     inline const bytes::Element At(const std::size_t & i) const;
 public:
+    inline bytes::Element ReverseAt(const std::size_t & i);
+    inline const bytes::Element ReverseAt(const std::size_t & i) const;
+public:
+    inline std::size_t Next(const std::size_t & i, 
+        const std::size_t & st = 1) const;
+public:
+    inline std::size_t Previous(const std::size_t & i,
+        const std::size_t & st = 1) const;
+public:
     inline bool IsEnd(const std::size_t & i) const;
 public:
     inline bool IsReverseEnd(const std::size_t & i) const;
@@ -238,6 +247,34 @@ inline const bytes::Element Segment::At(const std::size_t & i) const
 {
     if (!m_object || !m_trait) return bytes::Element();
     return bytes::Element(m_trait->At(i, m_begin, m_end), m_object, m_trait);
+}
+
+inline bytes::Element Segment::ReverseAt(const std::size_t & i)
+{
+    if (!m_object || !m_trait) return bytes::Element();
+    return bytes::Element(m_trait->ReverseAt(i, m_begin, m_end), m_object, 
+        m_trait);
+}
+
+inline const bytes::Element Segment::ReverseAt(const std::size_t & i) const
+{
+    if (!m_object || !m_trait) return bytes::Element();
+    return bytes::Element(m_trait->ReverseAt(i, m_begin, m_end), m_object, 
+        m_trait);
+}
+
+inline std::size_t Segment::Next(const std::size_t & i, 
+    const std::size_t & st) const
+{
+    if (!m_object || !m_trait) return m_end;
+    return m_trait->Next(i, st, m_begin, m_end);
+}
+
+inline std::size_t Segment::Previous(const std::size_t & i,
+    const std::size_t & st) const
+{
+    if (!m_object || !m_trait) return -1;
+    return m_trait->Previous(i, st, m_begin, m_end);
 }
 
 inline bool Segment::IsEnd(const std::size_t & i) const
