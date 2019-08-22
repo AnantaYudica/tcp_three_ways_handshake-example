@@ -38,19 +38,11 @@ public:
     inline std::size_t OnReverseAt(const std::size_t & i, 
         const std::size_t & bg, const std::size_t & ed) const;
 public:
-    inline std::size_t OnNextAt(const std::size_t & i, 
+    inline std::size_t OnNext(const std::size_t & i, 
         const std::size_t & st, const std::size_t & bg, 
         const std::size_t & ed) const;
 public:
-    inline std::size_t OnPreviousAt(const std::size_t & i, 
-        const std::size_t & st, const std::size_t & bg, 
-        const std::size_t & ed) const;
-public:
-    inline std::size_t OnNextReverseAt(const std::size_t & i, 
-        const std::size_t & st, const std::size_t & bg, 
-        const std::size_t & ed) const;
-public:
-    inline std::size_t OnPrevioursReverseAt(const std::size_t & i, 
+    inline std::size_t OnPrevious(const std::size_t & i, 
         const std::size_t & st, const std::size_t & bg, 
         const std::size_t & ed) const;
 public:
@@ -124,7 +116,7 @@ inline std::size_t Direct::OnReverseAt(const std::size_t & i,
     return i;
 }
 
-inline std::size_t Direct::OnNextAt(const std::size_t & i, 
+inline std::size_t Direct::OnNext(const std::size_t & i, 
     const std::size_t & st, const std::size_t & bg, 
     const std::size_t & ed) const
 {
@@ -132,23 +124,7 @@ inline std::size_t Direct::OnNextAt(const std::size_t & i,
         OnAt(ed, bg, ed);
 }
 
-inline std::size_t Direct::OnPreviousAt(const std::size_t & i, 
-    const std::size_t & st, const std::size_t & bg, 
-    const std::size_t & ed) const
-{
-    return (st <= i) ? OnAt(i - st, bg, ed) : 
-        OnAt(bg - 1, bg, ed);
-}
-
-inline std::size_t Direct::OnNextReverseAt(const std::size_t & i, 
-    const std::size_t & st, const std::size_t & bg, 
-    const std::size_t & ed) const
-{
-    return (st < ((ed - bg) - i)) ? OnAt(i + st, bg, ed) : 
-        OnAt(ed, bg, ed);
-}
-
-inline std::size_t Direct::OnPrevioursReverseAt(const std::size_t & i, 
+inline std::size_t Direct::OnPrevious(const std::size_t & i, 
     const std::size_t & st, const std::size_t & bg, 
     const std::size_t & ed) const
 {
