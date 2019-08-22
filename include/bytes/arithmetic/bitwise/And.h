@@ -7,6 +7,7 @@
 
 #include "../../Pointer.h"
 #include "../../ptr/Segment.h"
+#include "../../endian/Big.h"
 
 namespace bytes
 {
@@ -134,7 +135,8 @@ inline void And::Operator(ConstSegmentPtrType a_segment,
     {
         if (a_segment->IsReverseEnd(i) || j >= b_size) 
             result_segment->ReverseAt(k) = std::uint8_t(0);
-        else result_segment->ReverseAt(k) = a_segment->ReverseAt(i) & b[j];
+        else result_segment->ReverseAt(k) = a_segment->ReverseAt(i) & 
+            b[bytes::endian::Big::Instance().ReverseAt(j, 0, b_size)];
         i = a_segment->Next(i);
         k = result_segment->Next(k);
     }
