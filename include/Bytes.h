@@ -516,54 +516,50 @@ inline void Bytes::Assign(const std::size_t & i, const std::size_t & s,
 
 inline Bytes Bytes::Slice(const std::size_t & i)
 {
-    return Bytes(GetPointer(), GetSegment()->At(i).Index(), GetTrait());
+    return Bytes(GetPointer(), i, GetTrait());
 }
 
 inline const Bytes Bytes::Slice(const std::size_t & i) const
 {
     auto _this = const_cast<Bytes *>(this);
-    return Bytes(_this->GetPointer(), GetSegment()->At(i).Index(), GetTrait());
+    return Bytes(_this->GetPointer(), i, GetTrait());
 }
 
 inline Bytes Bytes::Slice(const std::size_t & i, const bytes::Trait & t)
 {
-    return Bytes(GetPointer(), GetSegment()->At(i).Index(), t);
+    return Bytes(GetPointer(), i, t);
 }
 
 inline const Bytes Bytes::Slice(const std::size_t & i, 
     const bytes::Trait & t) const
 {
     auto _this = const_cast<Bytes *>(this);
-    return Bytes(_this->GetPointer(), GetSegment()->At(i).Index(), t);
+    return Bytes(_this->GetPointer(), i, t);
 }
 
 inline Bytes Bytes::Slice(const std::size_t & i, const std::size_t & s)
 {
-    const std::size_t index = GetSegment()->At(i).Index();
-    return Bytes(GetPointer(), index, index + s, GetTrait());
+    return Bytes(GetPointer(), i, i + s, GetTrait());
 }
 
 inline const Bytes Bytes::Slice(const std::size_t & i, 
     const std::size_t & s) const
 {
-    const std::size_t index = GetSegment()->At(i).Index();
     auto _this = const_cast<Bytes *>(this);
-    return Bytes(_this->GetPointer(), index, index + s, GetTrait());
+    return Bytes(_this->GetPointer(), i, i + s, GetTrait());
 }
 
 inline Bytes Bytes::Slice(const std::size_t & i, const std::size_t & s,
     const bytes::Trait & t)
 {
-    const std::size_t index = GetSegment()->At(i).Index();
-    return Bytes(GetPointer(), index, index + s, t);
+    return Bytes(GetPointer(), i, i + s, t);
 }
 
 inline const Bytes Bytes::Slice(const std::size_t & i, const std::size_t & s,
     const bytes::Trait & t) const
 {
-    const std::size_t index = GetSegment()->At(i).Index();
     auto _this = const_cast<Bytes *>(this);
-    return Bytes(_this->GetPointer(), index, index + s, t);
+    return Bytes(_this->GetPointer(), i, i + s, t);
 }
 
 inline std::uint8_t * Bytes::Get()
