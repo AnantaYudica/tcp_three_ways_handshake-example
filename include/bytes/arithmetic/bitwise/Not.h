@@ -28,7 +28,7 @@ public:
 
 inline void Not::Operator(SegmentPtrType segment)
 {
-    for (std::size_t i = 0; i < segment->Size();)
+    for (std::size_t i = 0, j = 0; j < segment->Size(); ++j)
     {
         segment->At(i) = ~segment->At(i);
         i = segment->Next(i);
