@@ -83,21 +83,22 @@ inline void Addition::Operator(ConstSegmentPtrType a_segment,
     const auto & endian = bytes::sys::Endian();
     std::uint8_t carry = std::uint8_t(0);
     std::size_t i = 0;
-    for (; i < result_segment->Size(); ++i)
+    for (; i < result_segment->Size();)
     {
         std::uint16_t val = carry;
-        if (!a_segment->IsEnd(i))
-            val += a_segment->At(i);
-        if (!b_segment->IsEnd(i))
-            val += b_segment->At(i);
+        if (!a_segment->IsReverseEnd(i))
+            val += a_segment->ReverseAt(i);
+        if (!b_segment->IsReverseEnd(i))
+            val += b_segment->ReverseAt(i);
         std::uint8_t * pval = reinterpret_cast<std::uint8_t *>(&val);
-        carry = pval[endian.At(1, 0, 2)];
-        result_segment->At(i) = pval[endian.At(0, 0, 2)];
+        carry = pval[endian.At(0, 0, 2)];
+        result_segment->ReverseAt(i) = pval[endian.At(1, 0, 2)];
+        i = result_segment->Next(i);
     }
     if (carry != std::uint8_t(0))
     {
-        result_ptr->Reallocate(result_segment->Size() + 1, result_segment);
-        result_segment->At(i) = carry;
+        if (result_ptr->Reallocate(result_segment->Size() + 1, result_segment))
+            result_segment->ReverseAt(i) = carry;
     }
 }
 
@@ -148,21 +149,22 @@ inline void Addition::Operator(ConstSegmentPtrType a_segment,
     const auto & endian = bytes::sys::Endian();
     std::uint8_t carry = std::uint8_t(0);
     std::size_t i = 0;
-    for (; i < result_segment->Size(); ++i)
+    for (; i < result_segment->Size();)
     {
         std::uint16_t val = carry;
-        if (!a_segment->IsEnd(i))
-            val += a_segment->At(i);
+        if (!a_segment->IsReverseEnd(i))
+            val += a_segment->ReverseAt(i);
         if (i < b_size)
             val += b[i];
         std::uint8_t * pval = reinterpret_cast<std::uint8_t *>(&val);
-        carry = pval[endian.At(1, 0, 2)];
-        result_segment->At(i) = pval[endian.At(0, 0, 2)];
+        carry = pval[endian.At(0, 0, 2)];
+        result_segment->ReverseAt(i) = pval[endian.At(1, 0, 2)];
+        i = result_segment->Next(i);
     }
     if (carry != std::uint8_t(0))
     {
-        result_ptr->Reallocate(result_segment->Size() + 1, result_segment);
-        result_segment->At(i) = carry;
+        if (result_ptr->Reallocate(result_segment->Size() + 1, result_segment))
+            result_segment->ReverseAt(i) = carry;
     }
 }
 
