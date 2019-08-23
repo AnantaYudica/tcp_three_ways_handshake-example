@@ -110,26 +110,38 @@ inline int Comparison::Operation(ConstSegmentPtrType a_segment,
     ConstSegmentPtrType b_segment, const std::size_t & b_bg,
     const std::size_t & b_size)
 {
-    for (std::size_t i = a_size - 1, j = b_size - 1; 
-        i < a_size && j < b_size;)
+    std::size_t i = a_segment->Next(0, a_bg),
+        j = b_segment->Next(0, b_bg);
+    for (std::size_t k = a_size - 1, l = b_size - 1; 
+        k < a_size && l < b_size;)
     {
-        if (i != j)
+        if (k != l)
         {
-            if (i > j)
-                if (a_segment->At(i--) != std::uint8_t(0)) return 1;
+            if (k > l)
+            {
+                if (a_segment->At(i) != std::uint8_t(0)) return 1;
+                i = a_segment->Next(i);
+                --k;
+            }
             else
-                if (b_segment->At(j--) != std::uint8_t(0)) return -1;
+            {
+                if (b_segment->At(j) != std::uint8_t(0)) return -1;
+                j = b_segment->Next(j);
+                --l;
+            }
             continue;
         }
         if (a_segment->At(i) == b_segment->At(j)) 
         {
-            const bool is_i_decrement = i >= a_bg && i < a_size, 
-                is_j_decrement = j >= b_bg && j < b_size;
-            if (is_j_decrement && is_i_decrement)
+            const bool is_a_end = a_segment->IsEnd(i) && k >= a_size, 
+                is_b_end = a_segment->IsEnd(j) && l >= b_size;
+            if (!is_a_end && !is_b_end)
             {
-                --i; --j;
+                i = a_segment->Next(i);
+                j = b_segment->Next(j);
+                --k; --l;
             } 
-            else if (is_i_decrement) return 1;
+            else if (!is_a_end) return 1;
             else return -1;
         }
         else return a_segment->At(i) > b_segment->At(j) ? 1 : -1;
