@@ -9,6 +9,7 @@
 #include "sys/Endian.h"
 #include "Pointer.h"
 #include "ptr/Segment.h"
+#include "endian/Big.h"
 
 namespace bytes
 {
@@ -121,11 +122,15 @@ inline void Assign::Operator(SegmentPtrType a_segment,
     ConstSegmentPtrType b_segment, const std::size_t & b_bg, 
     const std::size_t & b_size)
 {
-    for(std::size_t i = a_bg, j = b_bg; i < a_size; ++i, ++j)
+    std::size_t i = a_segment->Next(0, a_bg), 
+        j = b_segment->Next(0, b_bg);
+    for(std::size_t k = a_bg, l = b_bg; k < a_size; ++k, ++l)
     {
-        if (b_segment->IsEnd(j) || j >= b_size) 
-            a_segment->At(i) = std::uint8_t(0);
-        else a_segment->At(i) = b_segment->At(j);
+        if (b_segment->IsReverseEnd(j) || k >= b_size) 
+            a_segment->ReverseAt(i) = std::uint8_t(0);
+        else a_segment->ReverseAt(i) = b_segment->ReverseAt(j);
+        i = a_segment->Next(i);
+        j = b_segment->Next(j);
     }
 }
 
@@ -272,11 +277,14 @@ inline void Assign::Operator(SegmentPtrType a_segment,
     const std::size_t & a_bg, const std::size_t & a_size,
     const std::uint8_t * b_ptr, const std::size_t & b_size)
 {
-    for(std::size_t i = a_bg, j = 0; i < a_size; ++i, ++j) 
+    std::size_t i = a_segment->Next(0, a_bg);
+    for(std::size_t i = a_bg, j = 0, l = 0; l < a_size; ++j, ++l) 
     {
         if (j >= b_size) 
-            a_segment->At(i) = std::uint8_t(0);
-        else a_segment->At(i) = b_ptr[j];
+            a_segment->ReverseAt(i) = std::uint8_t(0);
+        else a_segment->ReverseAt(i) = 
+            b_ptr[bytes::endian::Big::Instance().ReverseAt(j, 0, b_size)];
+        i = a_segment->Next(i);
     }
 }
 
