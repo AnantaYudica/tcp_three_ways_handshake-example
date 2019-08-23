@@ -11,6 +11,7 @@
 #include "../Assign.h"
 #include "Addition.h"
 #include "bitwise/Shift.h"
+#include "../endian/Big.h"
 
 namespace bytes
 {
@@ -92,32 +93,48 @@ inline void Multiplication::Operator(ConstSegmentPtrType a_segment,
     auto mul_trait = 
         std::make_shared<bytes::Trait>(result_segment->GetTrait());
     auto mul_segment = mul_ptr.Share(0, result_size, mul_trait);
-    for (std::size_t i = 0; i < b_size; ++i)
+    std::size_t i = 0, j = 0, k = 0;
+    for (std::size_t l = 0; l < b_size; ++l)
     {
         bytes::Assign::Operator(mul_segment, std::uint8_t(0));
         std::uint16_t carry = 0;
+        std::uint8_t b_segment_reverse_at = b_segment->ReverseAt(j);
         std::uint8_t * carry_ptr = reinterpret_cast<std::uint8_t *>(&carry);
-        std::size_t j;
-        for (j = 0; j < a_size; ++j)
+        i = 0; k = 0;
+        for (std::size_t m = 0; m < a_size; ++m)
         {
-            if (b_segment->At(i) == std::uint8_t(0) && carry == 0) break;
-            std::uint16_t val = a_segment->At(j);
-            val *= b_segment->At(i);
+            if (b_segment_reverse_at == std::uint8_t(0) && carry == 0) break;
+            std::uint16_t val = a_segment->ReverseAt(i);
+            val *= b_segment_reverse_at;
             std::uint8_t * pval = reinterpret_cast<std::uint8_t *>(&val);
-            carry += pval[endian.At(0, 0, 2)];
-            mul_segment->At(j) = carry_ptr[endian.At(0, 0, 2)];
-            carry >>= sizeof(std::uint8_t) * 8;
             carry += pval[endian.At(1, 0, 2)];
+            mul_segment->ReverseAt(k) = carry_ptr[endian.At(1, 0, 2)];
+            carry >>= sizeof(std::uint8_t) * 8;
+            carry += pval[endian.At(0, 0, 2)];
+            i = a_segment->Next(i);
+            k = mul_segment->Next(k);
         }
-        const std::size_t resize = (carry_ptr[endian.At(1, 0, 2)] != 0 ? 2 :
-            (carry_ptr[endian.At(0, 0, 2)] != 0 ? 1 : 0));
-        if (resize > 0)
-            mul_ptr.Reallocate(mul_segment->Size() + resize, mul_segment);
-        mul_segment->At(j++) = carry_ptr[endian.At(0, 0, 2)];
-        mul_segment->At(j) = carry_ptr[endian.At(1, 0, 2)];
-        bytes::arithmetic::bitwise::Shift::Operator(mul_segment, 8 * i);
+        const std::size_t resize = (carry_ptr[endian.At(0, 0, 2)] != 0 ? 2 :
+            (carry_ptr[endian.At(1, 0, 2)] != 0 ? 1 : 0));
+        const bool has_carry = resize > 0, 
+            is_resize_mul = mul_segment->Size() < (a_size + resize);
+        if (has_carry && is_resize_mul &&
+            mul_ptr.Reallocate(mul_segment->Size() + resize, mul_segment))
+        {
+            mul_segment->At(mul_segment->Next(0)) += 
+                carry_ptr[endian.At(1, 0, 2)];
+            mul_segment->At(0) += carry_ptr[endian.At(0, 0, 2)];
+        }
+        else if (has_carry && !is_resize_mul)
+        {
+            mul_segment->ReverseAt(k) += carry_ptr[endian.At(1, 0, 2)];
+            mul_segment->ReverseAt(mul_segment->Next(k)) += 
+                carry_ptr[endian.At(0, 0, 2)];
+        }
+        bytes::arithmetic::bitwise::Shift::Operator(mul_segment, 8 * l);
         bytes::arithmetic::Addition::Operator(result_ptr, result_segment, 
             mul_segment);
+        j = a_segment->Next(j);
     }
 }
 
@@ -190,32 +207,49 @@ inline void Multiplication::Operator(ConstSegmentPtrType a_segment,
     auto mul_trait = 
         std::make_shared<bytes::Trait>(result_segment->GetTrait());
     auto mul_segment = mul_ptr.Share(0, result_size, mul_trait);
-    for (std::size_t i = 0; i < b_size; ++i)
+    std::size_t i = 0, j = 0, k = 0;
+    for (std::size_t l = 0; l < b_size; ++l)
     {
         bytes::Assign::Operator(mul_segment, std::uint8_t(0));
         std::uint16_t carry = 0;
+        std::uint8_t b_reverse_at = 
+            b[bytes::endian::Big::Instance().ReverseAt(j, 0, b_size)];
         std::uint8_t * carry_ptr = reinterpret_cast<std::uint8_t *>(&carry);
-        std::size_t j;
-        for (j = 0; j < a_size; ++j)
+        i = 0; k = 0;
+        for (std::size_t m = 0; m < a_size; ++m)
         {
-            if (b[i] == 0 && carry == 0) break;
-            std::uint16_t val = a_segment->At(j);
-            val *= b[i];
+            if (b_reverse_at == 0 && carry == 0) break;
+            std::uint16_t val = a_segment->ReverseAt(i);
+            val *= b_reverse_at;
             std::uint8_t * pval = reinterpret_cast<std::uint8_t *>(&val);
-            carry += pval[endian.At(0, 0, 2)];
-            mul_segment->At(j) = carry_ptr[endian.At(0, 0, 2)];
-            carry >>= sizeof(std::uint8_t) * 8;
             carry += pval[endian.At(1, 0, 2)];
+            mul_segment->ReverseAt(k) = carry_ptr[endian.At(1, 0, 2)];
+            carry >>= sizeof(std::uint8_t) * 8;
+            carry += pval[endian.At(0, 0, 2)];
+            i = a_segment->Next(i);
+            k = mul_segment->Next(k);
         }
-        const std::size_t resize = (carry_ptr[endian.At(1, 0, 2)] != 0 ? 2 :
-            (carry_ptr[endian.At(0, 0, 2)] != 0 ? 1 : 0));
-        if (resize > 0)
-            mul_ptr.Reallocate(mul_segment->Size() + resize, mul_segment);
-        mul_segment->At(j++) = carry_ptr[endian.At(0, 0, 2)];
-        mul_segment->At(j) = carry_ptr[endian.At(1, 0, 2)];
-        bytes::arithmetic::bitwise::Shift::Operator(mul_segment, 8 * i);
+        const std::size_t resize = (carry_ptr[endian.At(0, 0, 2)] != 0 ? 2 :
+            (carry_ptr[endian.At(1, 0, 2)] != 0 ? 1 : 0));
+        const bool has_carry = resize > 0, 
+            is_resize_mul = mul_segment->Size() < (a_size + resize);
+        if (has_carry && is_resize_mul &&
+            mul_ptr.Reallocate(mul_segment->Size() + resize, mul_segment))
+        {
+            mul_segment->At(mul_segment->Next(0)) += 
+                carry_ptr[endian.At(1, 0, 2)];
+            mul_segment->At(0) += carry_ptr[endian.At(0, 0, 2)];
+        }
+        else if (has_carry && !is_resize_mul)
+        {
+            mul_segment->ReverseAt(k) += carry_ptr[endian.At(1, 0, 2)];
+            mul_segment->ReverseAt(mul_segment->Next(k)) += 
+                carry_ptr[endian.At(0, 0, 2)];
+        }
+        bytes::arithmetic::bitwise::Shift::Operator(mul_segment, 8 * l);
         bytes::arithmetic::Addition::Operator(result_ptr, result_segment, 
             mul_segment);
+        j = a_segment->Next(j);
     }
 }
 
