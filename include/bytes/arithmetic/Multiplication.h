@@ -134,7 +134,7 @@ inline void Multiplication::Operator(ConstSegmentPtrType a_segment,
         bytes::arithmetic::bitwise::Shift::Operator(mul_segment, 8 * l);
         bytes::arithmetic::Addition::Operator(result_ptr, result_segment, 
             mul_segment);
-        j = a_segment->Next(j);
+        j = b_segment->Next(j);
     }
 }
 
@@ -208,7 +208,7 @@ inline void Multiplication::Operator(ConstSegmentPtrType a_segment,
         std::make_shared<bytes::Trait>(result_segment->GetTrait());
     auto mul_segment = mul_ptr.Share(0, result_size, mul_trait);
     std::size_t i = 0, j = 0, k = 0;
-    for (std::size_t l = 0; l < b_size; ++l)
+    for (std::size_t l = 0; l < b_size; ++l, ++j)
     {
         bytes::Assign::Operator(mul_segment, std::uint8_t(0));
         std::uint16_t carry = 0;
@@ -249,7 +249,6 @@ inline void Multiplication::Operator(ConstSegmentPtrType a_segment,
         bytes::arithmetic::bitwise::Shift::Operator(mul_segment, 8 * l);
         bytes::arithmetic::Addition::Operator(result_ptr, result_segment, 
             mul_segment);
-        j = a_segment->Next(j);
     }
 }
 
