@@ -78,7 +78,6 @@ inline void NewtonRaphson::Round(PointerPtrType ptr, SegmentPtrType segment,
     auto sum_segment = round_ptr->Share(0, segment->Size(), round_trait);
     auto mul_segment = round_ptr->Share(segment->Size(), segment->Size() * 2, 
         round_trait);
-
     const std::size_t max_exponent = precision * 3;
     if (exponent >= 0 || std::size_t(-exponent) <= max_exponent) return;
     bytes::Assign::Operator(round_ptr, sum_segment, segment);
@@ -95,7 +94,8 @@ inline void NewtonRaphson::Round(PointerPtrType ptr, SegmentPtrType segment,
     const std::size_t index = prev_exponent / 8;
     const std::size_t binary_shift = prev_exponent % 8;
     const std::uint8_t binary_index = 1 << binary_shift;
-    const bool round = (sum_segment->At(index) & binary_index) == binary_index;
+    const bool round = (sum_segment->ReverseAt(sum_segment->Next(0, index)) & 
+        binary_index) == binary_index;
     bytes::arithmetic::bitwise::Shift::Operator(segment, -std::intmax_t(diff));
     exponent += diff;
     if (round) bytes::arithmetic::Addition::Operator(ptr, segment, 1);
@@ -126,9 +126,9 @@ inline void NewtonRaphson::Operator(ConstSegmentPtrType numerator_segment,
     std::intmax_t x0_exponent = -1, x_exponent = 0, 
         xn_exponent = -(int(min_exponent)), c2_exponent = 1, bx_exponent = 0;
     bytes::Assign::Operator(xn_segment,  std::uint8_t(0));
-    xn_segment->At(0) = std::uint8_t(0x01);
+    xn_segment->ReverseAt(0) = std::uint8_t(0x01);
     bytes::Assign::Operator(c2_segment,  std::uint8_t(0));
-    c2_segment->At(0) = std::uint8_t(0x01);
+    c2_segment->ReverseAt(0) = std::uint8_t(0x01);
     do
     {
         std::memcpy(x0_segment->Get(), xn_segment->Get(), expand_size);
@@ -194,9 +194,9 @@ inline void NewtonRaphson::Operator(ConstSegmentPtrType numerator_segment,
     std::intmax_t x0_exponent = -1, x_exponent = 0, 
         xn_exponent = -(int(min_exponent)), c2_exponent = 1, bx_exponent = 0;
     bytes::Assign::Operator(xn_segment,  std::uint8_t(0));
-    xn_segment->At(0) = std::uint8_t(0x01);
+    xn_segment->ReverseAt(0) = std::uint8_t(0x01);
     bytes::Assign::Operator(c2_segment,  std::uint8_t(0));
-    c2_segment->At(0) = std::uint8_t(0x01);
+    c2_segment->ReverseAt(0) = std::uint8_t(0x01);
     do
     {
         std::memcpy(x0_segment->Get(), xn_segment->Get(), expand_size);
