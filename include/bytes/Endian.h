@@ -40,6 +40,21 @@ public:
     virtual std::size_t End(const std::size_t & bg, 
         const std::size_t & ed) const = 0;
 public:
+    virtual std::uint8_t Value(const std::uint8_t & b_at_0, 
+        const std::uint8_t & b_at_1, const std::uint8_t & off) const = 0;
+public:
+    virtual void Value(std::uint8_t & b_at_0, 
+        std::uint8_t & b_at_1, const std::uint8_t & v, 
+        const std::uint8_t & off) const = 0;
+public:
+    virtual std::uint8_t ValueReverse(const std::uint8_t & b_reverse_at_0, 
+        const std::uint8_t & b_reverse_at_1, 
+        const std::uint8_t & off) const = 0;
+public:
+    virtual void ValueReverse(std::uint8_t & b_reverse_at_0, 
+        std::uint8_t & b_reverse_at_1, const std::uint8_t & v, 
+        const std::uint8_t & off) const = 0;
+public:
     virtual void Copy(std::uint8_t * a, const std::size_t & as,
         const std::uint8_t * b, const std::size_t & bs) const = 0;
 public:
