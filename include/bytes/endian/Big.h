@@ -6,6 +6,7 @@
 #include <algorithm>
 
 #include "../Endian.h"
+#include "../../byte/Mask.h"
 
 namespace bytes
 {
@@ -37,6 +38,21 @@ public:
 public:
     inline std::size_t End(const std::size_t & bg, 
         const std::size_t & ed) const;
+public:
+    inline std::uint8_t ValueAt(const std::uint8_t & v_at_0, 
+        const std::uint8_t & v_at_1, const std::uint8_t & off = 0) const;
+public:
+    inline void ValueAt(std::uint8_t & v_at_0, 
+        std::uint8_t & v_at_1, const std::uint8_t & v_in, 
+        const std::uint8_t & off = 0) const;
+public:
+    inline std::uint8_t ValueReverseAt(const std::uint8_t & v_reverse_at_0, 
+        const std::uint8_t & v_reverse_at_1, 
+        const std::uint8_t & off = 0) const;
+public:
+    inline void ValueReverseAt(std::uint8_t & v_reverse_at_0, 
+        std::uint8_t & v_reverse_at_1, const std::uint8_t & v_in, 
+        const std::uint8_t & off = 0) const;
 public:
     inline void Copy(std::uint8_t * a, const std::size_t & as,
         const std::uint8_t * b, const std::size_t & bs) const;
@@ -74,6 +90,68 @@ inline std::size_t Big::End(const std::size_t & bg,
     const std::size_t & ed) const
 {
     return ed;
+}
+
+inline std::uint8_t Big::ValueAt(const std::uint8_t & v_at_0, 
+    const std::uint8_t & v_at_1, const std::uint8_t & off) const
+{
+    if (off == 0) return v_at_0;
+    else if (off == 8) return v_at_1;
+    else if (off >= 16) return std::uint8_t(0);
+    else if (off > 8) return std::uint8_t(v_at_1 << (off % 8));
+    else return std::uint8_t(v_at_0 << off) |
+        std::uint8_t(v_at_1 >> (8 - off));
+}
+
+inline void Big::ValueAt(std::uint8_t & v_at_0, 
+    std::uint8_t & v_at_1, const std::uint8_t & v_in, 
+    const std::uint8_t & off) const
+{
+    if (off == 0) v_at_0 = v_in;
+    else if (off == 8) v_at_1 = v_in;
+    else if (off >= 16) return;
+    else if (off > 8) v_at_1 = std::uint8_t(v_at_1 & 
+        (byte::Mask(0xFF, 8 - (off % 8)))) | std::uint8_t(v_in >> off);
+    else 
+    {
+        const std::uint8_t inv_off = std::uint8_t(8) - off;
+        v_at_0 = std::uint8_t(v_at_0 & byte::Mask(0xFF, inv_off)) |
+            std::uint8_t(v_in >> off);
+        v_at_1 = std::uint8_t(v_at_1 & byte::Mask(0xFF, -int(off))) |
+            std::uint8_t(v_in << inv_off);
+    }
+}
+
+inline std::uint8_t Big::ValueReverseAt(const std::uint8_t & v_reverse_at_0, 
+    const std::uint8_t & v_reverse_at_1, 
+    const std::uint8_t & off) const
+{
+    if (off == 0) return v_reverse_at_0;
+    else if (off == 8) return v_reverse_at_1;
+    else if (off >= 16) return std::uint8_t(0);
+    else if (off > 8) return std::uint8_t(v_reverse_at_1 >> (off % 8));
+    else return std::uint8_t(v_reverse_at_0 >> off) |
+        std::uint8_t(v_reverse_at_1 << 8 - off);
+}
+
+inline void Big::ValueReverseAt(std::uint8_t & v_reverse_at_0, 
+    std::uint8_t & v_reverse_at_1, const std::uint8_t & v_in, 
+    const std::uint8_t & off) const
+{
+    if (off == 0) v_reverse_at_0 = v_in;
+    else if (off == 8) v_reverse_at_1 = v_in;
+    else if (off >= 16) return;
+    else if (off > 8) v_reverse_at_1 = std::uint8_t(v_reverse_at_1 & 
+        (byte::Mask(0xFF, -int(8 - (off % 8))))) | 
+        std::uint8_t(v_in << (off % 8));
+    else
+    {
+        const std::uint8_t inv_off = std::uint8_t(8) - off;
+        v_reverse_at_0 = std::uint8_t(v_reverse_at_0 & 
+            byte::Mask(0xFF, -int(inv_off))) | std::uint8_t(v_in << off);
+        v_reverse_at_1 = std::uint8_t(v_reverse_at_1 & 
+            byte::Mask(0xFF, off)) | std::uint8_t(v_in >> inv_off);
+    }
 }
 
 inline void Big::Copy(std::uint8_t * a, const std::size_t & as,
