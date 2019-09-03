@@ -40,19 +40,19 @@ public:
     virtual std::size_t End(const std::size_t & bg, 
         const std::size_t & ed) const = 0;
 public:
-    virtual std::uint8_t Value(const std::uint8_t & b_at_0, 
-        const std::uint8_t & b_at_1, const std::uint8_t & off) const = 0;
+    virtual std::uint8_t ValueAt(const std::uint8_t & v_at_0, 
+        const std::uint8_t & v_at_1, const std::uint8_t & off) const = 0;
 public:
-    virtual void Value(std::uint8_t & b_at_0, 
-        std::uint8_t & b_at_1, const std::uint8_t & v, 
+    virtual void ValueAt(std::uint8_t & v_at_0, 
+        std::uint8_t & v_at_1, const std::uint8_t & v_in, 
         const std::uint8_t & off) const = 0;
 public:
-    virtual std::uint8_t ValueReverse(const std::uint8_t & b_reverse_at_0, 
-        const std::uint8_t & b_reverse_at_1, 
+    virtual std::uint8_t ValueReverseAt(const std::uint8_t & v_reverse_at_0, 
+        const std::uint8_t & v_reverse_at_1, 
         const std::uint8_t & off) const = 0;
 public:
-    virtual void ValueReverse(std::uint8_t & b_reverse_at_0, 
-        std::uint8_t & b_reverse_at_1, const std::uint8_t & v, 
+    virtual void ValueReverseAt(std::uint8_t & v_reverse_at_0, 
+        std::uint8_t & v_reverse_at_1, const std::uint8_t & v_in, 
         const std::uint8_t & off) const = 0;
 public:
     virtual void Copy(std::uint8_t * a, const std::size_t & as,
