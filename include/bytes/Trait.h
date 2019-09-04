@@ -97,6 +97,20 @@ public:
 public:
     inline std::uint8_t Get(const std::uint8_t & v) const;
 public:
+    inline std::uint8_t ValueAt(const std::uint8_t & v_at_0,
+        const std::uint8_t & v_at_1, const std::uint8_t & off = 0,
+        const std::uint8_t & sz = 8) const;
+    inline void ValueAt(std::uint8_t & v_at_0, 
+        std::uint8_t & v_at_1, const std::uint8_t & v_in, 
+        const std::uint8_t & off = 0, const std::uint8_t & sz = 8) const;
+public:
+    inline std::uint8_t ValueReverseAt(const std::uint8_t & v_r_at_0, 
+        const std::uint8_t & v_r_at_1, const std::uint8_t & off = 0, 
+        const std::uint8_t & sz = 8) const;
+    inline void ValueReverseAt(std::uint8_t & v_r_at_0, 
+        std::uint8_t & v_r_at_1, const std::uint8_t & v_in, 
+        const std::uint8_t & off = 0, const std::uint8_t & sz = 8) const;
+public:
     inline bool operator==(const Trait & b) const;
 public:
     inline bool operator!=(const Trait & b) const;
@@ -325,6 +339,34 @@ inline std::uint8_t Trait::Set(const std::uint8_t & v) const
 inline std::uint8_t Trait::Get(const std::uint8_t & v) const
 {
     return m_modifier->OnGet(v);
+}
+
+inline std::uint8_t Trait::ValueAt(const std::uint8_t & v_at_0,
+    const std::uint8_t & v_at_1, const std::uint8_t & off,
+    const std::uint8_t & sz) const
+{
+    return m_endian->ValueAt(v_at_0, v_at_1, off, sz);
+}
+
+inline void Trait::ValueAt(std::uint8_t & v_at_0, 
+    std::uint8_t & v_at_1, const std::uint8_t & v_in, 
+    const std::uint8_t & off, const std::uint8_t & sz) const
+{
+    m_endian->ValueAt(v_at_0, v_at_1, v_in, off, sz);
+}
+
+inline std::uint8_t Trait::ValueReverseAt(const std::uint8_t & v_r_at_0, 
+    const std::uint8_t & v_r_at_1, const std::uint8_t & off, 
+    const std::uint8_t & sz) const
+{
+    return m_endian->ValueReverseAt(v_r_at_0, v_r_at_1, off, sz);
+}
+
+inline void Trait::ValueReverseAt(std::uint8_t & v_r_at_0, 
+    std::uint8_t & v_r_at_1, const std::uint8_t & v_in, 
+    const std::uint8_t & off, const std::uint8_t & sz) const
+{
+    m_endian->ValueReverseAt(v_r_at_0, v_r_at_1, v_in, off, sz);
 }
 
 inline bool Trait::operator==(const Trait & b) const
