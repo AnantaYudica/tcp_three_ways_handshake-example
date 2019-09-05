@@ -35,7 +35,93 @@ public:
 public:
     inline std::size_t GetAbsoluteIndex() const;
 public:
+    inline bool IsSameObject(const ReverseElement & elem) const;
+    inline bool 
+        IsSameObject(const std::shared_ptr<bytes::ptr::Object> & b) const;
+public:
     inline operator std::uint8_t() const;
+public:
+    inline ReverseElement & operator|=(const ReverseElement & b);
+    inline ReverseElement & operator|=(const std::uint8_t & b);
+public:
+    inline std::uint8_t operator|(const ReverseElement & b) const;
+    inline std::uint8_t operator|(const std::uint8_t & b) const;
+public:
+    inline ReverseElement & operator&=(const ReverseElement & b);
+    inline ReverseElement & operator&=(const std::uint8_t & b);
+public:
+    inline std::uint8_t operator&(const ReverseElement & b) const;
+    inline std::uint8_t operator&(const std::uint8_t & b) const;
+public:
+    inline ReverseElement & operator^=(const ReverseElement & b);
+    inline ReverseElement & operator^=(const std::uint8_t & b);
+public:
+    inline std::uint8_t operator^(const ReverseElement & b) const;
+    inline std::uint8_t operator^(const std::uint8_t & b) const;
+public:
+    inline ReverseElement & operator>>=(const std::uint8_t & b);
+public:
+    inline ReverseElement & operator<<=(const std::uint8_t & b);
+public:
+    inline std::uint8_t operator+() const = delete;
+public:
+    inline std::uint8_t operator-() const = delete;
+public:
+    inline ReverseElement & operator++();
+    inline std::uint8_t operator++(int);
+public:
+    inline ReverseElement & operator--();
+    inline std::uint8_t operator--(int);
+public:
+    inline ReverseElement & operator+=(const ReverseElement & b);
+    inline ReverseElement & operator+=(const std::uint8_t & b);
+public:
+    inline std::uint8_t operator+(const ReverseElement & b) const;
+    inline std::uint8_t operator+(const std::uint8_t & b) const;
+public:
+    inline ReverseElement & operator-=(const ReverseElement & b);
+    inline ReverseElement & operator-=(const std::uint8_t & b);
+public:
+    inline std::uint8_t operator-(const ReverseElement & b) const;
+    inline std::uint8_t operator-(const std::uint8_t & b) const;
+public:
+    inline ReverseElement & operator*=(const ReverseElement & b);
+    inline ReverseElement & operator*=(const std::uint8_t & b);
+public:
+    inline std::uint8_t operator*(const ReverseElement & b) const;
+    inline std::uint8_t operator*(const std::uint8_t & b) const;
+public:
+    inline ReverseElement & operator/=(const ReverseElement & b);
+    inline ReverseElement & operator/=(const std::uint8_t & b);
+public:
+    inline std::uint8_t operator/(const ReverseElement & b) const;
+    inline std::uint8_t operator/(const std::uint8_t & b) const;
+public:
+    inline ReverseElement & operator%=(const ReverseElement & b);
+    inline ReverseElement & operator%=(const std::uint8_t & b);
+public:
+    inline std::uint8_t operator%(const ReverseElement & b) const;
+    inline std::uint8_t operator%(const std::uint8_t & b) const;
+public:
+    inline bool operator==(const ReverseElement & b) const;
+    inline bool operator==(const std::uint8_t & b) const;
+public:
+    inline bool operator!=(const ReverseElement & b) const;
+    inline bool operator!=(const std::uint8_t & b) const;
+public:
+    inline bool operator<(const ReverseElement & b) const;
+    inline bool operator<(const std::uint8_t & b) const;
+public:
+    inline bool operator<=(const ReverseElement & b) const;
+    inline bool operator<=(const std::uint8_t & b) const;
+public:
+    inline bool operator>(const ReverseElement & b) const;
+    inline bool operator>(const std::uint8_t & b) const;
+public:
+    inline bool operator>=(const ReverseElement & b) const;
+    inline bool operator>=(const std::uint8_t & b) const;
+public:
+    inline void Swap(ReverseElement & b);
 };
 
 inline ReverseElement::ReverseElement() :
@@ -99,6 +185,17 @@ inline std::size_t ReverseElement::GetAbsoluteIndex() const
         GetEndIndex());
 }
 
+inline bool ReverseElement::IsSameObject(const ReverseElement & elem) const
+{
+    return bytes::Element::IsSameObject(elem);
+}
+
+inline bool ReverseElement::
+    IsSameObject(const std::shared_ptr<bytes::ptr::Object> & b) const
+{
+    return bytes::Element::IsSameObject(b);
+}
+
 inline ReverseElement::operator std::uint8_t() const
 {
     const std::size_t index = GetIndex(), 
@@ -111,6 +208,281 @@ inline ReverseElement::operator std::uint8_t() const
     return trait->ValueAt(object->At(trait->At(index, begin, end)), 
         object->At(trait->At(trait->Next(index, 1, begin, end), 
         begin, end)), offset, 8);
+}
+
+inline ReverseElement & ReverseElement::operator|=(const ReverseElement & b)
+{
+    bytes::Element::operator|=(b);
+    return *this;
+}
+
+inline ReverseElement & ReverseElement::operator|=(const std::uint8_t & b)
+{
+    bytes::Element::operator|=(b);
+    return *this;
+}
+
+inline std::uint8_t ReverseElement::operator|(const ReverseElement & b) const
+{
+    return bytes::Element::operator|(b);
+}
+
+inline std::uint8_t ReverseElement::operator|(const std::uint8_t & b) const
+{
+    return bytes::Element::operator|(b);
+}
+
+inline ReverseElement & ReverseElement::operator&=(const ReverseElement & b)
+{
+    bytes::Element::operator&=(b);
+    return *this;
+}
+
+inline ReverseElement & ReverseElement::operator&=(const std::uint8_t & b)
+{
+    bytes::Element::operator&=(b);
+    return *this;
+}
+
+inline std::uint8_t ReverseElement::operator&(const ReverseElement & b) const
+{
+    return bytes::Element::operator&(b);
+}
+
+inline std::uint8_t ReverseElement::operator&(const std::uint8_t & b) const
+{
+    return bytes::Element::operator&(b);
+}
+
+inline ReverseElement & ReverseElement::operator^=(const ReverseElement & b)
+{
+    bytes::Element::operator^=(b);
+    return *this;
+}
+
+inline ReverseElement & ReverseElement::operator^=(const std::uint8_t & b)
+{
+    bytes::Element::operator^=(b);
+    return *this;
+}
+
+inline std::uint8_t ReverseElement::operator^(const ReverseElement & b) const
+{
+    return bytes::Element::operator^(b);
+}
+
+inline std::uint8_t ReverseElement::operator^(const std::uint8_t & b) const
+{
+    return bytes::Element::operator^(b);
+}
+
+inline ReverseElement & ReverseElement::operator>>=(const std::uint8_t & b)
+{
+    bytes::Element::operator>>=(b);
+    return *this;
+}
+
+inline ReverseElement & ReverseElement::operator<<=(const std::uint8_t & b)
+{
+    bytes::Element::operator<<=(b);
+    return *this;
+}
+
+inline ReverseElement & ReverseElement::operator++()
+{
+    bytes::Element::operator++();
+    return *this;
+}
+
+inline std::uint8_t ReverseElement::operator++(int)
+{
+    return bytes::Element::operator++(0);
+}
+
+inline ReverseElement & ReverseElement::operator--()
+{
+    bytes::Element::operator--();
+    return *this;
+}
+
+inline std::uint8_t ReverseElement::operator--(int)
+{
+    return bytes::Element::operator--(0);
+}
+
+inline ReverseElement & ReverseElement::operator+=(const ReverseElement & b)
+{
+    bytes::Element::operator+=(b);
+    return *this;
+}
+
+inline ReverseElement & ReverseElement::operator+=(const std::uint8_t & b)
+{
+    bytes::Element::operator+=(b);
+    return *this;
+}
+
+inline std::uint8_t ReverseElement::operator+(const ReverseElement & b) const
+{
+    return bytes::Element::operator+(b);
+}
+
+inline std::uint8_t ReverseElement::operator+(const std::uint8_t & b) const
+{
+    return bytes::Element::operator+(b);
+}
+
+inline ReverseElement & ReverseElement::operator-=(const ReverseElement & b)
+{
+    bytes::Element::operator-=(b);
+    return *this;
+}
+
+inline ReverseElement & ReverseElement::operator-=(const std::uint8_t & b)
+{
+    bytes::Element::operator-=(b);
+    return *this;
+}
+
+inline std::uint8_t ReverseElement::operator-(const ReverseElement & b) const
+{
+    return bytes::Element::operator-(b);
+}
+
+inline std::uint8_t ReverseElement::operator-(const std::uint8_t & b) const
+{
+    return bytes::Element::operator-(b);
+}
+
+inline ReverseElement & ReverseElement::operator*=(const ReverseElement & b)
+{
+    bytes::Element::operator*=(b);
+    return *this;
+}
+
+inline ReverseElement & ReverseElement::operator*=(const std::uint8_t & b)
+{
+    bytes::Element::operator*=(b);
+    return *this;
+}
+
+inline std::uint8_t ReverseElement::operator*(const ReverseElement & b) const
+{
+    return bytes::Element::operator*(b);
+}
+
+inline std::uint8_t ReverseElement::operator*(const std::uint8_t & b) const
+{
+    return bytes::Element::operator*(b);
+}
+
+inline ReverseElement & ReverseElement::operator/=(const ReverseElement & b)
+{
+    bytes::Element::operator/=(b);
+    return *this;
+}
+
+inline ReverseElement & ReverseElement::operator/=(const std::uint8_t & b)
+{
+    bytes::Element::operator/=(b);
+    return *this;
+}
+
+inline std::uint8_t ReverseElement::operator/(const ReverseElement & b) const
+{
+    return bytes::Element::operator/(b);
+}
+
+inline std::uint8_t ReverseElement::operator/(const std::uint8_t & b) const
+{
+    return bytes::Element::operator/(b);
+}
+
+inline ReverseElement & ReverseElement::operator%=(const ReverseElement & b)
+{
+    bytes::Element::operator%=(b);
+    return *this;
+}
+
+inline ReverseElement & ReverseElement::operator%=(const std::uint8_t & b)
+{
+    bytes::Element::operator%=(b);
+    return *this;
+}
+
+inline std::uint8_t ReverseElement::operator%(const ReverseElement & b) const
+{
+    return bytes::Element::operator%(b);
+}
+
+inline std::uint8_t ReverseElement::operator%(const std::uint8_t & b) const
+{
+    return bytes::Element::operator%(b);
+}
+
+inline bool ReverseElement::operator==(const ReverseElement & b) const
+{
+    return bytes::Element::operator==(b);
+}
+
+inline bool ReverseElement::operator==(const std::uint8_t & b) const
+{
+    return bytes::Element::operator==(b);
+}
+
+inline bool ReverseElement::operator!=(const ReverseElement & b) const
+{
+    return bytes::Element::operator!=(b);
+}
+
+inline bool ReverseElement::operator!=(const std::uint8_t & b) const
+{
+    return bytes::Element::operator!=(b);
+}
+
+inline bool ReverseElement::operator<(const ReverseElement & b) const
+{
+    return bytes::Element::operator<(b);
+}
+
+inline bool ReverseElement::operator<(const std::uint8_t & b) const
+{
+    return bytes::Element::operator<(b);
+}
+
+inline bool ReverseElement::operator<=(const ReverseElement & b) const
+{
+    return bytes::Element::operator<=(b);
+}
+
+inline bool ReverseElement::operator<=(const std::uint8_t & b) const
+{
+    return bytes::Element::operator<=(b);
+}
+
+inline bool ReverseElement::operator>(const ReverseElement & b) const
+{
+    return bytes::Element::operator>(b);
+}
+
+inline bool ReverseElement::operator>(const std::uint8_t & b) const
+{
+    return bytes::Element::operator>(b);
+}
+
+inline bool ReverseElement::operator>=(const ReverseElement & b) const
+{
+    return bytes::Element::operator>=(b);
+}
+
+inline bool ReverseElement::operator>=(const std::uint8_t & b) const
+{
+    return bytes::Element::operator>=(b);
+}
+
+inline void ReverseElement::Swap(ReverseElement & b)
+{
+    bytes::Element::Swap(b);
 }
 
 } //!bytes
