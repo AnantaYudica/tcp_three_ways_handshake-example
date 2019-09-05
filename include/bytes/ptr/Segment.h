@@ -9,6 +9,7 @@
 #include "../Endian.h"
 #include "../Trait.h"
 #include "../Element.h"
+#include "../ReverseElement.h"
 
 namespace bytes
 {
@@ -60,10 +61,17 @@ protected:
     inline std::size_t Resize(const std::size_t & s);
 public:
     inline bytes::Element At(const std::size_t & i);
+    inline bytes::Element At(const std::size_t & i, const std::uint8_t & off);
     inline const bytes::Element At(const std::size_t & i) const;
+    inline const bytes::Element At(const std::size_t & i, 
+        const std::uint8_t & off) const;
 public:
-    inline bytes::Element ReverseAt(const std::size_t & i);
-    inline const bytes::Element ReverseAt(const std::size_t & i) const;
+    inline bytes::ReverseElement ReverseAt(const std::size_t & i);
+    inline bytes::ReverseElement ReverseAt(const std::size_t & i, 
+        const std::uint8_t & off);
+    inline const bytes::ReverseElement ReverseAt(const std::size_t & i) const;
+    inline const bytes::ReverseElement ReverseAt(const std::size_t & i,
+        const std::uint8_t & off) const;
 public:
     inline std::size_t Next(const std::size_t & i, 
         const std::size_t & st = 1) const;
@@ -240,27 +248,54 @@ inline std::size_t Segment::Resize(const std::size_t & s)
 inline bytes::Element Segment::At(const std::size_t & i)
 {
     if (!m_object || !m_trait) return bytes::Element();
-    return bytes::Element(m_trait->At(i, m_begin, m_end), m_object, m_trait);
+    return bytes::Element(i, m_begin, m_end, m_object, m_trait);
+}
+
+inline bytes::Element Segment::At(const std::size_t & i, 
+    const std::uint8_t & off)
+{
+    if (!m_object || !m_trait) return bytes::Element();
+    return bytes::Element(i, m_begin, m_end, off, m_object, m_trait);
 }
 
 inline const bytes::Element Segment::At(const std::size_t & i) const
 {
     if (!m_object || !m_trait) return bytes::Element();
-    return bytes::Element(m_trait->At(i, m_begin, m_end), m_object, m_trait);
+    return bytes::Element(i, m_begin, m_end, m_object, m_trait);
 }
 
-inline bytes::Element Segment::ReverseAt(const std::size_t & i)
+inline const bytes::Element Segment::At(const std::size_t & i, 
+    const std::uint8_t & off) const
 {
     if (!m_object || !m_trait) return bytes::Element();
-    return bytes::Element(m_trait->ReverseAt(i, m_begin, m_end), m_object, 
-        m_trait);
+    return bytes::Element(i, m_begin, m_end, off, m_object, m_trait);
 }
 
-inline const bytes::Element Segment::ReverseAt(const std::size_t & i) const
+inline bytes::ReverseElement Segment::ReverseAt(const std::size_t & i)
 {
-    if (!m_object || !m_trait) return bytes::Element();
-    return bytes::Element(m_trait->ReverseAt(i, m_begin, m_end), m_object, 
-        m_trait);
+    if (!m_object || !m_trait) return bytes::ReverseElement();
+    return bytes::ReverseElement(i, m_begin, m_end, m_object, m_trait);
+}
+
+inline bytes::ReverseElement Segment::ReverseAt(const std::size_t & i,
+    const std::uint8_t & off)
+{
+    if (!m_object || !m_trait) return bytes::ReverseElement();
+    return bytes::ReverseElement(i, m_begin, m_end, off, m_object, m_trait);
+}
+
+inline const bytes::ReverseElement 
+    Segment::ReverseAt(const std::size_t & i) const
+{
+    if (!m_object || !m_trait) return bytes::ReverseElement();
+    return bytes::ReverseElement(i, m_begin, m_end, m_object, m_trait);
+}
+
+inline const bytes::ReverseElement Segment::ReverseAt(const std::size_t & i,
+    const std::uint8_t & off) const
+{
+    if (!m_object || !m_trait) return bytes::ReverseElement();
+    return bytes::ReverseElement(i, m_begin, m_end, off, m_object, m_trait);
 }
 
 inline std::size_t Segment::Next(const std::size_t & i, 
