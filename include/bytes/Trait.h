@@ -98,18 +98,18 @@ public:
     inline std::uint8_t Get(const std::uint8_t & v) const;
 public:
     inline std::uint8_t ValueAt(const std::uint8_t & v_at_0,
-        const std::uint8_t & v_at_1, const std::uint8_t & off = 0,
-        const std::uint8_t & sz = 8) const;
+        const std::uint8_t & v_at_1, const std::uint8_t & off,
+        const std::uint8_t & sz) const;
     inline void ValueAt(std::uint8_t & v_at_0, 
         std::uint8_t & v_at_1, const std::uint8_t & v_in, 
-        const std::uint8_t & off = 0, const std::uint8_t & sz = 8) const;
+        const std::uint8_t & off, const std::uint8_t & sz) const;
 public:
     inline std::uint8_t ValueReverseAt(const std::uint8_t & v_r_at_0, 
-        const std::uint8_t & v_r_at_1, const std::uint8_t & off = 0, 
-        const std::uint8_t & sz = 8) const;
+        const std::uint8_t & v_r_at_1, const std::uint8_t & off, 
+        const std::uint8_t & sz) const;
     inline void ValueReverseAt(std::uint8_t & v_r_at_0, 
         std::uint8_t & v_r_at_1, const std::uint8_t & v_in, 
-        const std::uint8_t & off = 0, const std::uint8_t & sz = 8) const;
+        const std::uint8_t & off, const std::uint8_t & sz) const;
 public:
     inline bool operator==(const Trait & b) const;
 public:
