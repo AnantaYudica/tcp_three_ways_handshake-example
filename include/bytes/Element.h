@@ -14,7 +14,7 @@ namespace bytes
 class Element
 {
 private:
-    std::uint8_t m_offset;
+    std::uint8_t m_offset, m_size;
     std::size_t m_index, m_begin, m_end;
     std::shared_ptr<bytes::ptr::Object> m_object;
     std::shared_ptr<bytes::Trait> m_trait;
@@ -25,6 +25,11 @@ public:
         const std::shared_ptr<bytes::Trait> & t);
     inline Element(const std::size_t & i, const std::size_t & bg, 
         const std::size_t & ed, const std::uint8_t & off, 
+        const std::shared_ptr<bytes::ptr::Object> & o,
+        const std::shared_ptr<bytes::Trait> & t);
+    inline Element(const std::size_t & i, const std::size_t & bg, 
+        const std::size_t & ed, const std::uint8_t & off, 
+        const std::uint8_t & sz,
         const std::shared_ptr<bytes::ptr::Object> & o,
         const std::shared_ptr<bytes::Trait> & t);
 public:
@@ -38,6 +43,8 @@ public:
     virtual inline Element & operator=(const std::uint8_t & v);
 public:
     inline std::uint8_t GetOffset() const;
+public:
+    inline std::uint8_t GetSize() const;
 public:
     inline std::size_t GetIndex() const;
 public:
@@ -150,6 +157,7 @@ public:
 
 inline Element::Element() :
     m_offset(0),
+    m_size(0),
     m_index(0),
     m_begin(0),
     m_end(0),
@@ -161,6 +169,7 @@ inline Element::Element(const std::size_t & i, const std::size_t & bg,
     const std::size_t & ed, const std::shared_ptr<bytes::ptr::Object> & o,
     const std::shared_ptr<bytes::Trait> & t) :
         m_offset(0),
+        m_size(8),
         m_index(i),
         m_begin(bg),
         m_end(ed),
@@ -176,6 +185,24 @@ inline Element::Element(const std::size_t & i, const std::size_t & bg,
     const std::shared_ptr<bytes::ptr::Object> & o,
     const std::shared_ptr<bytes::Trait> & t) :
         m_offset(off),
+        m_size(8),
+        m_index(i),
+        m_begin(bg),
+        m_end(ed),
+        m_object(o),
+        m_trait(t)
+{
+    if (!m_object) m_object = std::make_shared<bytes::ptr::Object>(1);
+    if (!m_trait) m_trait = std::make_shared<bytes::Trait>();
+}
+
+inline Element::Element(const std::size_t & i, const std::size_t & bg, 
+    const std::size_t & ed, const std::uint8_t & off, 
+    const std::uint8_t & sz,
+    const std::shared_ptr<bytes::ptr::Object> & o,
+    const std::shared_ptr<bytes::Trait> & t) :
+        m_offset(off),
+        m_size(sz),
         m_index(i),
         m_begin(bg),
         m_end(ed),
@@ -189,6 +216,7 @@ inline Element::Element(const std::size_t & i, const std::size_t & bg,
 inline Element::~Element()
 {
     m_offset = 0;
+    m_size = 0;
     m_index = 0;
     m_begin = 0;
     m_end = 0;
@@ -198,6 +226,7 @@ inline Element::~Element()
 
 inline Element::Element(const Element & cpy) :
     m_offset(cpy.m_offset),
+    m_size(cpy.m_size),
     m_index(cpy.m_index),
     m_begin(cpy.m_begin),
     m_end(cpy.m_end),
@@ -207,6 +236,7 @@ inline Element::Element(const Element & cpy) :
 
 inline Element::Element(Element && mov) :
     m_offset(mov.m_offset),
+    m_size(mov.m_size),
     m_index(mov.m_index),
     m_begin(mov.m_begin),
     m_end(mov.m_end),
@@ -214,6 +244,7 @@ inline Element::Element(Element && mov) :
     m_trait(mov.m_trait)
 {
     mov.m_offset = 0;
+    mov.m_size = 0;
     mov.m_index = 0;
     mov.m_begin = 0;
     mov.m_end = 0;
@@ -239,13 +270,18 @@ inline Element & Element::operator=(const std::uint8_t & v)
     else
          m_trait->ValueAt(m_object->At(m_trait->At(m_index, m_begin, m_end)), 
             m_object->At(m_trait->At(m_trait->Next(m_index, 1, m_begin, m_end),
-            m_begin, m_end)), m_trait->Set(v), m_offset);
+            m_begin, m_end)), m_trait->Set(v), m_offset, m_size);
     return *this;
 }
 
 inline std::uint8_t Element::GetOffset() const
 {
     return m_offset;
+}
+
+inline std::uint8_t Element::GetSize() const
+{
+    return m_size;
 }
 
 inline std::size_t Element::GetIndex() const
@@ -307,7 +343,7 @@ inline Element::operator std::uint8_t() const
         return m_trait->Get(m_object->At(m_trait->At(m_index, m_begin, m_end)));
     return m_trait->ValueAt(m_object->At(m_trait->At(m_index, m_begin, m_end)), 
         m_object->At(m_trait->At(m_trait->Next(m_index, 1, m_begin, m_end), 
-        m_begin, m_end)), m_offset, 8);
+        m_begin, m_end)), m_offset, m_size);
 }
 
 inline std::uint8_t Element::operator~() const
@@ -584,18 +620,21 @@ inline bool Element::operator>=(const std::uint8_t & b) const
 inline void Element::Swap(Element & b)
 {
     auto offset = m_offset;
+    auto size = m_size;
     auto index = m_index;
     auto begin = m_begin;
     auto end = m_end;
     auto object = m_object;
     auto trait = m_trait;
     m_offset = b.m_offset;
+    m_size = b.m_size;
     m_index = b.m_index;
     m_begin = b.m_begin;
     m_end = b.m_end;
     m_object = b.m_object;
     m_trait = b.m_trait;
     b.m_offset = offset;
+    b.m_size = size;
     b.m_index = index;
     b.m_begin = begin;
     b.m_end = end;

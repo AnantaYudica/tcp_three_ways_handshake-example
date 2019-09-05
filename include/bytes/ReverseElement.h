@@ -23,6 +23,11 @@ public:
         const std::size_t & ed, const std::uint8_t & off, 
         const std::shared_ptr<bytes::ptr::Object> & o,
         const std::shared_ptr<bytes::Trait> & t);
+    inline ReverseElement(const std::size_t & i, const std::size_t & bg, 
+        const std::size_t & ed, const std::uint8_t & off, 
+        const std::uint8_t & sz,
+        const std::shared_ptr<bytes::ptr::Object> & o,
+        const std::shared_ptr<bytes::Trait> & t);
 public:
     inline ~ReverseElement();
 public:
@@ -141,6 +146,14 @@ inline ReverseElement::ReverseElement(const std::size_t & i,
         bytes::Element(i, bg, ed, off, o, t)
 {}
 
+inline ReverseElement::ReverseElement(const std::size_t & i, const std::size_t & bg, 
+    const std::size_t & ed, const std::uint8_t & off, 
+    const std::uint8_t & sz,
+    const std::shared_ptr<bytes::ptr::Object> & o,
+    const std::shared_ptr<bytes::Trait> & t) :
+        bytes::Element(i, bg, ed, off, sz, o, t)
+{}
+
 inline ReverseElement::~ReverseElement()
 {}
 
@@ -175,7 +188,7 @@ inline ReverseElement & ReverseElement::operator=(const std::uint8_t & v)
     else
         trait->ValueAt(object->At(trait->ReverseAt(index, begin, end)), 
             object->At(trait->ReverseAt(trait->Next(index, 1, begin, end), 
-            begin, end)), trait->Set(v), offset);
+            begin, end)), trait->Set(v), offset, GetSize());
     return *this;
 }
 
@@ -207,7 +220,7 @@ inline ReverseElement::operator std::uint8_t() const
         return trait->Get(object->At(trait->ReverseAt(index, begin, end)));
     return trait->ValueAt(object->At(trait->At(index, begin, end)), 
         object->At(trait->At(trait->Next(index, 1, begin, end), 
-        begin, end)), offset, 8);
+        begin, end)), offset, GetSize());
 }
 
 inline ReverseElement & ReverseElement::operator|=(const ReverseElement & b)
