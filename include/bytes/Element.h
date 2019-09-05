@@ -59,7 +59,7 @@ public:
 public:
     virtual inline operator std::uint8_t() const;
 public:
-    virtual inline std::uint8_t operator~() const;
+    inline std::uint8_t operator~() const;
 public:
     inline Element & operator|=(const Element & b);
     inline Element & operator|=(const std::uint8_t & b);
