@@ -110,24 +110,23 @@ inline int Comparison::Operation(ConstSegmentPtrType a_segment,
     ConstSegmentPtrType b_segment, const std::size_t & b_bg,
     const std::size_t & b_size)
 {
-    std::size_t i = a_segment->Next(0, a_bg),
-        j = b_segment->Next(0, b_bg);
+    std::size_t i_st = a_bg, j_st = b_bg;
     for (std::size_t k = a_size - 1, l = b_size - 1; 
         k < a_size && l < b_size;)
     {
+        const std::size_t i = a_segment->Next(0, i_st),
+            j = a_segment->Next(0, j_st);
         if (k != l)
         {
             if (k > l)
             {
                 if (a_segment->At(i) != std::uint8_t(0)) return 1;
-                i = a_segment->Next(i);
-                --k;
+                ++i_st; --k; 
             }
             else
             {
                 if (b_segment->At(j) != std::uint8_t(0)) return -1;
-                j = b_segment->Next(j);
-                --l;
+                ++j_st; --l; 
             }
             continue;
         }
@@ -137,8 +136,7 @@ inline int Comparison::Operation(ConstSegmentPtrType a_segment,
                 is_b_end = a_segment->IsEnd(j) && l >= b_size;
             if (!is_a_end && !is_b_end)
             {
-                i = a_segment->Next(i);
-                j = b_segment->Next(j);
+                ++i_st; ++j_st;
                 --k; --l;
             } 
             else if (!is_a_end) return 1;
