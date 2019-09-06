@@ -74,18 +74,18 @@ public:
 inline void And::Operator(ConstSegmentPtrType a_segment,
         ConstSegmentPtrType b_segment, SegmentPtrType result_segment)
 {
-    std::size_t i = 0, j = 0, k = 0;
-    for(std::size_t l = 0; l < result_segment->Size(); ++l)
+    std::size_t i_st = 0, j_st = 0, k_st = 0;
+    for(; k_st < result_segment->Size(); ++i_st, ++j_st, ++k_st)
     {
+        const std::size_t i = a_segment->Next(0, i_st),
+            j = b_segment->Next(0, j_st),
+            k = result_segment->Next(0, k_st);
         const bool a_is_end = a_segment->IsReverseEnd(i),
             b_is_end = b_segment->IsReverseEnd(j);
         if (a_is_end || b_is_end) 
             result_segment->ReverseAt(k) = std::uint8_t(0);
         else result_segment->ReverseAt(k) = 
             a_segment->ReverseAt(i) & b_segment->ReverseAt(j);
-        i = a_segment->Next(i);
-        j = b_segment->Next(j);
-        k = result_segment->Next(k);
     }
 }
 
@@ -130,15 +130,15 @@ inline void And::Operator(ConstSegmentPtrType a_segment,
     const std::uint8_t * b, const std::size_t & b_size, 
     SegmentPtrType result_segment)
 {
-    std::size_t i = 0, j = 0, k = 0;
-    for(std::size_t l = 0; l < result_segment->Size(); ++j, ++l)
+    std::size_t i_st = 0, j = 0, k_st = 0;
+    for(; k_st < result_segment->Size(); ++i_st, ++j, ++k_st)
     {
+        const std::size_t i = a_segment->Next(0, i_st),
+            k = result_segment->Next(0, k_st);
         if (a_segment->IsReverseEnd(i) || j >= b_size) 
             result_segment->ReverseAt(k) = std::uint8_t(0);
         else result_segment->ReverseAt(k) = a_segment->ReverseAt(i) & 
             b[bytes::endian::Big::Instance().ReverseAt(j, 0, b_size)];
-        i = a_segment->Next(i);
-        k = result_segment->Next(k);
     }
 }
 
