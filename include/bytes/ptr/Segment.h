@@ -62,16 +62,24 @@ protected:
 public:
     inline bytes::Element At(const std::size_t & i);
     inline bytes::Element At(const std::size_t & i, const std::uint8_t & off);
+    inline bytes::Element At(const std::size_t & i, const std::uint8_t & off,
+        const std::uint8_t & sz);
     inline const bytes::Element At(const std::size_t & i) const;
     inline const bytes::Element At(const std::size_t & i, 
         const std::uint8_t & off) const;
+    inline const bytes::Element At(const std::size_t & i, 
+        const std::uint8_t & off, const std::uint8_t & sz) const;
 public:
     inline bytes::ReverseElement ReverseAt(const std::size_t & i);
     inline bytes::ReverseElement ReverseAt(const std::size_t & i, 
         const std::uint8_t & off);
+    inline bytes::ReverseElement ReverseAt(const std::size_t & i, 
+        const std::uint8_t & off, const std::uint8_t & sz);
     inline const bytes::ReverseElement ReverseAt(const std::size_t & i) const;
     inline const bytes::ReverseElement ReverseAt(const std::size_t & i,
         const std::uint8_t & off) const;
+    inline const bytes::ReverseElement ReverseAt(const std::size_t & i,
+        const std::uint8_t & off, const std::uint8_t & sz) const;
 public:
     inline std::size_t Next(const std::size_t & i, 
         const std::size_t & st = 1) const;
@@ -258,6 +266,13 @@ inline bytes::Element Segment::At(const std::size_t & i,
     return bytes::Element(i, m_begin, m_end, off, m_object, m_trait);
 }
 
+inline bytes::Element Segment::At(const std::size_t & i, 
+    const std::uint8_t & off, const std::uint8_t & sz)
+{
+    if (!m_object || !m_trait) return bytes::Element();
+    return bytes::Element(i, m_begin, m_end, off, sz, m_object, m_trait);
+}
+
 inline const bytes::Element Segment::At(const std::size_t & i) const
 {
     if (!m_object || !m_trait) return bytes::Element();
@@ -269,6 +284,13 @@ inline const bytes::Element Segment::At(const std::size_t & i,
 {
     if (!m_object || !m_trait) return bytes::Element();
     return bytes::Element(i, m_begin, m_end, off, m_object, m_trait);
+}
+
+inline const bytes::Element Segment::At(const std::size_t & i, 
+    const std::uint8_t & off, const std::uint8_t & sz) const
+{
+    if (!m_object || !m_trait) return bytes::Element();
+    return bytes::Element(i, m_begin, m_end, off, sz, m_object, m_trait);
 }
 
 inline bytes::ReverseElement Segment::ReverseAt(const std::size_t & i)
@@ -284,6 +306,14 @@ inline bytes::ReverseElement Segment::ReverseAt(const std::size_t & i,
     return bytes::ReverseElement(i, m_begin, m_end, off, m_object, m_trait);
 }
 
+inline bytes::ReverseElement Segment::ReverseAt(const std::size_t & i,
+    const std::uint8_t & off, const std::uint8_t & sz)
+{
+    if (!m_object || !m_trait) return bytes::ReverseElement();
+    return bytes::ReverseElement(i, m_begin, m_end, off, sz, m_object, 
+        m_trait);
+}
+
 inline const bytes::ReverseElement 
     Segment::ReverseAt(const std::size_t & i) const
 {
@@ -296,6 +326,14 @@ inline const bytes::ReverseElement Segment::ReverseAt(const std::size_t & i,
 {
     if (!m_object || !m_trait) return bytes::ReverseElement();
     return bytes::ReverseElement(i, m_begin, m_end, off, m_object, m_trait);
+}
+
+inline const bytes::ReverseElement Segment::ReverseAt(const std::size_t & i,
+    const std::uint8_t & off, const std::uint8_t & sz) const
+{
+    if (!m_object || !m_trait) return bytes::ReverseElement();
+    return bytes::ReverseElement(i, m_begin, m_end, off, sz, m_object, 
+        m_trait);
 }
 
 inline std::size_t Segment::Next(const std::size_t & i, 
