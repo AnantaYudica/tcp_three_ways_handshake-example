@@ -83,9 +83,12 @@ inline void Addition::Operator(ConstSegmentPtrType a_segment,
 {
     const auto & endian = bytes::sys::Endian();
     std::uint8_t carry = std::uint8_t(0);
-    std::size_t i = 0, j = 0, k = 0;
-    for (std::size_t l = 0; l < result_segment->Size(); ++l)
+    std::size_t i_st = 0, j_st = 0, k_st = 0;
+    for (; k_st < result_segment->Size(); ++i_st, ++j_st, ++k_st)
     {
+        const std::size_t i = a_segment->Next(0, i_st),
+            j = b_segment->Next(0, j_st),
+            k = result_segment->Next(0, k_st);
         std::uint16_t val = carry;
         if (!a_segment->IsReverseEnd(i))
             val += a_segment->ReverseAt(i);
@@ -94,9 +97,6 @@ inline void Addition::Operator(ConstSegmentPtrType a_segment,
         std::uint8_t * pval = reinterpret_cast<std::uint8_t *>(&val);
         carry = pval[endian.At(0, 0, 2)];
         result_segment->ReverseAt(k) = pval[endian.At(1, 0, 2)];
-        i = a_segment->Next(i);
-        j = b_segment->Next(j);
-        k = result_segment->Next(k);
     }
     if (carry != std::uint8_t(0))
     {
@@ -151,9 +151,11 @@ inline void Addition::Operator(ConstSegmentPtrType a_segment,
 {
     const auto & endian = bytes::sys::Endian();
     std::uint8_t carry = std::uint8_t(0);
-    std::size_t i = 0, j = 0, k = 0;
-    for (std::size_t l = 0; l < result_segment->Size(); ++l, ++j)
+    std::size_t i_st = 0, j = 0, k_st = 0;
+    for (; k_st < result_segment->Size(); ++i_st, ++j, ++k_st)
     {
+        const std::size_t i = a_segment->Next(0, i_st),
+            k = result_segment->Next(0, k_st);
         std::uint16_t val = carry;
         if (!a_segment->IsReverseEnd(i))
             val += a_segment->ReverseAt(i);
@@ -162,8 +164,6 @@ inline void Addition::Operator(ConstSegmentPtrType a_segment,
         std::uint8_t * pval = reinterpret_cast<std::uint8_t *>(&val);
         carry = pval[endian.At(0, 0, 2)];
         result_segment->ReverseAt(k) = pval[endian.At(1, 0, 2)];
-        i = a_segment->Next(i);
-        k = result_segment->Next(k);
     }
     if (carry != std::uint8_t(0))
     {
