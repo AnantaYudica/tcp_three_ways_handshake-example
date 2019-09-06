@@ -28,10 +28,10 @@ public:
 
 inline void Not::Operator(SegmentPtrType segment)
 {
-    for (std::size_t i = 0, j = 0; j < segment->Size(); ++j)
+    for (std::size_t i_st = 0; i_st < segment->Size(); ++i_st)
     {
+        const std::size_t i = segment->Next(0, i_st);
         segment->At(i) = ~segment->At(i);
-        i = segment->Next(i);
     }
 }
 
