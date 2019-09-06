@@ -14,7 +14,8 @@ private:
     static inline void Default(Bit & b);
     static inline bool Validation(Bit & b);
 private:
-    std::uint8_t m_offset;
+    std::uint8_t m_offset, m_elementOffset;
+    std::size_t m_elementIndex;
     std::shared_ptr<bytes::ptr::Segment> m_segment;
 public:
     inline Bit();
@@ -24,6 +25,11 @@ public:
     inline Bit(const std::shared_ptr<bytes::ptr::Segment> & b);
     inline Bit(const std::shared_ptr<bytes::ptr::Segment> & b, 
         const std::uint8_t & off);
+    inline Bit(const std::shared_ptr<bytes::ptr::Segment> & b, 
+        const std::uint8_t & off, const std::size_t & elem_i);
+    inline Bit(const std::shared_ptr<bytes::ptr::Segment> & b, 
+        const std::uint8_t & off, const std::size_t & elem_i,
+        const std::uint8_t & elem_off);
     inline ~Bit();
 public:
     inline Bit(const Bit & cpy);
@@ -91,9 +97,11 @@ public:
 inline void Bit::Default(Bit & b)
 {
     b.m_offset = 0;
+    b.m_elementIndex = 0;
+    b.m_elementOffset = 0;
     b.m_segment = std::make_shared<bytes::ptr::Segment>(0, 1, 
         std::make_shared<bytes::ptr::Object>(1));
-    b.m_segment->At(0) = 0;
+    b.m_segment->ReverseAt(0) = 0;
 }
 
 inline bool Bit::Validation(Bit & b)
@@ -109,15 +117,19 @@ inline bool Bit::Validation(Bit & b)
 inline Bit::Bit() :
     m_segment(std::make_shared<bytes::ptr::Segment>(0, 1, 
         std::make_shared<bytes::ptr::Object>(1))),
-    m_offset(0)
+    m_offset(0),
+    m_elementIndex(0),
+    m_elementOffset(0)
 {
-    m_segment->At(0) = 0;
+    m_segment->ReverseAt(0) = 0;
 }
 
 inline Bit::Bit(const bool & b) :
     m_segment(std::make_shared<bytes::ptr::Segment>(0, 1, 
         std::make_shared<bytes::ptr::Object>(1))),
-    m_offset(0)
+    m_offset(0),
+    m_elementIndex(0),
+    m_elementOffset(0)
 {
     *this = b;
 }
@@ -125,7 +137,9 @@ inline Bit::Bit(const bool & b) :
 inline Bit::Bit(const std::uint8_t & b) :
     m_segment(std::make_shared<bytes::ptr::Segment>(0, 1, 
         std::make_shared<bytes::ptr::Object>(1))),
-    m_offset(0)
+    m_offset(0),
+    m_elementIndex(0),
+    m_elementOffset(0)
 {
     *this = b;
 }
@@ -133,14 +147,18 @@ inline Bit::Bit(const std::uint8_t & b) :
 inline Bit::Bit(const std::uint8_t & b, const std::uint8_t & off) :
     m_segment(std::make_shared<bytes::ptr::Segment>(0, 1, 
         std::make_shared<bytes::ptr::Object>(1))),
-    m_offset(off)
+    m_offset(off),
+    m_elementIndex(0),
+    m_elementOffset(0)
 {
-    m_segment->At(0) = b;
+    m_segment->ReverseAt(0) = b;
 }
 
 inline Bit::Bit(const std::shared_ptr<bytes::ptr::Segment> & b) :
     m_segment(b),
-    m_offset(0)
+    m_offset(0),
+    m_elementIndex(0),
+    m_elementOffset(0)
 {
     Validation(*this);
 }
@@ -148,7 +166,30 @@ inline Bit::Bit(const std::shared_ptr<bytes::ptr::Segment> & b) :
 inline Bit::Bit(const std::shared_ptr<bytes::ptr::Segment> & b, 
     const std::uint8_t & off) :
         m_segment(b),
-        m_offset(off)
+        m_offset(off),
+        m_elementIndex(0),
+        m_elementOffset(0)
+{
+    Validation(*this);
+}
+
+inline Bit::Bit(const std::shared_ptr<bytes::ptr::Segment> & b, 
+    const std::uint8_t & off, const std::size_t & elem_i) :
+        m_segment(b),
+        m_offset(off),
+        m_elementIndex(elem_i),
+        m_elementOffset(0)
+{
+    Validation(*this);
+}
+
+inline Bit::Bit(const std::shared_ptr<bytes::ptr::Segment> & b, 
+    const std::uint8_t & off, const std::size_t & elem_i,
+    const std::uint8_t & elem_off) :
+        m_segment(b),
+        m_offset(off),
+        m_elementIndex(elem_i),
+        m_elementOffset(elem_off)
 {
     Validation(*this);
 }
@@ -157,19 +198,25 @@ inline Bit::~Bit()
 {
     m_segment = nullptr;
     m_offset = 0;
+    m_elementIndex = 0;
+    m_elementOffset = 0;
 }
 
 inline Bit::Bit(const Bit & cpy) :
     m_segment(std::make_shared<bytes::ptr::Segment>(0, 1, 
         std::make_shared<bytes::ptr::Object>(1))),
-    m_offset(0)
+    m_offset(0),
+    m_elementIndex(0),
+    m_elementOffset(0)
 {
     *this = static_cast<bool>(cpy);
 }
 
 inline Bit::Bit(Bit && mov) :
     m_segment(mov.m_segment),
-    m_offset(mov.m_offset)
+    m_offset(mov.m_offset),
+    m_elementIndex(mov.m_elementIndex),
+    m_elementOffset(mov.m_elementOffset)
 {
     Default(mov);
 }
@@ -186,8 +233,10 @@ inline Bit & Bit::operator=(const Bit & b)
 
 inline Bit & Bit::operator=(const bool & b)
 {
-    m_segment->At(0) &= ~byte::One(m_offset);
-    m_segment->At(0) |= byte::One(m_offset, b);
+    m_segment->ReverseAt(m_elementIndex, m_elementOffset) &= 
+        ~byte::One(m_offset);
+    m_segment->ReverseAt(m_elementIndex, m_elementOffset) |= 
+        byte::One(m_offset, b);
     return *this;
 }
 
@@ -201,21 +250,22 @@ inline bool Bit::IsSameObject(const Bit & b) const
     return m_segment->IsSameObject(*(b.m_segment));
 }
 
-inline bool 
-    Bit::IsSameObject(const std::shared_ptr<bytes::ptr::Object> & b) const
+inline bool Bit::
+    IsSameObject(const std::shared_ptr<bytes::ptr::Object> & b) const
 {
     return m_segment->IsSameObject(b);
 }
 
 inline Bit::operator bool() const
 {
-    return m_segment->At(0) & byte::One(m_offset);
+    return m_segment->ReverseAt(m_elementIndex, m_elementOffset) & 
+        byte::One(m_offset);
 }
 
 inline Bit::operator std::uint8_t() const
 {
-    if (m_segment->At(0) & byte::One(m_offset))
-        return std::uint8_t(1);
+    if (m_segment->ReverseAt(m_elementIndex, m_elementOffset) & 
+        byte::One(m_offset)) return std::uint8_t(1);
     return std::uint8_t(0);
 }
 
@@ -233,7 +283,8 @@ inline Bit & Bit::operator|=(const Bit & b)
 
 inline Bit & Bit::operator|=(const bool & b)
 {
-    m_segment->At(0) |= byte::One(m_offset, b);
+    m_segment->ReverseAt(m_elementIndex, m_elementOffset) |= 
+        byte::One(m_offset, b);
     return *this;
 }
 
@@ -270,8 +321,8 @@ inline Bit & Bit::operator&=(const Bit & b)
 
 inline Bit & Bit::operator&=(const bool & b)
 {
-    m_segment->At(0) &= (byte::One(m_offset, b) | 
-        ~byte::One(m_offset));
+    m_segment->ReverseAt(m_elementIndex, m_elementOffset) &= 
+        (byte::One(m_offset, b) | ~byte::One(m_offset));
     return *this;
 }
 
@@ -308,7 +359,8 @@ inline Bit & Bit::operator^=(const Bit & b)
 
 inline Bit & Bit::operator^=(const bool & b)
 {
-    m_segment->At(0) ^= byte::One(m_offset, b);
+    m_segment->ReverseAt(m_elementIndex, m_elementOffset) ^= 
+        byte::One(m_offset, b);
     return *this;
 }
 
@@ -406,10 +458,16 @@ inline bool Bit::operator!=(const std::uint8_t & b) const
 inline void Bit::Swap(Bit & b)
 {
     auto offset = m_offset;
+    auto elementIndex = m_elementIndex;
+    auto elementOffset = m_elementOffset;
     auto segment = m_segment;
     m_offset = b.m_offset;
+    m_elementIndex = b.m_elementIndex;
+    m_elementOffset = b.m_elementOffset;
     m_segment = b.m_segment;
     b.m_offset = offset;
+    b.m_elementIndex = elementIndex;
+    b.m_elementOffset = elementOffset;
     b.m_segment = segment; 
 }
 
