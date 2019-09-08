@@ -20,8 +20,8 @@ class Field
 public:
     typedef typename bit::field::Value<N>::Type ValueType;
 private:
-    static ValueType Value(const Field<N> & Field);
-    static void Value(Field<N> & Field, const ValueType & val);
+    static ValueType Value(const Field<N> & f);
+    static void Value(Field<N> & f, const ValueType & val);
 private:
     static inline void Default(Field<N> & b);
     static inline bool Validation(Field<N> & b);
@@ -145,12 +145,12 @@ public:
 };
 
 template<std::size_t N>
-inline typename Field<N>::ValueType Field<N>::Value(const Field<N> & Field)
+inline typename Field<N>::ValueType Field<N>::Value(const Field<N> & f)
 {
     const auto & endian = bytes::sys::Endian();
-    auto & segment = Field.m_segment;
-    const auto & index = Field.m_index;
-    const auto & offset = Field.m_offset;
+    auto & segment = f.m_segment;
+    const auto & index = f.m_index;
+    const auto & offset = f.m_offset;
     ValueType val = 0;
     std::uint8_t * pval = (std::uint8_t *)&val;
     std::size_t i_st = index;
@@ -164,12 +164,12 @@ inline typename Field<N>::ValueType Field<N>::Value(const Field<N> & Field)
 }
 
 template<std::size_t N>
-inline void Field<N>::Value(Field<N> & Field, const ValueType & val)
+inline void Field<N>::Value(Field<N> & f, const ValueType & val)
 {
     const auto & endian = bytes::sys::Endian();
-    auto & segment = Field.m_segment;
-    const auto & index = Field.m_index;
-    const auto & offset = Field.m_offset;
+    auto & segment = f.m_segment;
+    const auto & index = f.m_index;
+    const auto & offset = f.m_offset;
     std::uint8_t * pval = (std::uint8_t *)&val;
     std::size_t i_st = index;
     for (std::size_t j = 0; j < sizeof(ValueType); ++i_st, ++j)
