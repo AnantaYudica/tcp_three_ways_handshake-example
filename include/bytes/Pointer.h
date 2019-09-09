@@ -147,14 +147,14 @@ inline bool Pointer::Reallocate(const std::size_t & sz,
         }
         if ((**it) == *seg)
         {
-            ns = (*it)->Resize(sz);
+            ns = (*it)->Reallocate(sz);
             if (ns == od) return false;
             m_object->Reallocate(ns, seg->Begin(), seg->Begin() + od, 
                 &((*it)->GetTrait().GetEndian()));
             f = true;
             while (!q.empty())
             {
-                q.front()->Resize(seg->Begin(), od, ns);
+                q.front()->Reallocate(seg->Begin(), od, ns);
                 q.pop();
             }
         }
