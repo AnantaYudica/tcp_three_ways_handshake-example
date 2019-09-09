@@ -26,7 +26,6 @@ private:
     static inline void Default(Field<N> & b);
     static inline bool Validation(Field<N> & b);
 private:
-    std::uint8_t m_offset;
     std::size_t m_index;
     std::shared_ptr<bytes::ptr::Segment> m_segment;
 public:
@@ -35,8 +34,6 @@ public:
     inline Field(const std::shared_ptr<bytes::ptr::Segment> & b);
     inline Field(const std::shared_ptr<bytes::ptr::Segment> & b,
         const std::size_t & i);
-    inline Field(const std::shared_ptr<bytes::ptr::Segment> & b,
-        const std::size_t & i, const std::uint8_t & off);
     inline ~Field();
 public:
     inline Field(const Field<N> & cpy);
@@ -150,7 +147,6 @@ inline typename Field<N>::ValueType Field<N>::Value(const Field<N> & f)
     const auto & endian = bytes::sys::Endian();
     auto & segment = f.m_segment;
     const auto & index = f.m_index;
-    const auto & offset = f.m_offset;
     ValueType val = 0;
     std::uint8_t * pval = (std::uint8_t *)&val;
     std::size_t i_st = index;
@@ -158,7 +154,7 @@ inline typename Field<N>::ValueType Field<N>::Value(const Field<N> & f)
     {
         const std::size_t i = segment->Next(0, i_st);
         pval[endian.ReverseAt(j, 0, sizeof(ValueType))] =
-            segment->ReverseAt(i, offset, N);
+            segment->ReverseAt(i, N);
     }
     return val;
 }
@@ -169,13 +165,12 @@ inline void Field<N>::Value(Field<N> & f, const ValueType & val)
     const auto & endian = bytes::sys::Endian();
     auto & segment = f.m_segment;
     const auto & index = f.m_index;
-    const auto & offset = f.m_offset;
     std::uint8_t * pval = (std::uint8_t *)&val;
     std::size_t i_st = index;
     for (std::size_t j = 0; j < sizeof(ValueType); ++i_st, ++j)
     {
         const std::size_t i = segment->Next(0, i_st);
-        segment->ReverseAt(i, offset, N) = 
+        segment->ReverseAt(i, N) = 
             pval[endian.ReverseAt(j, 0, sizeof(ValueType))];
     }
 }
@@ -183,7 +178,6 @@ inline void Field<N>::Value(Field<N> & f, const ValueType & val)
 template<std::size_t N>
 inline void Field<N>::Default(Field<N> & b)
 {
-    b.m_offset = 0;
     b.m_index = 0;
     b.m_segment = std::make_shared<bytes::ptr::Segment>(0, sizeof(ValueType),
         std::make_shared<bytes::ptr::Object>(sizeof(ValueType)));
@@ -202,7 +196,6 @@ inline bool Field<N>::Validation(Field<N> & b)
 
 template<std::size_t N>
 inline Field<N>::Field() :
-    m_offset(0),
     m_index(0),
     m_segment(new bytes::ptr::Segment(0, sizeof(ValueType), 
         std::make_shared<bytes::ptr::Object>(sizeof(ValueType))))
@@ -210,7 +203,6 @@ inline Field<N>::Field() :
 
 template<std::size_t N>
 inline Field<N>::Field(const ValueType & b) :
-    m_offset(0),
     m_index(0),
     m_segment(new bytes::ptr::Segment(0, sizeof(ValueType), 
         std::make_shared<bytes::ptr::Object>(sizeof(ValueType))))
@@ -220,7 +212,6 @@ inline Field<N>::Field(const ValueType & b) :
 
 template<std::size_t N>
 inline Field<N>::Field(const std::shared_ptr<bytes::ptr::Segment> & b) :
-    m_offset(0),
     m_index(0),
     m_segment(b)
 {
@@ -230,17 +221,6 @@ inline Field<N>::Field(const std::shared_ptr<bytes::ptr::Segment> & b) :
 template<std::size_t N>
 inline Field<N>::Field(const std::shared_ptr<bytes::ptr::Segment> & b,
     const std::size_t & i) :
-        m_offset(0),
-        m_index(i),
-        m_segment(b)
-{
-    Validation(*this);
-}
-    
-template<std::size_t N>
-inline Field<N>::Field(const std::shared_ptr<bytes::ptr::Segment> & b,
-    const std::size_t & i, const std::uint8_t & off) :
-        m_offset(off),
         m_index(i),
         m_segment(b)
 {
@@ -250,14 +230,12 @@ inline Field<N>::Field(const std::shared_ptr<bytes::ptr::Segment> & b,
 template<std::size_t N>
 inline Field<N>::~Field()
 {
-    m_offset = 0;
     m_index = 0;
     m_segment = nullptr;
 }
 
 template<std::size_t N>
 inline Field<N>::Field(const Field<N> & cpy) :
-    m_offset(0),
     m_index(0),
     m_segment(new bytes::ptr::Segment(0, sizeof(ValueType), 
         std::make_shared<bytes::ptr::Object>(sizeof(ValueType))))
@@ -267,7 +245,6 @@ inline Field<N>::Field(const Field<N> & cpy) :
 
 template<std::size_t N>
 inline Field<N>::Field(Field<N> && mov) :
-    m_offset(mov.m_offset),
     m_index(mov.m_index),
     m_segment(mov.m_segment)
 {
@@ -614,13 +591,13 @@ inline Field<N> Field<N>::operator%(const ValueType& b) const
 template<std::size_t N>
 inline Bit Field<N>::operator[](const std::size_t & i)
 {
-    return {m_segment, i % 8, m_index + (i / 8), m_offset};
+    return {m_segment, i % 8, m_index + (i / 8)};
 }
 
 template<std::size_t N>
 inline const Bit Field<N>::operator[](const std::size_t & i) const
 {
-    Bit res{m_segment->ReverseAt(m_index + (i / 8), m_offset), i % 8};
+    Bit res{m_segment->ReverseAt(m_index + (i / 8)), i % 8};
     return res;
 }
 
@@ -699,13 +676,10 @@ inline bool Field<N>::operator>=(const ValueType & b) const
 template<std::size_t N>
 inline void Field<N>::Swap(Field<N> & b)
 {
-    auto offset = m_offset;
     auto index = m_index;
     auto segment = m_segment;
-    m_offset = b.m_offset;
     m_index = b.m_index;
     m_segment = b.m_segment;
-    b.m_offset = offset;
     b.m_index = index;
     b.m_segment = segment;
 }
