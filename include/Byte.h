@@ -15,7 +15,6 @@ private:
     static inline void Default(Byte & b);
     static inline bool Validation(Byte & b);
 private:
-    std::uint8_t m_offset;
     std::size_t m_index;
     std::shared_ptr<bytes::ptr::Segment> m_segment;
 public:
@@ -24,8 +23,6 @@ public:
     inline Byte(const std::shared_ptr<bytes::ptr::Segment> & b);
     inline Byte(const std::shared_ptr<bytes::ptr::Segment> & b,
         const std::size_t & i);
-    inline Byte(const std::shared_ptr<bytes::ptr::Segment> & b,
-        const std::size_t & i, const std::uint8_t & off);
 public:
     inline ~Byte();
 public:
@@ -140,7 +137,6 @@ inline void Byte::Default(Byte & b)
         std::make_shared<bytes::ptr::Object>(1));
     b.m_segment->ReverseAt(0) = 0;
     b.m_index = 0;
-    b.m_offset = 0;
 }
 
 inline bool Byte::Validation(Byte & b)
@@ -156,8 +152,7 @@ inline bool Byte::Validation(Byte & b)
 inline Byte::Byte() :
     m_segment(new bytes::ptr::Segment(0, 1, 
         std::make_shared<bytes::ptr::Object>(1))),
-    m_index(0),
-    m_offset(0)
+    m_index(0)
 {
     m_segment->ReverseAt(0) = 0;
 }
@@ -165,16 +160,14 @@ inline Byte::Byte() :
 inline Byte::Byte(const std::uint8_t & b) :
     m_segment(new bytes::ptr::Segment(0, 1, 
         std::make_shared<bytes::ptr::Object>(1))),
-    m_index(0),
-    m_offset(0)
+    m_index(0)
 {
     m_segment->ReverseAt(0) = b;
 }
 
 inline Byte::Byte(const std::shared_ptr<bytes::ptr::Segment> & b) :
     m_segment(b),
-    m_index(0),
-    m_offset(0)
+    m_index(0)
 {
     Validation(*this);
 }
@@ -182,17 +175,7 @@ inline Byte::Byte(const std::shared_ptr<bytes::ptr::Segment> & b) :
 inline Byte::Byte(const std::shared_ptr<bytes::ptr::Segment> & b,
     const std::size_t & i) :
         m_segment(b),
-        m_index(i),
-        m_offset(0)
-{
-    Validation(*this);
-}
-
-inline Byte::Byte(const std::shared_ptr<bytes::ptr::Segment> & b,
-    const std::size_t & i, const std::uint8_t & off) :
-        m_segment(b),
-        m_index(i),
-        m_offset(off)
+        m_index(i)
 {
     Validation(*this);
 }
@@ -201,39 +184,36 @@ inline Byte::~Byte()
 {
     m_segment = nullptr;
     m_index = 0;
-    m_offset = 0;
 }
 
 inline Byte::Byte(const Byte & cpy) :
     m_segment(new bytes::ptr::Segment(0, 1, 
         std::make_shared<bytes::ptr::Object>(1))),
-    m_index(0),
-    m_offset(0)
+    m_index(0)
 {
     (*this) = cpy;
 }
 
 inline Byte::Byte(Byte && mov) :
     m_segment(mov.m_segment),
-    m_index(mov.m_index),
-    m_offset(mov.m_offset)
+    m_index(mov.m_index)
 {
     Default(mov);
 }
 
 inline Byte & Byte::operator=(Byte && b)
 {
-    return (*this = b.m_segment->ReverseAt(m_index, m_offset));
+    return (*this = b.m_segment->ReverseAt(m_index));
 }
 
 inline Byte & Byte::operator=(const Byte & b)
 {
-    return (*this = b.m_segment->ReverseAt(m_index, m_offset));
+    return (*this = b.m_segment->ReverseAt(m_index));
 }
 
 inline Byte & Byte::operator=(const std::uint8_t & b)
 {
-    m_segment->ReverseAt(m_index, m_offset) = b;
+    m_segment->ReverseAt(m_index) = b;
     return *this;
 }
 
@@ -250,7 +230,7 @@ inline bool
 
 inline Byte::operator std::uint8_t() const
 {
-    return m_segment->ReverseAt(m_index, m_offset);
+    return m_segment->ReverseAt(m_index);
 }
 
 inline Byte Byte::operator~() const
@@ -267,7 +247,7 @@ inline Byte & Byte::operator|=(const Byte & b)
 
 inline Byte & Byte::operator|=(const std::uint8_t & b)
 {
-    m_segment->ReverseAt(m_index, m_offset) |= b;
+    m_segment->ReverseAt(m_index) |= b;
     return *this;
 }
 
@@ -292,7 +272,7 @@ inline Byte & Byte::operator&=(const Byte & b)
 
 inline Byte & Byte::operator&=(const std::uint8_t & b)
 {
-    m_segment->ReverseAt(m_index, m_offset) &= b;
+    m_segment->ReverseAt(m_index) &= b;
     return *this;
 }
 
@@ -317,7 +297,7 @@ inline Byte & Byte::operator^=(const Byte & b)
 
 inline Byte & Byte::operator^=(const std::uint8_t & b)
 {
-    m_segment->ReverseAt(m_index, m_offset) ^= b;
+    m_segment->ReverseAt(m_index) ^= b;
     return *this;
 }
 
@@ -337,7 +317,7 @@ inline Byte Byte::operator^(const std::uint8_t & b) const
 
 inline Byte & Byte::operator>>=(const std::uint8_t & b)
 {
-    m_segment->ReverseAt(m_index, m_offset) >>= b;
+    m_segment->ReverseAt(m_index) >>= b;
     return *this;
 }
 
@@ -350,7 +330,7 @@ inline Byte Byte::operator>>(const std::uint8_t & b) const
 
 inline Byte & Byte::operator<<=(const std::uint8_t & b)
 {
-    m_segment->ReverseAt(m_index, m_offset) <<= b;
+    m_segment->ReverseAt(m_index) <<= b;
     return *this;
 }
 
@@ -392,7 +372,7 @@ inline Byte & Byte::operator+=(const Byte & b)
 
 inline Byte & Byte::operator+=(const std::uint8_t & b)
 {
-    m_segment->ReverseAt(m_index, m_offset) += b;
+    m_segment->ReverseAt(m_index) += b;
     return *this;
 }
 
@@ -417,7 +397,7 @@ inline Byte & Byte::operator-=(const Byte & b)
 
 inline Byte & Byte::operator-=(const std::uint8_t & b)
 {
-    m_segment->ReverseAt(m_index, m_offset) -= b;
+    m_segment->ReverseAt(m_index) -= b;
     return *this;
 }
 
@@ -442,7 +422,7 @@ inline Byte & Byte::operator*=(const Byte & b)
 
 inline Byte & Byte::operator*=(const std::uint8_t & b)
 {
-    m_segment->ReverseAt(m_index, m_offset) *= b;
+    m_segment->ReverseAt(m_index) *= b;
     return *this;
 }
 
@@ -467,7 +447,7 @@ inline Byte & Byte::operator/=(const Byte & b)
 
 inline Byte & Byte::operator/=(const std::uint8_t & b)
 {
-    m_segment->ReverseAt(m_index, m_offset) /= b;
+    m_segment->ReverseAt(m_index) /= b;
     return *this;
 }
 
@@ -492,7 +472,7 @@ inline Byte & Byte::operator%=(const Byte & b)
 
 inline Byte & Byte::operator%=(const std::uint8_t & b)
 {
-    m_segment->ReverseAt(m_index, m_offset) %= b;
+    m_segment->ReverseAt(m_index) %= b;
     return *this;
 }
 
@@ -512,12 +492,12 @@ inline Byte Byte::operator%(const std::uint8_t & b) const
 
 inline Bit Byte::operator[](const std::uint8_t & i)
 {
-    return {m_segment, i, m_index, m_offset};
+    return {m_segment, i, m_index};
 }
 
 inline const Bit Byte::operator[](const std::uint8_t & i) const
 {
-    Bit res{m_segment->ReverseAt(m_index, m_offset), i};
+    Bit res{m_segment->ReverseAt(m_index), i};
     return res;
 }
 
@@ -528,7 +508,7 @@ inline bool Byte::operator==(const Byte & b) const
 
 inline bool Byte::operator==(const std::uint8_t & b) const
 {
-    return m_segment->ReverseAt(m_index, m_offset) == b;
+    return m_segment->ReverseAt(m_index) == b;
 }
 
 inline bool Byte::operator!=(const Byte & b) const
@@ -548,7 +528,7 @@ inline bool Byte::operator<(const Byte & b) const
 
 inline bool Byte::operator<(const std::uint8_t & b) const
 {
-    return m_segment->ReverseAt(m_index, m_offset) < b;
+    return m_segment->ReverseAt(m_index) < b;
 }
 
 inline bool Byte::operator<=(const Byte & b) const
@@ -558,7 +538,7 @@ inline bool Byte::operator<=(const Byte & b) const
 
 inline bool Byte::operator<=(const std::uint8_t & b) const
 {
-    return m_segment->ReverseAt(m_index, m_offset) <= b;
+    return m_segment->ReverseAt(m_index) <= b;
 }
 
 inline bool Byte::operator>(const Byte & b) const
@@ -568,7 +548,7 @@ inline bool Byte::operator>(const Byte & b) const
 
 inline bool Byte::operator>(const std::uint8_t & b) const
 {
-    return m_segment->ReverseAt(m_index, m_offset) > b;
+    return m_segment->ReverseAt(m_index) > b;
 }
 
 inline bool Byte::operator>=(const Byte & b) const
@@ -578,20 +558,17 @@ inline bool Byte::operator>=(const Byte & b) const
 
 inline bool Byte::operator>=(const std::uint8_t & b) const
 {
-    return m_segment->ReverseAt(m_index, m_offset) >= b;
+    return m_segment->ReverseAt(m_index) >= b;
 }
 
 inline void Byte::Swap(Byte & b)
 {
     auto segment = m_segment;
     auto index = m_index;
-    auto offset = m_offset;
     m_segment = b.m_segment;
     m_index = b.m_index;
-    m_offset = b.m_offset;
     b.m_segment = segment;
     b.m_index = index;
-    b.m_offset = offset;
 }
 
 inline Byte operator|(const std::uint8_t & a, const Byte & b)
