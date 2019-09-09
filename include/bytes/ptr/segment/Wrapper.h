@@ -34,12 +34,14 @@ public:
 public:
     using bytes::ptr::Segment::GetTrait;
 public:
+    using bytes::ptr::Segment::Offset;
+public:
     using bytes::ptr::Segment::Begin;
 public:
     using bytes::ptr::Segment::End;
 public:
-    inline std::size_t Resize(const std::size_t & s);
-    inline void Resize(const std::size_t & i, const std::size_t & s,
+    inline std::size_t Reallocate(const std::size_t & s);
+    inline void Reallocate(const std::size_t & i, const std::size_t & s,
         const std::size_t & ns);
 };
 
@@ -75,12 +77,12 @@ inline Warpper & Warpper::operator=(Warpper && mov)
     return *this;
 }
 
-inline std::size_t Warpper::Resize(const std::size_t & s)
+inline std::size_t Warpper::Reallocate(const std::size_t & s)
 {
-    return bytes::ptr::Segment::Resize(s);
+    return bytes::ptr::Segment::Reallocate(s);
 }
 
-inline void Warpper::Resize(const std::size_t & i, const std::size_t & s,
+inline void Warpper::Reallocate(const std::size_t & i, const std::size_t & s,
     const std::size_t & ns)
 {
     if (s == ns) return;
@@ -99,7 +101,7 @@ inline void Warpper::Resize(const std::size_t & i, const std::size_t & s,
         End(End() - d);
     }
     else if (!ised_before && !isbg_after)
-        Resize(ns);
+        Reallocate(ns);
 }
 
 } //!segment
