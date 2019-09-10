@@ -44,6 +44,9 @@ public:
 public:
     inline std::shared_ptr<bytes::ptr::Segment> Share(const std::size_t & bg, 
         const std::size_t & ed, const std::shared_ptr<bytes::Trait> & t);
+    inline std::shared_ptr<bytes::ptr::Segment> Share(const std::size_t & bg, 
+        const std::size_t & ed, const std::uint8_t & off,
+        const std::shared_ptr<bytes::Trait> & t);
 public:
     inline std::size_t Size() const;
 public:
@@ -161,7 +164,7 @@ inline bool Pointer::Reallocate(const std::size_t & sz,
         else 
         {
             if (!f) q.push(*it);
-            else (*it)->Resize(seg->Begin(), od, ns);
+            else (*it)->Reallocate(seg->Begin(), od, ns);
         }
         ++it;
     }
@@ -172,13 +175,20 @@ inline std::shared_ptr<bytes::ptr::Segment>
     Pointer::Share(const std::size_t & bg, const std::size_t & ed,
         const std::shared_ptr<bytes::Trait> & t)
 {
+    return Share(bg, ed, 0, t);
+}
+
+inline std::shared_ptr<bytes::ptr::Segment> 
+    Pointer::Share(const std::size_t & bg, const std::size_t & ed, 
+        const std::uint8_t & off, const std::shared_ptr<bytes::Trait> & t)
+{
     if (!*this) return std::make_shared<bytes::ptr::Segment>();
     for(auto it = m_segments.begin(); it != m_segments.end(); ++it)
     {
         if ((*it)->Begin() == bg && (*it)->End() == ed && 
             (*it)->GetTrait() == *t) return (*it);
     }
-    auto nseg = std::make_shared<bytes::ptr::segment::Warpper>(bg, ed, 
+    auto nseg = std::make_shared<bytes::ptr::segment::Warpper>(bg, ed, off,
         m_object, t);
     m_segments.push_back(nseg);
     return nseg;
