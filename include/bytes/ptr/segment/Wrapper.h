@@ -23,6 +23,10 @@ public:
     inline Warpper(const std::size_t & bg, const std::size_t & ed,
         const std::shared_ptr<bytes::ptr::Object> & o,
         const std::shared_ptr<bytes::Trait> & t);
+    inline Warpper(const std::size_t & bg, const std::size_t & ed,
+        const std::uint8_t & off, 
+        const std::shared_ptr<bytes::ptr::Object> & o,
+        const std::shared_ptr<bytes::Trait> & t);
 public:
     inline ~Warpper();
 public:
@@ -53,6 +57,13 @@ inline Warpper::Warpper(const std::size_t & bg, const std::size_t & ed,
     const std::shared_ptr<bytes::Trait> & t) :
         bytes::ptr::Segment(bg, ed, o, t)
 {} 
+
+inline Warpper::Warpper(const std::size_t & bg, const std::size_t & ed,
+    const std::uint8_t & off, 
+    const std::shared_ptr<bytes::ptr::Object> & o,
+    const std::shared_ptr<bytes::Trait> & t) :
+        bytes::ptr::Segment(bg, ed, off, o, t)
+{}
 
 inline Warpper::~Warpper()
 {}
