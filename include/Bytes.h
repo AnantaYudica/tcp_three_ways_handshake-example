@@ -6,6 +6,8 @@
 #include <memory>
 #include <initializer_list>
 
+#include "bit/Field.h"
+#include "bit/field/min/Allocation.h"
 #include "Byte.h"
 #include "bytes/Base.h"
 #include "bytes/arithmetic/Addition.h"
@@ -82,8 +84,17 @@ private:
         const std::size_t & s, const bytes::Trait & t);
     inline Bytes(const std::shared_ptr<bytes::Pointer> & ptr, 
         const std::size_t & s, const std::shared_ptr<bytes::Trait> & t);
+private: 
     inline Bytes(const std::shared_ptr<bytes::Pointer> & ptr, 
-        const std::size_t & s, const bytes::Endian::CategoryEnum & e,
+        const std::size_t & s, const std::uint8_t & off);
+    inline Bytes(const std::shared_ptr<bytes::Pointer> & ptr, 
+        const std::size_t & s, const std::uint8_t & off, 
+        const bytes::Endian::CategoryEnum & e);
+    inline Bytes(const std::shared_ptr<bytes::Pointer> & ptr, 
+        const std::size_t & s, const std::uint8_t & off, 
+        const bytes::Trait & t);
+    inline Bytes(const std::shared_ptr<bytes::Pointer> & ptr, 
+        const std::size_t & s, const std::uint8_t & off, 
         const std::shared_ptr<bytes::Trait> & t);
 private:
     inline Bytes(const std::shared_ptr<bytes::Pointer> & ptr, 
@@ -97,6 +108,19 @@ private:
     inline Bytes(const std::shared_ptr<bytes::Pointer> & ptr, 
         const std::size_t & bg, const std::size_t & ed, 
         const std::shared_ptr<bytes::Trait> & t);
+private:
+    inline Bytes(const std::shared_ptr<bytes::Pointer> & ptr, 
+        const std::size_t & bg, const std::size_t & ed, 
+        const std::uint8_t & off);
+    inline Bytes(const std::shared_ptr<bytes::Pointer> & ptr, 
+        const std::size_t & bg, const std::size_t & ed, 
+        const std::uint8_t & off, const bytes::Endian::CategoryEnum & e);
+    inline Bytes(const std::shared_ptr<bytes::Pointer> & ptr, 
+        const std::size_t & bg, const std::size_t & ed, 
+        const std::uint8_t & off, const bytes::Trait & t);
+    inline Bytes(const std::shared_ptr<bytes::Pointer> & ptr, 
+        const std::size_t & bg, const std::size_t & ed, 
+        const std::uint8_t & off, const std::shared_ptr<bytes::Trait> & t);
 public:
     inline ~Bytes();
 public:
@@ -147,6 +171,15 @@ public:
     inline Bytes Slice(const std::size_t & i, const bytes::Trait & t);
     inline const Bytes Slice(const std::size_t & i, 
         const bytes::Trait & t) const;
+public:
+    inline Bytes Slice(const std::size_t & i, const std::uint8_t & off);
+    inline const Bytes Slice(const std::size_t & i, 
+        const std::uint8_t & off) const;
+    inline Bytes Slice(const std::size_t & i, const std::uint8_t & off,
+        const bytes::Trait & t);
+    inline const Bytes Slice(const std::size_t & i, const std::uint8_t & off, 
+        const bytes::Trait & t) const;
+public:
     inline Bytes Slice(const std::size_t & i, const std::size_t & s);
     inline const Bytes Slice(const std::size_t & i, 
         const std::size_t & s) const;
@@ -154,6 +187,59 @@ public:
         const bytes::Trait & t);
     inline const Bytes Slice(const std::size_t & i, const std::size_t & s,
         const bytes::Trait & t) const;
+public:     
+    inline Bytes Slice(const std::size_t & i, const std::size_t & s,
+        const std::uint8_t & off);
+    inline const Bytes Slice(const std::size_t & i, const std::size_t & s,
+        const std::uint8_t & off) const;
+    inline Bytes Slice(const std::size_t & i, const std::size_t & s,
+        const std::uint8_t & off, const bytes::Trait & t);
+    inline const Bytes Slice(const std::size_t & i, const std::size_t & s,
+        const std::uint8_t & off, const bytes::Trait & t) const;
+public:
+    template<std::size_t N>
+    inline bit::Field<N> Value();
+    template<std::size_t N>
+    inline const bit::Field<N> Value() const;
+    template<std::size_t N>
+    inline bit::Field<N> Value(const bytes::Trait & t);
+    template<std::size_t N>
+    inline const bit::Field<N> Value(const bytes::Trait & t) const;
+public:
+    template<std::size_t N>
+    inline bit::Field<N> Value(const std::uint8_t & off);
+    template<std::size_t N>
+    inline const bit::Field<N> Value(const std::uint8_t & off) const;
+    template<std::size_t N>
+    inline bit::Field<N> Value(const std::uint8_t & off,
+        const bytes::Trait & t);
+    template<std::size_t N>
+    inline const bit::Field<N> Value(const std::uint8_t & off,
+        const bytes::Trait & t) const;
+public:
+    template<std::size_t N>
+    inline bit::Field<N> Value(const std::size_t & i);
+    template<std::size_t N>
+    inline bit::Field<N> Value(const std::size_t & i) const;
+    template<std::size_t N>
+    inline bit::Field<N> Value(const std::size_t & i, 
+        const bytes::Trait & t);
+    template<std::size_t N>
+    inline const bit::Field<N> Value(const std::size_t & i,
+        const bytes::Trait & t) const;
+public: 
+    template<std::size_t N>
+    inline bit::Field<N> Value(const std::size_t & i,
+        const std::uint8_t & off);
+    template<std::size_t N>
+    inline bit::Field<N> Value(const std::size_t & i,
+        const std::uint8_t & off) const;
+    template<std::size_t N>
+    inline bit::Field<N> Value(const std::size_t & i,
+        const std::uint8_t & off, const bytes::Trait & t);
+    template<std::size_t N>
+    inline const bit::Field<N> Value(const std::size_t & i,
+        const std::uint8_t & off, const bytes::Trait & t) const;
 public:
     inline std::uint8_t * Get();
     inline const std::uint8_t * Get() const;
@@ -339,6 +425,29 @@ inline Bytes::Bytes(const std::shared_ptr<bytes::Pointer> & ptr,
 {}
 
 inline Bytes::Bytes(const std::shared_ptr<bytes::Pointer> & ptr, 
+    const std::size_t & s, const std::uint8_t & off) :
+        bytes::Base(ptr, s, off)
+{}
+
+inline Bytes::Bytes(const std::shared_ptr<bytes::Pointer> & ptr, 
+    const std::size_t & s, const std::uint8_t & off, 
+    const bytes::Endian::CategoryEnum & e) :
+        bytes::Base(ptr, s, off, e)
+{}
+
+inline Bytes::Bytes(const std::shared_ptr<bytes::Pointer> & ptr, 
+    const std::size_t & s, const std::uint8_t & off, 
+    const bytes::Trait & t) :
+        bytes::Base(ptr, s, off, t)
+{}
+
+inline Bytes::Bytes(const std::shared_ptr<bytes::Pointer> & ptr, 
+    const std::size_t & s, const std::uint8_t & off, 
+    const std::shared_ptr<bytes::Trait> & t) :
+        bytes::Base(ptr, s, off, t)
+{}
+
+inline Bytes::Bytes(const std::shared_ptr<bytes::Pointer> & ptr, 
     const std::size_t & bg, const std::size_t & ed) :
         bytes::Base(ptr, bg, ed)
 {}
@@ -361,6 +470,29 @@ inline Bytes::Bytes(const std::shared_ptr<bytes::Pointer> & ptr,
         bytes::Base(ptr, bg, ed, t)
 {}
 
+inline Bytes::Bytes(const std::shared_ptr<bytes::Pointer> & ptr, 
+    const std::size_t & bg, const std::size_t & ed, 
+    const std::uint8_t & off) :
+        bytes::Base(ptr, bg, ed, off)
+{}
+
+inline Bytes::Bytes(const std::shared_ptr<bytes::Pointer> & ptr, 
+    const std::size_t & bg, const std::size_t & ed, 
+    const std::uint8_t & off, const bytes::Endian::CategoryEnum & e) :
+        bytes::Base(ptr, bg, ed, off, e)
+{}
+
+inline Bytes::Bytes(const std::shared_ptr<bytes::Pointer> & ptr, 
+    const std::size_t & bg, const std::size_t & ed, 
+    const std::uint8_t & off, const bytes::Trait & t) :
+        bytes::Base(ptr, bg, ed, off, t)
+{}
+
+inline Bytes::Bytes(const std::shared_ptr<bytes::Pointer> & ptr, 
+    const std::size_t & bg, const std::size_t & ed, 
+    const std::uint8_t & off, const std::shared_ptr<bytes::Trait> & t) :
+        bytes::Base(ptr, bg, ed, off, t)
+{}
 
 inline Bytes::~Bytes()
 {}
@@ -411,8 +543,7 @@ const bytes::Trait & Bytes::GetTrait() const
 
 Byte Bytes::At(const std::size_t & i)
 {
-    const std::size_t index = GetSegment()->At(i).Index();
-    return Byte(GetPointer()->Share(index, index + 1, 
+    return Byte(GetPointer()->Share(i, i + 1, 
         SetCapacityTrait<bytes::trait::capacity::Fixed>(GetTrait())));
 }
 
@@ -537,6 +668,31 @@ inline const Bytes Bytes::Slice(const std::size_t & i,
     return Bytes(_this->GetPointer(), i, t);
 }
 
+inline Bytes Bytes::Slice(const std::size_t & i, const std::uint8_t & off)
+{
+    return Bytes(GetPointer(), i, off);
+}
+
+inline const Bytes Bytes::Slice(const std::size_t & i, 
+    const std::uint8_t & off) const
+{
+    auto _this = const_cast<Bytes *>(this);
+    return Bytes(_this->GetPointer(), i, off);
+}
+
+inline Bytes Bytes::Slice(const std::size_t & i, const std::uint8_t & off,
+    const bytes::Trait & t)
+{
+    return Bytes(GetPointer(), i, off, t);
+}
+
+inline const Bytes Bytes::Slice(const std::size_t & i, const std::uint8_t & off, 
+    const bytes::Trait & t) const
+{
+    auto _this = const_cast<Bytes *>(this);
+    return Bytes(_this->GetPointer(), i, off, t);
+}
+
 inline Bytes Bytes::Slice(const std::size_t & i, const std::size_t & s)
 {
     return Bytes(GetPointer(), i, i + s, GetTrait());
@@ -562,6 +718,161 @@ inline const Bytes Bytes::Slice(const std::size_t & i, const std::size_t & s,
     return Bytes(_this->GetPointer(), i, i + s, t);
 }
 
+inline Bytes Bytes::Slice(const std::size_t & i, const std::size_t & s,
+    const std::uint8_t & off)
+{
+    return Bytes(GetPointer(), i, i + s, off);
+}
+
+inline const Bytes Bytes::Slice(const std::size_t & i, const std::size_t & s,
+    const std::uint8_t & off) const
+{
+    auto _this = const_cast<Bytes *>(this);
+    return Bytes(_this->GetPointer(), i, i + s, off);
+}
+
+inline Bytes Bytes::Slice(const std::size_t & i, const std::size_t & s,
+    const std::uint8_t & off, const bytes::Trait & t)
+{
+    return Bytes(GetPointer(), i, i + s, off, t);
+}
+
+inline const Bytes Bytes::Slice(const std::size_t & i, const std::size_t & s,
+    const std::uint8_t & off, const bytes::Trait & t) const
+{
+    auto _this = const_cast<Bytes *>(this);
+    return Bytes(_this->GetPointer(), i, i + s, off, t);
+}
+
+template<std::size_t N>
+inline bit::Field<N> Bytes::Value()
+{
+    return bit::Field<N>(GetPointer()->Share(0, 
+        bit::field::min::Allocation<N>(), Trait()));
+}
+
+template<std::size_t N>
+inline const bit::Field<N> Bytes::Value() const
+{
+    auto _this = const_cast<Bytes *>(this);
+    return bit::Field<N>(_this->GetPointer()->Share(0, 
+        bit::field::min::Allocation<N>(), Trait()));
+}
+
+template<std::size_t N>
+inline bit::Field<N> Bytes::Value(const bytes::Trait & t)
+{
+    return bit::Field<N>(GetPointer()->Share(0, 
+        bit::field::min::Allocation<N>(), Trait(t)));
+}
+
+template<std::size_t N>
+inline const bit::Field<N> Bytes::Value(const bytes::Trait & t) const
+{
+    auto _this = const_cast<Bytes *>(this);
+    return bit::Field<N>(_this->GetPointer()->Share(0, 
+        bit::field::min::Allocation<N>(), Trait(t)));
+}
+
+template<std::size_t N>
+inline bit::Field<N> Bytes::Value(const std::uint8_t & off)
+{
+    return bit::Field<N>(GetPointer()->Share(0, 
+        bit::field::min::Allocation<N>(), off, Trait()));
+}
+
+template<std::size_t N>
+inline const bit::Field<N> Bytes::Value(const std::uint8_t & off) const
+{
+    auto _this = const_cast<Bytes *>(this);
+    return bit::Field<N>(_this->GetPointer()->Share(0, 
+        bit::field::min::Allocation<N>(), off, Trait()));
+}
+
+template<std::size_t N>
+inline bit::Field<N> Bytes::Value(const std::uint8_t & off,
+    const bytes::Trait & t)
+{
+    return bit::Field<N>(GetPointer()->Share(0, 
+        bit::field::min::Allocation<N>(), off, Trait(t)));
+}
+
+template<std::size_t N>
+inline const bit::Field<N> Bytes::Value(const std::uint8_t & off,
+    const bytes::Trait & t) const
+{
+    auto _this = const_cast<Bytes *>(this);
+    return bit::Field<N>(_this->GetPointer()->Share(0, 
+        bit::field::min::Allocation<N>(), off, Trait(t)));
+}
+
+template<std::size_t N>
+inline bit::Field<N> Bytes::Value(const std::size_t & i)
+{
+    return bit::Field<N>(GetPointer()->Share(i, 
+        bit::field::min::Allocation<N>(), Trait()));
+}
+
+template<std::size_t N>
+inline bit::Field<N> Bytes::Value(const std::size_t & i) const
+{
+    auto _this = const_cast<Bytes *>(this);
+    return bit::Field<N>(_this->GetPointer()->Share(i, 
+        bit::field::min::Allocation<N>(), Trait()));
+}
+
+template<std::size_t N>
+inline bit::Field<N> Bytes::Value(const std::size_t & i, 
+    const bytes::Trait & t)
+{
+    return bit::Field<N>(GetPointer()->Share(i, 
+        bit::field::min::Allocation<N>(), Trait(t)));
+}
+
+template<std::size_t N>
+inline const bit::Field<N> Bytes::Value(const std::size_t & i,
+    const bytes::Trait & t) const
+{
+    auto _this = const_cast<Bytes *>(this);
+    return bit::Field<N>(_this->GetPointer()->Share(i, 
+        bit::field::min::Allocation<N>(), Trait(t)));
+}
+    
+template<std::size_t N>
+inline bit::Field<N> Bytes::Value(const std::size_t & i,
+    const std::uint8_t & off)
+{
+    return bit::Field<N>(GetPointer()->Share(i, 
+        bit::field::min::Allocation<N>(), off, Trait()));
+}
+
+template<std::size_t N>
+inline bit::Field<N> Bytes::Value(const std::size_t & i,
+    const std::uint8_t & off) const
+{
+    auto _this = const_cast<Bytes *>(this);
+    return bit::Field<N>(_this->GetPointer()->Share(i, 
+        bit::field::min::Allocation<N>(), off, Trait()));
+}
+
+template<std::size_t N>
+inline bit::Field<N> Bytes::Value(const std::size_t & i,
+    const std::uint8_t & off, const bytes::Trait & t)
+{
+    
+    return bit::Field<N>(GetPointer()->Share(i, 
+        bit::field::min::Allocation<N>(), off, Trait(t)));
+}
+
+template<std::size_t N>
+inline const bit::Field<N> Bytes::Value(const std::size_t & i,
+    const std::uint8_t & off, const bytes::Trait & t) const
+{
+    auto _this = const_cast<Bytes *>(this);
+    return bit::Field<N>(_this->GetPointer()->Share(i, 
+        bit::field::min::Allocation<N>(), off, Trait(t)));
+}
+    
 inline std::uint8_t * Bytes::Get()
 {
     return GetSegment()->Get();
