@@ -76,8 +76,17 @@ protected:
         const std::size_t & s, const bytes::Trait & t);
     inline Base(const std::shared_ptr<bytes::Pointer> & ptr, 
         const std::size_t & s, const std::shared_ptr<bytes::Trait> & t);
+protected: 
     inline Base(const std::shared_ptr<bytes::Pointer> & ptr, 
-        const std::size_t & s, const bytes::Endian::CategoryEnum & e,
+        const std::size_t & s, const std::uint8_t & off);
+    inline Base(const std::shared_ptr<bytes::Pointer> & ptr, 
+        const std::size_t & s, const std::uint8_t & off, 
+        const bytes::Endian::CategoryEnum & e);
+    inline Base(const std::shared_ptr<bytes::Pointer> & ptr, 
+        const std::size_t & s, const std::uint8_t & off, 
+        const bytes::Trait & t);
+    inline Base(const std::shared_ptr<bytes::Pointer> & ptr, 
+        const std::size_t & s, const std::uint8_t & off, 
         const std::shared_ptr<bytes::Trait> & t);
 protected:
     inline Base(const std::shared_ptr<bytes::Pointer> & ptr, 
@@ -91,6 +100,19 @@ protected:
     inline Base(const std::shared_ptr<bytes::Pointer> & ptr, 
         const std::size_t & bg, const std::size_t & ed, 
         const std::shared_ptr<bytes::Trait> & t);
+protected:
+    inline Base(const std::shared_ptr<bytes::Pointer> & ptr, 
+        const std::size_t & bg, const std::size_t & ed, 
+        const std::uint8_t & off);
+    inline Base(const std::shared_ptr<bytes::Pointer> & ptr, 
+        const std::size_t & bg, const std::size_t & ed, 
+        const std::uint8_t & off, const bytes::Endian::CategoryEnum & e);
+    inline Base(const std::shared_ptr<bytes::Pointer> & ptr, 
+        const std::size_t & bg, const std::size_t & ed, 
+        const std::uint8_t & off, const bytes::Trait & t);
+    inline Base(const std::shared_ptr<bytes::Pointer> & ptr, 
+        const std::size_t & bg, const std::size_t & ed, 
+        const std::uint8_t & off, const std::shared_ptr<bytes::Trait> & t);
 public:
     inline ~Base();
 public:
@@ -312,6 +334,41 @@ inline Base::Base(const std::shared_ptr<bytes::Pointer> & ptr,
 }
 
 inline Base::Base(const std::shared_ptr<bytes::Pointer> & ptr, 
+    const std::size_t & s, const std::uint8_t & off) :
+        m_ptr(ptr),
+        m_segment(nullptr)
+{
+    if (Validation(*this)) m_segment = m_ptr->Share(0, s, off, Trait());
+}
+
+inline Base::Base(const std::shared_ptr<bytes::Pointer> & ptr, 
+    const std::size_t & s, const std::uint8_t & off, 
+    const bytes::Endian::CategoryEnum & e) :
+        m_ptr(ptr),
+        m_segment(nullptr)
+{
+    if (Validation(*this)) m_segment = m_ptr->Share(0, s, off, Trait(e));
+}
+
+inline Base::Base(const std::shared_ptr<bytes::Pointer> & ptr, 
+    const std::size_t & s, const std::uint8_t & off, 
+    const bytes::Trait & t) :
+        m_ptr(ptr),
+        m_segment(nullptr)
+{
+    if (Validation(*this)) m_segment = m_ptr->Share(0, s, off, Trait(t));
+}
+
+inline Base::Base(const std::shared_ptr<bytes::Pointer> & ptr, 
+    const std::size_t & s, const std::uint8_t & off, 
+    const std::shared_ptr<bytes::Trait> & t) :
+        m_ptr(ptr),
+        m_segment(nullptr)
+{
+    if (Validation(*this)) m_segment = m_ptr->Share(0, s, off, t);
+}
+
+inline Base::Base(const std::shared_ptr<bytes::Pointer> & ptr, 
     const std::size_t & bg, const std::size_t & ed) :
         m_ptr(ptr),
         m_segment(nullptr)
@@ -344,6 +401,42 @@ inline Base::Base(const std::shared_ptr<bytes::Pointer> & ptr,
         m_segment(nullptr)
 {
     if (Validation(*this)) m_segment = m_ptr->Share(bg, ed, t);
+}
+
+inline Base::Base(const std::shared_ptr<bytes::Pointer> & ptr, 
+    const std::size_t & bg, const std::size_t & ed, 
+    const std::uint8_t & off) :
+        m_ptr(ptr),
+        m_segment(nullptr)
+{
+    if (Validation(*this)) m_segment = m_ptr->Share(bg, ed, off, Trait());
+}
+
+inline Base::Base(const std::shared_ptr<bytes::Pointer> & ptr, 
+    const std::size_t & bg, const std::size_t & ed, 
+    const std::uint8_t & off, const bytes::Endian::CategoryEnum & e) :
+        m_ptr(ptr),
+        m_segment(nullptr)
+{
+    if (Validation(*this)) m_segment = m_ptr->Share(bg, ed, off, Trait(e));
+}
+
+inline Base::Base(const std::shared_ptr<bytes::Pointer> & ptr, 
+    const std::size_t & bg, const std::size_t & ed, 
+    const std::uint8_t & off, const bytes::Trait & t) :
+        m_ptr(ptr),
+        m_segment(nullptr)
+{
+    if (Validation(*this)) m_segment = m_ptr->Share(bg, ed, off, Trait(t));
+}
+
+inline Base::Base(const std::shared_ptr<bytes::Pointer> & ptr, 
+    const std::size_t & bg, const std::size_t & ed, 
+    const std::uint8_t & off, const std::shared_ptr<bytes::Trait> & t) :
+        m_ptr(ptr),
+        m_segment(nullptr)
+{
+    if (Validation(*this)) m_segment = m_ptr->Share(bg, ed, off, t);
 }
 
 inline Base::~Base()
