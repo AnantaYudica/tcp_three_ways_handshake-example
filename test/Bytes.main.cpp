@@ -9,8 +9,8 @@ int main()
         std::make_shared<bytes::trait::capacity::Fixed>(),
         std::make_shared<bytes::trait::element::Direct>(),
         std::make_shared<bytes::trait::modifier::Direct>()};
-    auto a0_1 = a0.Slice(0, 2, trait0);
-    auto a0_2 = a0.Slice(2, 2, trait0);
+    auto a0_1 = a0.Slice(0, std::size_t(2), trait0);
+    auto a0_2 = a0.Slice(2, std::size_t(2), trait0);
     assert(a0_1[0] == std::uint8_t(0x01));
     assert(a0_1[1] == std::uint8_t(0x02));
     assert(a0_2[0] == std::uint8_t(0x03));
@@ -60,8 +60,8 @@ int main()
     Bytes a1{{0x01, 0x02}};
     Bytes a2{{0x02, 0x01}};
     Bytes a3{{0x01, 0x02, 0x03, 0x04}, bytes::Endian::big};
-    auto a3_0 = a3.Slice(0, 2);
-    auto a3_1 = a3.Slice(2, 2);
+    auto a3_0 = a3.Slice(0, std::size_t(2));
+    auto a3_1 = a3.Slice(2, std::size_t(2));
     assert(a1 != a2);
     assert(a1 == a3_0);
     assert(a2 <= a3_1);
@@ -72,8 +72,8 @@ int main()
         std::make_shared<bytes::trait::capacity::Fixed>(),
         std::make_shared<bytes::trait::element::Direct>(),
         std::make_shared<bytes::trait::modifier::Direct>()};
-    auto a11_1 = a11.Slice(0, 2, trait11);
-    auto a11_2 = a11.Slice(2, 2, trait11);
+    auto a11_1 = a11.Slice(0, std::size_t(2), trait11);
+    auto a11_2 = a11.Slice(2, std::size_t(2), trait11);
     assert(a11_1[0] == std::uint8_t(0x03));
     assert(a11_1[1] == std::uint8_t(0x04));
     assert(a11_2[0] == std::uint8_t(0x01));
