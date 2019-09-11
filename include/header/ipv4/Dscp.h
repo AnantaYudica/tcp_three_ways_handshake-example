@@ -38,59 +38,58 @@ enum class Dscp : std::uint8_t
 namespace dscp
 {
 
-inline constexpr std::uint8_t ToValue(const Dscp & dscp_enum)
+inline constexpr std::uint8_t ToValue(const header::ipv4::Dscp & dscp_enum)
 {
     return static_cast<std::uint8_t>(dscp_enum);
 }
 
-inline ipv4::Dscp ToEnum(const std::uint8_t & dscp_value)
+inline header::ipv4::Dscp ToEnum(const std::uint8_t & dscp_value)
 {
     switch (dscp_value)
     {
-        case ToValue(ipv4::Dscp::ef): 
-            return ipv4::Dscp::ef;
-        case ToValue(ipv4::Dscp::af11):
-            return ipv4::Dscp::af11;
-        case ToValue(ipv4::Dscp::af12):
-            return ipv4::Dscp::af12;
-        case ToValue(ipv4::Dscp::af13):
-            return ipv4::Dscp::af13;
-        case ToValue(ipv4::Dscp::af21):
-            return ipv4::Dscp::af21;
-        case ToValue(ipv4::Dscp::af22):
-            return ipv4::Dscp::af22;
-        case ToValue(ipv4::Dscp::af23):
-            return ipv4::Dscp::af23;
-        case ToValue(ipv4::Dscp::af31):
-            return ipv4::Dscp::af31;
-        case ToValue(ipv4::Dscp::af32):
-            return ipv4::Dscp::af32;
-        case ToValue(ipv4::Dscp::af33):
-            return ipv4::Dscp::af33;
-        case ToValue(ipv4::Dscp::af41):
-            return ipv4::Dscp::af41;
-        case ToValue(ipv4::Dscp::af42):
-            return ipv4::Dscp::af42;
-        case ToValue(ipv4::Dscp::af43):
-            return ipv4::Dscp::af43;
-        case ToValue(ipv4::Dscp::cs1):
-            return ipv4::Dscp::cs1;
-        case ToValue(ipv4::Dscp::cs2):
-            return ipv4::Dscp::cs2;
-        case ToValue(ipv4::Dscp::cs3):
-            return ipv4::Dscp::cs3;
-        case ToValue(ipv4::Dscp::cs4):
-            return ipv4::Dscp::cs4;
-        case ToValue(ipv4::Dscp::cs5):
-            return ipv4::Dscp::cs5;
-        case ToValue(ipv4::Dscp::cs6):
-            return ipv4::Dscp::cs6;
-        case ToValue(ipv4::Dscp::cs7):
-            return ipv4::Dscp::cs7;
+        case ToValue(header::ipv4::Dscp::ef): 
+            return header::ipv4::Dscp::ef;
+        case ToValue(header::ipv4::Dscp::af11):
+            return header::ipv4::Dscp::af11;
+        case ToValue(header::ipv4::Dscp::af12):
+            return header::ipv4::Dscp::af12;
+        case ToValue(header::ipv4::Dscp::af13):
+            return header::ipv4::Dscp::af13;
+        case ToValue(header::ipv4::Dscp::af21):
+            return header::ipv4::Dscp::af21;
+        case ToValue(header::ipv4::Dscp::af22):
+            return header::ipv4::Dscp::af22;
+        case ToValue(header::ipv4::Dscp::af23):
+            return header::ipv4::Dscp::af23;
+        case ToValue(header::ipv4::Dscp::af31):
+            return header::ipv4::Dscp::af31;
+        case ToValue(header::ipv4::Dscp::af32):
+            return header::ipv4::Dscp::af32;
+        case ToValue(header::ipv4::Dscp::af33):
+            return header::ipv4::Dscp::af33;
+        case ToValue(header::ipv4::Dscp::af41):
+            return header::ipv4::Dscp::af41;
+        case ToValue(header::ipv4::Dscp::af42):
+            return header::ipv4::Dscp::af42;
+        case ToValue(header::ipv4::Dscp::af43):
+            return header::ipv4::Dscp::af43;
+        case ToValue(header::ipv4::Dscp::cs1):
+            return header::ipv4::Dscp::cs1;
+        case ToValue(header::ipv4::Dscp::cs2):
+            return header::ipv4::Dscp::cs2;
+        case ToValue(header::ipv4::Dscp::cs3):
+            return header::ipv4::Dscp::cs3;
+        case ToValue(header::ipv4::Dscp::cs4):
+            return header::ipv4::Dscp::cs4;
+        case ToValue(header::ipv4::Dscp::cs5):
+            return header::ipv4::Dscp::cs5;
+        case ToValue(header::ipv4::Dscp::cs6):
+            return header::ipv4::Dscp::cs6;
+        case ToValue(header::ipv4::Dscp::cs7):
+            return header::ipv4::Dscp::cs7;
     }
-    return ipv4::Dscp::_default;
+    return header::ipv4::Dscp::_default;
 }
-
 
 } //!dscp
 
